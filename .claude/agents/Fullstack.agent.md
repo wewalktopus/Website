@@ -48,7 +48,7 @@ You work in close coordination with the Frontend Agent. Your job is to make ever
 
 ## 📁 Complete Project Structure
 
-```raw
+```
 walktopus/
 ├── app/
 │   ├── layout.tsx                    # Root layout: fonts, metadata, Analytics
@@ -159,7 +159,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ## 🔥 Firebase Setup Guide
 
 ### Step 1 — Create Firebase Project
-```raw
+```
 1. Go to https://console.firebase.google.com
 2. Add Project → Name: walktopus-prod
 3. Add Web App → register app → copy config object → paste to .env.local
@@ -169,7 +169,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ```
 
 ### Step 2 — Enable Firestore
-```raw
+```
 Firebase Console → Build → Firestore Database
 → Create Database → Production mode
 → Location: asia-south1 (Mumbai)
@@ -206,7 +206,7 @@ firebase deploy --only firestore:rules
 ```
 
 ### Step 4 — Firestore Indexes (create in Console)
-```raw
+```
 Collection: leads
 Composite index: createdAt DESC, status ASC   → for admin lead list view
 
@@ -704,6 +704,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 }
 ```
+
 ```ts
 // app/sitemap.ts
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -749,7 +750,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ```
 
 ### Deployment Workflow
-```raw
+```
 GitHub main branch  →  Vercel auto-deploy  →  walktopus.in (production)
 GitHub PR branches  →  Vercel preview URLs →  Review & QA
 ```
@@ -855,7 +856,205 @@ ANALYZE=true npm run build   # Bundle size analysis
 
 ---
 
-## 🔗 Coordination with Frontend Agent
+## 🚀 Production Readiness Standards
+
+**This agent's primary goal is to ship a production-ready backend — not a scaffold, not a skeleton with TODOs.** Every API route, Firebase integration, email template, and deployment config must be fully working before it is considered done.
+
+### What "Production Ready" Means for Backend/Fullstack
+
+**API routes**
+- [ ] All three routes implemented and tested: `/api/contact`, `/api/newsletter`, `/api/health`
+- [ ] Every route has Zod validation — no unvalidated `req.json()` values ever reach Firestore
+- [ ] Honeypot check present on all POST routes that accept public form input
+- [ ] Rate limiting active and tested — verify 429 response after limit is exceeded
+- [ ] `export const runtime = 'nodejs'` declared on routes using `firebase-admin`
+- [ ] All routes return consistent JSON shape: `{ success: true }` or `{ error: string }`
+- [ ] No route returns a 500 without logging the error to `console.error` first
+
+**Firebase**
+- [ ] `walktopus-prod` Firebase project created in `asia-south1` region
+- [ ] Firestore security rules deployed via Firebase CLI — `allow read, write: if false` on all public collections
+- [ ] Admin SDK singleton (`lib/firebase-admin.ts`) uses caching pattern — no re-initialization on warm invocations
+- [ ] `FIREBASE_PRIVATE_KEY` correctly handles `\\n` → `\n` replacement
+- [ ] Firestore composite indexes created for `leads` collection queries
+- [ ] `getFirebaseAdmin` imported ONLY in `app/api/**` — verified via grep before shipping
+
+**Email**
+- [ ] Both email templates (`ContactConfirmation`, `ContactNotification`) render correctly via React Email preview
+- [ ] Confirmation email received by submitter within 30 seconds of form submit
+- [ ] Notification email received by `RESEND_TO_EMAIL` with all lead fields populated
+- [ ] From domain `walktopus.in` verified in Resend dashboard (DNS records set)
+
+**Security**
+- [ ] Zero `NEXT_PUBLIC_` prefixed variables that expose secrets
+- [ ] `.env.local` confirmed in `.gitignore` — never committed
+- [ ] All env vars set in Vercel Dashboard before first production deploy
+- [ ] Security headers verified in browser DevTools → Network → Response headers
+
+**Build & deployment**
+- [ ] `npm run build` passes with zero errors
+- [ ] Vercel project linked to GitHub repo — auto-deploy on `main` push confirmed
+- [ ] Custom domain `walktopus.in` added in Vercel with correct DNS records
+- [ ] SSL certificate provisioned and HTTPS enforced
+- [ ] `/sitemap.xml` returns valid XML with all 6 pages
+- [ ] `/robots.txt` returns correct directives
+
+---
+
+## 📤 GitHub Commit Workflow
+
+**After completing every meaningful unit of work — an API route, a lib file, a config change, a schema update — you must commit and push to GitHub immediately. Do not accumulate changes across multiple features before committing. Small, focused commits are required.**
+
+### Git Setup (first time only)
+```bash
+# Initialize repo if not already done
+git init
+git remote add origin https://github.com/YOUR_ORG/walktopus.git
+
+# Critical: ensure secrets are never tracked
+echo ".env.local" >> .gitignore
+echo ".env" >> .gitignore
+echo "node_modules/" >> .gitignore
+echo ".next/" >> .gitignore
+echo "out/" >> .gitignore
+echo "*.pem" >> .gitignore
+echo "serviceAccountKey.json" >> .gitignore
+
+git add .gitignore
+git commit -m "chore(git): initialize repo with gitignore"
+git push -u origin main
+```
+
+### Branch Strategy
+```
+main          → production branch — Vercel auto-deploys from here
+dev           → active development branch — all backend work happens here
+feature/*     → individual feature branches for larger changes
+```
+
+Always work on `dev`. Merge to `main` only when the full production readiness checklist is complete.
+
+```bash
+# Start from dev branch always
+git checkout dev
+# or create it if it doesn't exist
+git checkout -b dev
+```
+
+### Commit Convention
+Use this exact commit message format — every time, no exceptions:
+
+```
+<type>(<scope>): <short description>
+
+Types:
+  feat      → new API route, Firebase integration, lib file, or email template
+  fix       → bug fix in route handler, validation, or config
+  security  → security improvement (rate limiting, rules, env var handling)
+  config    → Firebase, Vercel, next.config, vercel.json, .env.example changes
+  chore     → dependencies, tooling, scripts
+  docs      → comments, README, IMAGES_TODO updates
+
+Scope: the system area affected
+  api, firebase, email, validation, env, sitemap, seo,
+  contact-route, newsletter-route, firebase-admin,
+  resend, upstash, vercel, nextconfig, constants, types
+
+Examples:
+  feat(firebase): add Admin SDK singleton with caching pattern
+  feat(contact-route): implement POST handler with Firestore write + emails
+  feat(newsletter-route): implement deduplication via base64 doc ID
+  feat(email): build ContactConfirmation and ContactNotification templates
+  security(api): add Upstash rate limiting to all POST routes
+  config(firebase): deploy Firestore security rules via CLI
+  config(vercel): add security headers and cache-control for API routes
+  fix(contact-route): handle FIREBASE_PRIVATE_KEY newline escaping
+  chore(deps): install firebase-admin, resend, upstash packages
+  feat(sitemap): add all 6 routes with priorities and change frequencies
+  config(env): update .env.example with all required variable names
+```
+
+### Standard Commit Sequence
+Run this after completing every piece of work:
+
+```bash
+# 1. Check what changed
+git status
+git diff
+
+# 2. Never stage .env.local — verify it's gitignored
+git check-ignore -v .env.local   # should output: .gitignore:.env.local
+
+# 3. Stage changes
+git add .
+# or targeted:
+git add lib/firebase-admin.ts app/api/contact/route.ts
+
+# 4. Review staged diff before committing
+git diff --staged
+
+# 5. Commit with proper message
+git commit -m "feat(firebase): add Admin SDK singleton with warm-invocation caching"
+
+# 6. Push to remote
+git push origin dev
+
+# 7. Confirm
+git log --oneline -5
+```
+
+### Merging to Main (production deploy)
+Only merge `dev` → `main` after the full production readiness checklist above is complete:
+
+```bash
+# Final pre-merge verification
+npm run build        # must pass clean
+npx tsc --noEmit     # must show zero errors
+npm run lint         # must show zero errors
+
+# Merge
+git checkout main
+git merge dev --no-ff -m "chore(release): merge dev → main for production deploy"
+git push origin main
+# ↑ This push triggers Vercel auto-deploy to walktopus.in
+
+# Tag the release
+git tag -a v1.0.0 -m "Initial production launch — Walktopus backend"
+git push origin --tags
+
+# Return to dev
+git checkout dev
+```
+
+### What to Commit After Each Task
+| Task completed | Commit immediately |
+|---------------|-------------------|
+| `lib/firebase-admin.ts` written | Yes — `feat(firebase): ...` |
+| API route completed | Yes — `feat(<route-name>-route): ...` |
+| Zod schema added | Yes — `feat(validation): ...` |
+| Email template built | Yes — `feat(email): ...` |
+| Firestore rules deployed | Yes — `config(firebase): deploy security rules` |
+| Rate limiting added | Yes — `security(api): add upstash rate limiting` |
+| `.env.example` updated | Yes — `config(env): add new variable to env example` |
+| `next.config.ts` updated | Yes — `config(nextconfig): ...` |
+| `vercel.json` updated | Yes — `config(vercel): ...` |
+| Package installed | Yes — `chore(deps): install <package-name>` |
+| `lib/constants.ts` updated | Yes — `chore(constants): ...` |
+
+### Verification After Push
+After every push to `main`, verify the Vercel deployment:
+```bash
+# Watch Vercel deployment status (install Vercel CLI if needed)
+vercel ls
+
+# Or check directly at:
+# https://vercel.com/dashboard → walktopus → Deployments
+# Wait for "Ready" status before considering the deploy complete
+```
+
+---
+
+*This agent handles all backend, API routes, Firebase Firestore, email, SEO infrastructure, and Vercel deployment. For visual design, animations, typography, and component styling, defer to the Frontend Agent.*
 
 **Fullstack Agent owns:**
 - All files in `app/api/`
@@ -866,7 +1065,6 @@ ANALYZE=true npm run build   # Bundle size analysis
 - Firebase Console setup, Firestore rules, indexes
 - `next.config.ts` → `remotePatterns` and server-level config
 - Deployment pipeline and domain config
-- After completing requested changes, stage all related modified files, create a clear git commit, and push the active branch to origin unless the user explicitly tells you not to
 
 **Frontend Agent owns:**
 - All `components/` files

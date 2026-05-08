@@ -72,7 +72,7 @@ As the vision grew, Walktopus was undertaken by **DGEN Technologies Private Limi
 
 ## 📁 Project File Structure
 
-```raw
+```
 walktopus/
 ├── app/
 │   ├── layout.tsx              # Root layout, fonts, metadata
@@ -381,7 +381,6 @@ Before every component commit:
 - [ ] No hardcoded pixel values in JSX — use Tailwind spacing scale
 - [ ] Dark section backgrounds use `#2B2929` or `#3A3737` only
 - [ ] CTA buttons on every major section
-- [ ] After completing requested changes, stage all related modified files, create a clear git commit, and push the active branch to origin unless the user explicitly tells you not to
 
 ---
 
@@ -429,6 +428,177 @@ npm install lucide-react
 npm install clsx tailwind-merge
 npm install react-hook-form
 ```
+
+---
+
+## 🚀 Production Readiness Standards
+
+**This agent's primary goal is to ship a production-ready website — not a prototype, not a demo.** Every component, page, and animation must meet the bar required for a live public-facing brand website before it is considered done.
+
+### What "Production Ready" Means for Frontend
+
+**Visual completeness**
+- [ ] All 6 pages fully built: `/`, `/services`, `/for-businesses`, `/for-individuals`, `/about`, `/contact`
+- [ ] No empty sections, no "coming soon" placeholders in the layout structure
+- [ ] All placeholder images use `PlaceholderImage.tsx` with brand overlay — no raw `<img>` tags
+- [ ] Navbar and Footer render correctly on every page
+- [ ] Every page has at least one prominent CTA button linking to `/contact`
+
+**Responsiveness**
+- [ ] Tested and pixel-perfect at 375px (iPhone SE), 768px (iPad), 1280px (laptop), 1440px (desktop)
+- [ ] No horizontal scroll at any breakpoint
+- [ ] Touch targets minimum 44×44px on mobile
+- [ ] Font sizes never below 14px on mobile
+
+**Performance**
+- [ ] `npm run build` completes with zero errors and zero TypeScript warnings
+- [ ] No unused imports in any component file
+- [ ] All `next/image` components have explicit `width`, `height`, and `alt`
+- [ ] Hero section images use `priority={true}`
+- [ ] No client-side data fetching on static pages — all content is hardcoded or from `lib/constants.ts`
+- [ ] Lighthouse Performance score > 95 on production build
+
+**Accessibility**
+- [ ] All interactive elements are keyboard navigable
+- [ ] Correct ARIA labels on icon-only buttons
+- [ ] Color contrast ratio meets WCAG AA (verified for `#8D8782` on `#EEEAD9` backgrounds)
+- [ ] `<html lang="en">` set in root layout
+- [ ] Focus-visible styles present on all interactive elements
+
+**Code quality**
+- [ ] No `any` types in TypeScript
+- [ ] No `console.log` statements left in components
+- [ ] No commented-out blocks of dead code
+- [ ] Every component file has a single default export
+- [ ] `'use client'` directive only on components that actually need it (event handlers, hooks, animations)
+
+**Brand compliance**
+- [ ] Only approved brand colors used (zero hardcoded hex values not in the design system)
+- [ ] Only approved fonts loaded via `next/font/google`
+- [ ] All section headers follow the `SectionHeader.tsx` pattern (eyebrow + title + subtitle)
+- [ ] Trust banner with DGEN Technologies subsidiary text present on homepage
+
+---
+
+## 📤 GitHub Commit Workflow
+
+**After completing every meaningful unit of work — a component, a page, a fix, or a feature — you must commit and push to GitHub immediately. Do not batch multiple features into one commit. Small, focused commits are required.**
+
+### Git Setup (first time only)
+```bash
+# Initialize repo if not already done
+git init
+git remote add origin https://github.com/YOUR_ORG/walktopus.git
+
+# Ensure .gitignore covers sensitive files
+echo ".env.local" >> .gitignore
+echo ".env" >> .gitignore
+echo "node_modules/" >> .gitignore
+echo ".next/" >> .gitignore
+echo "out/" >> .gitignore
+```
+
+### Branch Strategy
+```
+main          → production branch — Vercel auto-deploys from here
+dev           → active development branch — all work happens here
+feature/*     → individual feature branches (optional for larger changes)
+```
+
+Always work on `dev` or a `feature/*` branch. Merge to `main` only when production-ready.
+
+```bash
+# Switch to dev branch before starting any work
+git checkout dev
+# or create it if it doesn't exist
+git checkout -b dev
+```
+
+### Commit Convention
+Use this exact commit message format — every time, no exceptions:
+
+```
+<type>(<scope>): <short description>
+
+Types:
+  feat      → new component, page, or feature
+  fix       → bug fix
+  style     → visual/CSS change, no logic change
+  refactor  → code restructure, no behavior change
+  chore     → config, dependencies, tooling
+  docs      → comments, README updates
+
+Scope: the page or component affected
+  homepage, navbar, footer, services, about, contact,
+  hero, trust-banner, card, button, animations, fonts, etc.
+
+Examples:
+  feat(homepage): add hero section with dual CTA buttons
+  feat(navbar): implement sticky navigation with mobile menu
+  feat(about): add origin story section and team cards
+  fix(hero): correct mobile layout overflow on 375px
+  style(button): update hover color to match brand accent
+  chore(fonts): add Syne and DM Sans via next/font/google
+  feat(contact): build smart form with business/individual split
+```
+
+### Standard Commit Sequence
+Run this after completing every piece of work:
+
+```bash
+# 1. Check what changed
+git status
+git diff
+
+# 2. Stage all changes (or stage specific files)
+git add .
+# or for targeted staging:
+git add components/home/HeroSection.tsx components/home/TrustBanner.tsx
+
+# 3. Verify what's staged before committing
+git diff --staged
+
+# 4. Commit with proper message
+git commit -m "feat(homepage): add hero section with dual CTA and animated W accent"
+
+# 5. Push to remote
+git push origin dev
+
+# 6. Confirm push was successful
+git log --oneline -5
+```
+
+### Merging to Main (production deploy)
+Only merge to `main` after the full production readiness checklist above is complete:
+
+```bash
+# Switch to main
+git checkout main
+
+# Merge dev into main
+git merge dev --no-ff -m "chore(release): merge dev → main for production deploy"
+
+# Push main → triggers Vercel auto-deploy
+git push origin main
+
+# Tag the release
+git tag -a v1.0.0 -m "Initial production launch — Walktopus brand website"
+git push origin --tags
+
+# Switch back to dev for continued work
+git checkout dev
+```
+
+### What to Commit After Each Task
+| Task completed | Commit immediately |
+|---------------|-------------------|
+| New component built | Yes — `feat(<component>): ...` |
+| Page layout finished | Yes — `feat(<page>): ...` |
+| Responsive fix applied | Yes — `fix(<scope>): ...` |
+| Animation added | Yes — `feat(animations): ...` |
+| Font or color token updated | Yes — `style(<scope>): ...` |
+| Package installed | Yes — `chore(deps): install framer-motion` |
+| Tailwind config updated | Yes — `chore(tailwind): add brand color tokens` |
 
 ---
 
