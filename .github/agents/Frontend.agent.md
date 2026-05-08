@@ -381,6 +381,7 @@ Before every component commit:
 - [ ] No hardcoded pixel values in JSX — use Tailwind spacing scale
 - [ ] Dark section backgrounds use `#2B2929` or `#3A3737` only
 - [ ] CTA buttons on every major section
+- [ ] After completing requested changes, stage all related modified files, create a clear git commit, and push the active branch to origin unless the user explicitly tells you not to
 
 ---
 
