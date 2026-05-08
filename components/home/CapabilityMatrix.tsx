@@ -35,7 +35,7 @@ const capabilities = [
 
 export function CapabilityMatrix() {
   return (
-    <section className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
+    <section className="mx-auto flex w-full max-w-7xl items-center px-6 py-24 lg:min-h-screen lg:py-28">
       <ScrollReveal>
         <SectionHeader
           eyebrow="Operating System"

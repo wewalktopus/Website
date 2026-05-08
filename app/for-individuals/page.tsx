@@ -1,9 +1,12 @@
 export const dynamic = 'force-static';
 
 import type { Metadata } from 'next';
+import { Compass, Rocket, Sparkles, TrendingUp } from 'lucide-react';
 import { INDIVIDUAL_JOURNEY } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 import { pageMetadata } from '@/lib/seo';
+
+const journeyIcons = [Compass, Sparkles, Rocket, TrendingUp] as const;
 
 export const metadata: Metadata = pageMetadata({
   title: 'Personal Branding Services',
@@ -24,6 +27,12 @@ export default function ForIndividualsPage() {
       <ol className="mt-12 grid gap-4 md:grid-cols-4">
         {INDIVIDUAL_JOURNEY.map((step, idx) => (
           <li key={step} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-6">
+            <span className="flex h-10 w-10 items-center justify-center border border-[var(--color-bg-secondary)] bg-white/60 text-[var(--color-accent)]">
+              {(() => {
+                const Icon = journeyIcons[idx % journeyIcons.length];
+                return <Icon className="h-5 w-5" />;
+              })()}
+            </span>
             <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">Step {idx + 1}</p>
             <p className="mt-3 text-xl font-bold">{step}</p>
           </li>

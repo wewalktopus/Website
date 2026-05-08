@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Instagram, Mail, MapPin, Youtube } from 'lucide-react';
 import { BRAND, NAV_LINKS } from '@/lib/constants';
 
 export function Footer() {
@@ -28,18 +29,26 @@ export function Footer() {
 
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.08em]">Contact</p>
-          <p className="mt-4 text-sm text-[var(--color-bg-secondary)]">{BRAND.email}</p>
-          <p className="mt-2 text-sm text-[var(--color-bg-secondary)]">
+          <p className="mt-4 flex items-center gap-2 text-sm text-[var(--color-bg-secondary)]">
+            <Mail className="h-4 w-4 text-[var(--color-accent)]" />
+            <span>{BRAND.email}</span>
+          </p>
+          <p className="mt-2 flex items-center gap-2 text-sm text-[var(--color-bg-secondary)]">
+            <Instagram className="h-4 w-4 text-[var(--color-accent)]" />
             <Link href={BRAND.social.instagram} target="_blank" rel="noreferrer" className="hover:text-[var(--color-accent)]">
               Instagram
             </Link>
           </p>
-          <p className="text-sm text-[var(--color-bg-secondary)]">
+          <p className="flex items-center gap-2 text-sm text-[var(--color-bg-secondary)]">
+            <Youtube className="h-4 w-4 text-[var(--color-accent)]" />
             <Link href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="hover:text-[var(--color-accent)]">
               YouTube
             </Link>
           </p>
-          <p className="text-sm text-[var(--color-bg-secondary)]">{BRAND.location}</p>
+          <p className="flex items-center gap-2 text-sm text-[var(--color-bg-secondary)]">
+            <MapPin className="h-4 w-4 text-[var(--color-accent)]" />
+            <span>{BRAND.location}</span>
+          </p>
           <p className="mt-6 text-xs text-[var(--color-bg-secondary)]">© {new Date().getFullYear()} Walktopus</p>
         </div>
       </div>

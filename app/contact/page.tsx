@@ -1,6 +1,7 @@
 export const dynamic = 'force-static';
 
 import type { Metadata } from 'next';
+import { Instagram, Mail, MapPin, MessageCircleMore, Youtube } from 'lucide-react';
 import { ContactForm } from '@/components/contact/ContactForm';
 import { BRAND } from '@/lib/constants';
 import { pageMetadata } from '@/lib/seo';
@@ -28,21 +29,30 @@ export default function ContactPage() {
 
       <aside className="h-fit border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
         <h2 className="text-2xl font-bold">Quick Contact</h2>
-        <p className="mt-4 text-sm text-[var(--color-soft-gray)]">Email: {BRAND.email}</p>
-        <p className="mt-2 text-sm text-[var(--color-soft-gray)]">
-          Instagram:{' '}
+        <p className="mt-4 flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
+          <Mail className="h-4 w-4 text-[var(--color-accent)]" />
+          <span>{BRAND.email}</span>
+        </p>
+        <p className="mt-2 flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
+          <Instagram className="h-4 w-4 text-[var(--color-accent)]" />
           <a href={BRAND.social.instagram} target="_blank" rel="noreferrer" className="text-[var(--color-text)] underline-offset-4 hover:underline">
             @walktopus
           </a>
         </p>
-        <p className="text-sm text-[var(--color-soft-gray)]">
-          YouTube:{' '}
+        <p className="flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
+          <Youtube className="h-4 w-4 text-[var(--color-accent)]" />
           <a href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="text-[var(--color-text)] underline-offset-4 hover:underline">
             youtube.com/@WeWalktopus
           </a>
         </p>
-        <p className="text-sm text-[var(--color-soft-gray)]">Location: {BRAND.location}</p>
-        <p className="mt-6 text-sm">Response Promise: Within 24 hours.</p>
+        <p className="flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
+          <MapPin className="h-4 w-4 text-[var(--color-accent)]" />
+          <span>{BRAND.location}</span>
+        </p>
+        <p className="mt-6 flex items-center gap-3 text-sm">
+          <MessageCircleMore className="h-4 w-4 text-[var(--color-accent)]" />
+          <span>Response Promise: Within 24 hours.</span>
+        </p>
         <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
           A subsidiary of Dgen Technologies Private Limited
         </p>
