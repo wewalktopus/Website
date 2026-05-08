@@ -25,6 +25,18 @@ export default function ContactPage() {
       <aside className="h-fit border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
         <h2 className="text-2xl font-bold">Quick Contact</h2>
         <p className="mt-4 text-sm text-[var(--color-soft-gray)]">Email: {BRAND.email}</p>
+        <p className="mt-2 text-sm text-[var(--color-soft-gray)]">
+          Instagram:{' '}
+          <a href={BRAND.social.instagram} target="_blank" rel="noreferrer" className="text-[var(--color-text)] underline-offset-4 hover:underline">
+            @walktopus
+          </a>
+        </p>
+        <p className="text-sm text-[var(--color-soft-gray)]">
+          YouTube:{' '}
+          <a href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="text-[var(--color-text)] underline-offset-4 hover:underline">
+            youtube.com/@walktopus
+          </a>
+        </p>
         <p className="text-sm text-[var(--color-soft-gray)]">Location: {BRAND.location}</p>
         <p className="mt-6 text-sm">Response Promise: Within 24 hours.</p>
         <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">

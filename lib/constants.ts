@@ -7,11 +7,12 @@ export const BRAND = {
   mission: 'To help every small and local business unlock their true digital potential.',
   origin:
     "Started to manage Sukomal Travel, a personal travel brand, and grew into a full-service digital marketing agency.",
-  email: 'hello@walktopus.in',
+  email: 'wewalktopus@gmail.com',
   phone: '+91 XXXXX XXXXX',
   location: 'Kolkata, West Bengal, India',
   social: {
-    instagram: 'https://instagram.com/walktopus',
+    instagram: 'https://www.instagram.com/walktopus',
+    youtube: 'https://youtube.com/@walktopus',
     linkedin: 'https://linkedin.com/company/walktopus',
     facebook: 'https://facebook.com/walktopus',
     twitter: 'https://x.com/walktopus',

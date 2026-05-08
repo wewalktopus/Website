@@ -29,6 +29,16 @@ export function Footer() {
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.08em]">Contact</p>
           <p className="mt-4 text-sm text-[var(--color-bg-secondary)]">{BRAND.email}</p>
+          <p className="mt-2 text-sm text-[var(--color-bg-secondary)]">
+            <Link href={BRAND.social.instagram} target="_blank" rel="noreferrer" className="hover:text-[var(--color-accent)]">
+              Instagram
+            </Link>
+          </p>
+          <p className="text-sm text-[var(--color-bg-secondary)]">
+            <Link href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="hover:text-[var(--color-accent)]">
+              YouTube
+            </Link>
+          </p>
           <p className="text-sm text-[var(--color-bg-secondary)]">{BRAND.location}</p>
           <p className="mt-6 text-xs text-[var(--color-bg-secondary)]">© {new Date().getFullYear()} Walktopus</p>
         </div>
