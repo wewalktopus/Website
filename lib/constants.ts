@@ -42,6 +42,7 @@ export const TEAM = [
 ] as const;
 
 export const NAV_LINKS = [
+  { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
   { label: 'For Businesses', href: '/for-businesses' },
   { label: 'For Individuals', href: '/for-individuals' },

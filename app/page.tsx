@@ -5,6 +5,10 @@ import { TrustBanner } from '@/components/home/TrustBanner';
 import { ServicesSnapshot } from '@/components/home/ServicesSnapshot';
 import { SocialProof } from '@/components/home/SocialProof';
 import { CaseStudiesTeaser } from '@/components/home/CaseStudiesTeaser';
+import { CapabilityMatrix } from '@/components/home/CapabilityMatrix';
+import { ScrollytellingPlaybook } from '@/components/home/ScrollytellingPlaybook';
+import { IndustryOutcomes } from '@/components/home/IndustryOutcomes';
+import { FinalCta } from '@/components/home/FinalCta';
 
 export default function HomePage() {
   return (
@@ -13,7 +17,11 @@ export default function HomePage() {
       <TrustBanner />
       <ServicesSnapshot />
       <SocialProof />
+      <CapabilityMatrix />
+      <ScrollytellingPlaybook />
       <CaseStudiesTeaser />
+      <IndustryOutcomes />
+      <FinalCta />
     </>
   );
 }
