@@ -79,6 +79,9 @@ export const metadata: Metadata = {
     },
   },
   category: 'business',
+  verification: {
+    google: '1XQm0DhR9qM77JVkoEiCaLNKNuUTgs39FMtwFh5uM_M',
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
