@@ -48,7 +48,7 @@ You work in close coordination with the Frontend Agent. Your job is to make ever
 
 ## 📁 Complete Project Structure
 
-```
+```raw
 walktopus/
 ├── app/
 │   ├── layout.tsx                    # Root layout: fonts, metadata, Analytics
@@ -159,7 +159,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ## 🔥 Firebase Setup Guide
 
 ### Step 1 — Create Firebase Project
-```
+```raw
 1. Go to https://console.firebase.google.com
 2. Add Project → Name: walktopus-prod
 3. Add Web App → register app → copy config object → paste to .env.local
@@ -169,7 +169,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ```
 
 ### Step 2 — Enable Firestore
-```
+```raw
 Firebase Console → Build → Firestore Database
 → Create Database → Production mode
 → Location: asia-south1 (Mumbai)
@@ -206,7 +206,7 @@ firebase deploy --only firestore:rules
 ```
 
 ### Step 4 — Firestore Indexes (create in Console)
-```
+```raw
 Collection: leads
 Composite index: createdAt DESC, status ASC   → for admin lead list view
 
@@ -704,7 +704,6 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 }
 ```
-
 ```ts
 // app/sitemap.ts
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -750,7 +749,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ```
 
 ### Deployment Workflow
-```
+```raw
 GitHub main branch  →  Vercel auto-deploy  →  walktopus.in (production)
 GitHub PR branches  →  Vercel preview URLs →  Review & QA
 ```
@@ -867,6 +866,7 @@ ANALYZE=true npm run build   # Bundle size analysis
 - Firebase Console setup, Firestore rules, indexes
 - `next.config.ts` → `remotePatterns` and server-level config
 - Deployment pipeline and domain config
+- After completing requested changes, stage all related modified files, create a clear git commit, and push the active branch to origin unless the user explicitly tells you not to
 
 **Frontend Agent owns:**
 - All `components/` files
