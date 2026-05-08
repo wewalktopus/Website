@@ -4,11 +4,15 @@ import type { Metadata } from 'next';
 import { TEAM } from '@/lib/constants';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'About',
-  description: 'Learn the Walktopus origin story and how Dgen Technologies powers our growth mission.',
-};
+export const metadata: Metadata = pageMetadata({
+  title: 'About Walktopus',
+  description:
+    'Learn how Walktopus started in Kolkata, how Dgen Technologies Private Limited powers the company, and why our mission is built around helping small businesses and creators grow online.',
+  pathname: '/about',
+  keywords: ['about Walktopus', 'Dgen Technologies subsidiary', 'Kolkata marketing agency story'],
+});
 
 export default function AboutPage() {
   return (
@@ -30,7 +34,14 @@ export default function AboutPage() {
           <p>As a subsidiary of Dgen Technologies Private Limited, Walktopus combines technical infrastructure with strategic marketing execution.</p>
           <p className="font-semibold text-[var(--color-text)]">Every small business deserves a big digital presence.</p>
         </div>
-        <PlaceholderImage seed="walktopus-about" width={1200} height={800} alt="About Walktopus" className="h-72" />
+        <PlaceholderImage
+          seed="walktopus-about"
+          width={1200}
+          height={800}
+          alt="Walktopus team story and digital marketing agency roots in Kolkata"
+          className="h-72"
+          sizes="(min-width: 768px) 50vw, 100vw"
+        />
       </section>
 
       <section>
@@ -38,7 +49,14 @@ export default function AboutPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {TEAM.map((member) => (
             <article key={member.name} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4">
-              <PlaceholderImage seed={member.placeholderSeed} width={400} height={400} alt={member.name} className="h-56" />
+              <PlaceholderImage
+                seed={member.placeholderSeed}
+                width={400}
+                height={400}
+                alt={`${member.name}, ${member.title} at Walktopus`}
+                className="h-56"
+                sizes="(min-width: 768px) 33vw, 100vw"
+              />
               <h3 className="mt-4 text-xl font-bold">{member.name}</h3>
               <p className="text-sm font-semibold text-[var(--color-accent)]">{member.title}</p>
               <p className="mt-2 text-sm text-[var(--color-soft-gray)]">{member.bio}</p>

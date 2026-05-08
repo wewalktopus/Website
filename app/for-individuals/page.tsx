@@ -3,18 +3,22 @@ export const dynamic = 'force-static';
 import type { Metadata } from 'next';
 import { INDIVIDUAL_JOURNEY } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'For Individuals',
-  description: 'Build a personal brand with strategic digital execution from Walktopus.',
-};
+export const metadata: Metadata = pageMetadata({
+  title: 'Personal Branding Services',
+  description:
+    'Walktopus helps creators, founders, consultants, and professionals build personal brands with content strategy, social growth, authority positioning, and search-friendly digital presence.',
+  pathname: '/for-individuals',
+  keywords: ['personal branding services India', 'creator marketing agency Kolkata', 'founder brand strategy'],
+});
 
 export default function ForIndividualsPage() {
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
       <h1 className="font-display text-6xl uppercase leading-tight sm:text-7xl">Build Your Brand. Own Your Audience.</h1>
       <p className="mt-6 max-w-3xl text-lg text-[var(--color-soft-gray)]">
-        For creators, consultants, and professionals ready to build authority, increase reach, and convert visibility into opportunities.
+        For creators, consultants, and professionals ready to build authority, increase reach, and convert visibility into opportunities through a stronger and more searchable digital presence.
       </p>
 
       <ol className="mt-12 grid gap-4 md:grid-cols-4">

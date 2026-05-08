@@ -3,11 +3,15 @@ export const dynamic = 'force-static';
 import type { Metadata } from 'next';
 import { ContactForm } from '@/components/contact/ContactForm';
 import { BRAND } from '@/lib/constants';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Book a free consultation with Walktopus and discuss your digital growth goals.',
-};
+export const metadata: Metadata = pageMetadata({
+  title: 'Contact Walktopus',
+  description:
+    'Contact Walktopus to book a free consultation for digital marketing, SEO strategy, social media management, YouTube growth, website content, and personal branding support.',
+  pathname: '/contact',
+  keywords: ['contact digital marketing agency Kolkata', 'book SEO consultation India', 'marketing strategy call'],
+});
 
 export default function ContactPage() {
   return (
@@ -34,7 +38,7 @@ export default function ContactPage() {
         <p className="text-sm text-[var(--color-soft-gray)]">
           YouTube:{' '}
           <a href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="text-[var(--color-text)] underline-offset-4 hover:underline">
-            youtube.com/@walktopus
+            youtube.com/@WeWalktopus
           </a>
         </p>
         <p className="text-sm text-[var(--color-soft-gray)]">Location: {BRAND.location}</p>

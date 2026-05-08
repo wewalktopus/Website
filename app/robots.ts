@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Googlebot-Image',
-        allow: ['/opengraph-image', '/logo.png', '/apple-icon', '/icon'],
+        allow: ['/opengraph-image', '/logo.png', '/logo-transparent.png', '/apple-icon', '/icon'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

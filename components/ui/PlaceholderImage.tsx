@@ -8,9 +8,10 @@ interface PlaceholderImageProps {
   alt: string;
   className?: string;
   overlay?: boolean;
+  sizes?: string;
 }
 
-export function PlaceholderImage({ seed, width, height, alt, className, overlay = true }: PlaceholderImageProps) {
+export function PlaceholderImage({ seed, width, height, alt, className, overlay = true, sizes = '100vw' }: PlaceholderImageProps) {
   const src = `https://picsum.photos/seed/${seed}/${width}/${height}`;
 
   return (
@@ -20,7 +21,14 @@ export function PlaceholderImage({ seed, width, height, alt, className, overlay 
           PLACEHOLDER
         </span>
       ) : null}
-      <Image src={src} alt={alt} width={width} height={height} className="h-full w-full object-cover grayscale-[30%]" />
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={sizes}
+        className="h-full w-full object-cover grayscale-[30%]"
+      />
       {overlay ? <div className="absolute inset-0 bg-[var(--color-bg)]/20 mix-blend-multiply" /> : null}
     </div>
   );
