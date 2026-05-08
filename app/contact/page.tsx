@@ -28,7 +28,7 @@ export default function ContactPage() {
         <p className="text-sm text-[var(--color-soft-gray)]">Location: {BRAND.location}</p>
         <p className="mt-6 text-sm">Response Promise: Within 24 hours.</p>
         <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
-          A subsidiary of DGEN Technologies Private Limited
+          A subsidiary of Dgen Technologies Private Limited
         </p>
       </aside>
     </div>

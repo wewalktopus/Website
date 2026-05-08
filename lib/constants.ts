@@ -2,8 +2,8 @@ export const BRAND = {
   name: 'Walktopus',
   tagline: 'Amplify Your Digital Presence. Drive Measurable Growth.',
   founded: 'December 2025',
-  parent: 'DGEN Technologies Private Limited',
-  parentShort: 'DGEN Technologies',
+  parent: 'Dgen Technologies Private Limited',
+  parentShort: 'Dgen Technologies',
   mission: 'To help every small and local business unlock their true digital potential.',
   origin:
     "Started to manage Sukomal Travel, a personal travel brand, and grew into a full-service digital marketing agency.",
@@ -28,7 +28,7 @@ export const TEAM = [
   },
   {
     name: 'Sukomal Debnath',
-    title: 'Co-founder and Director, DGEN Technologies',
+    title: 'Co-founder and Director, Dgen Technologies',
     bio: 'The mind behind Walktopus. Started with one travel account, built a company.',
     placeholderSeed: 'walktopus-sukomal',
   },

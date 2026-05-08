@@ -7,7 +7,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Learn the Walktopus origin story and how DGEN Technologies powers our growth mission.',
+  description: 'Learn the Walktopus origin story and how Dgen Technologies powers our growth mission.',
 };
 
 export default function AboutPage() {
@@ -27,7 +27,7 @@ export default function AboutPage() {
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-4 text-[var(--color-soft-gray)]">
           <p>Co-founded by Sukomal Debnath and Sagnik Mandal, Walktopus evolved from a practical idea into a growth partner for small businesses and individuals.</p>
-          <p>As a subsidiary of DGEN Technologies Private Limited, Walktopus combines technical infrastructure with strategic marketing execution.</p>
+          <p>As a subsidiary of Dgen Technologies Private Limited, Walktopus combines technical infrastructure with strategic marketing execution.</p>
           <p className="font-semibold text-[var(--color-text)]">Every small business deserves a big digital presence.</p>
         </div>
         <PlaceholderImage seed="walktopus-about" width={1200} height={800} alt="About Walktopus" className="h-72" />

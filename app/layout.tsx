@@ -17,27 +17,68 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     template: '%s | Walktopus',
-    default: 'Walktopus - Digital Marketing and Growth Agency',
+    default: 'Walktopus — Digital Marketing & Growth Agency',
   },
   description:
-    'Walktopus helps businesses and individuals amplify their digital presence through social media management, web identity, and data-driven growth campaigns.',
-  keywords: ['digital marketing', 'social media management', 'personal branding', 'SEO', 'Kolkata'],
-  authors: [{ name: 'DGEN Technologies Private Limited' }],
+    'Walktopus helps businesses and individuals amplify their digital presence through social media management, web identity, and data-driven growth campaigns. A subsidiary of Dgen Technologies Private Limited.',
+  keywords: [
+    'digital marketing',
+    'social media management',
+    'personal branding',
+    'SEO',
+    'Kolkata',
+    'growth agency',
+    'Dgen Technologies',
+  ],
+  authors: [{ name: 'Dgen Technologies Private Limited', url: siteUrl }],
+  creator: 'Walktopus',
+  publisher: 'Dgen Technologies Private Limited',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/favicon.ico',
+  },
+  manifest: '/site.webmanifest',
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: siteUrl,
     siteName: 'Walktopus',
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    title: 'Walktopus — Digital Marketing & Growth Agency',
+    description:
+      'Amplify your digital presence. Social media management, web identity & growth campaigns for businesses and individuals.',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Walktopus — Digital Marketing & Growth Agency',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/og-image.png'],
+    title: 'Walktopus — Digital Marketing & Growth Agency',
+    description:
+      'Amplify your digital presence. Social media management, web identity & growth campaigns for businesses and individuals.',
+    images: ['/opengraph-image'],
+    creator: '@walktopus',
+    site: '@walktopus',
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
+  category: 'business',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
