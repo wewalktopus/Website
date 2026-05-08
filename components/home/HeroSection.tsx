@@ -2,8 +2,8 @@ import { Button } from '@/components/ui/Button';
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[88vh] items-center overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl px-6 py-24">
+    <section className="relative flex h-screen min-h-screen items-center overflow-hidden">
+      <div className="mx-auto w-full max-w-7xl px-6">
         <div className="max-w-4xl">
           <p className="inline-block bg-[var(--color-accent)] px-3 py-1 font-mono text-xs uppercase tracking-[0.12em] text-white">
             W
