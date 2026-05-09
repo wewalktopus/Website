@@ -150,7 +150,7 @@ export function ServicesExperience() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
-      <section className="relative overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-12">
+      <section className="relative flex min-h-screen items-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-12">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-(--color-accent)/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-(--color-text)/10 blur-3xl" />
 
@@ -198,7 +198,7 @@ export function ServicesExperience() {
         </div>
       </ScrollReveal>
 
-      <section className="mt-24">
+      <section className="mt-24 min-h-screen">
         <ScrollReveal>
           <SectionHeader
             eyebrow="Three Pillars"
@@ -207,104 +207,120 @@ export function ServicesExperience() {
           />
         </ScrollReveal>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          {pillars.map((pillar, index) => {
-            const Icon = pillar.icon;
-            const isActive = pillar.id === activePillarId;
+        <div className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+          <div className="space-y-4 border border-(--color-bg-secondary) bg-(--color-bg-light) p-4 md:p-6">
+            {pillars.map((pillar, index) => {
+              const Icon = pillar.icon;
+              const isActive = pillar.id === activePillarId;
 
-            return (
-              <motion.button
-                key={pillar.id}
-                type="button"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.5, delay: index * 0.08, ease }}
-                whileHover={{ y: -4 }}
-                className={[
-                  'text-left rounded-sm border p-6 transition-colors duration-300',
-                  isActive
-                    ? 'border-(--color-accent) bg-(--color-bg-light)'
-                    : 'border-(--color-bg-secondary) bg-(--color-bg-light) hover:border-(--color-accent)',
-                ].join(' ')}
-                onClick={() => setActivePillarId(pillar.id)}
-                aria-pressed={isActive}
-              >
-                <Icon className="h-6 w-6 text-(--color-accent)" aria-hidden="true" />
-                <h3 className="mt-4 text-2xl font-extrabold leading-tight">{pillar.title}</h3>
-                <p className="mt-2 font-mono text-xs uppercase tracking-[0.12em] text-(--color-soft-gray)">{pillar.subtitle}</p>
-              </motion.button>
-            );
-          })}
+              return (
+                <motion.button
+                  key={pillar.id}
+                  type="button"
+                  initial={{ opacity: 0, x: -24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-100px' }}
+                  transition={{ duration: 0.5, delay: index * 0.08, ease }}
+                  whileHover={{ x: 4 }}
+                  className={[
+                    'w-full text-left rounded-sm border p-6 transition-colors duration-300',
+                    isActive
+                      ? 'border-(--color-accent) bg-(--color-bg)'
+                      : 'border-(--color-bg-secondary) bg-(--color-bg-light) hover:border-(--color-accent)',
+                  ].join(' ')}
+                  onClick={() => setActivePillarId(pillar.id)}
+                  aria-pressed={isActive}
+                >
+                  <Icon className="h-6 w-6 text-(--color-accent)" aria-hidden="true" />
+                  <h3 className="mt-4 text-2xl font-extrabold leading-tight">{pillar.title}</h3>
+                  <p className="mt-2 font-mono text-xs uppercase tracking-[0.12em] text-(--color-soft-gray)">{pillar.subtitle}</p>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePillar.id}
+              initial={{ opacity: 0, x: 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.4, ease }}
+              className="grid gap-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:grid-cols-[1fr_1.1fr]"
+            >
+              <div className="space-y-6">
+                <h4 className="text-3xl font-extrabold leading-tight">{activePillar.title}</h4>
+                <p className="text-lg text-(--color-soft-gray)">{activePillar.description}</p>
+                <ul className="space-y-3">
+                  {activePillar.bullets.map((bullet) => (
+                    <li key={bullet} className="flex items-start gap-3 text-base text-(--color-text)">
+                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button href="/contact" variant="primary" className="group">
+                  Discuss this service <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Button>
+              </div>
+
+              <PlaceholderImage
+                seed={activePillar.imageSeed}
+                width={1200}
+                height={800}
+                alt={activePillar.imageAlt}
+                className="h-80 md:h-full"
+                sizes="(min-width: 768px) 55vw, 100vw"
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activePillar.id}
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.4, ease }}
-            className="mt-8 grid gap-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:grid-cols-[1fr_1.1fr]"
-          >
-            <div className="space-y-6">
-              <h4 className="text-3xl font-extrabold leading-tight">{activePillar.title}</h4>
-              <p className="text-lg text-(--color-soft-gray)">{activePillar.description}</p>
-              <ul className="space-y-3">
-                {activePillar.bullets.map((bullet) => (
-                  <li key={bullet} className="flex items-start gap-3 text-base text-(--color-text)">
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                    <span>{bullet}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button href="/contact" variant="primary" className="group">
-                Discuss this service <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-            </div>
-
-            <PlaceholderImage
-              seed={activePillar.imageSeed}
-              width={1200}
-              height={800}
-              alt={activePillar.imageAlt}
-              className="h-80 md:h-full"
-              sizes="(min-width: 768px) 55vw, 100vw"
-            />
-          </motion.div>
-        </AnimatePresence>
       </section>
 
-      <section className="mt-24 grid gap-10 lg:grid-cols-[1fr_1.2fr]">
-        <ScrollReveal>
-          <SectionHeader
-            eyebrow="Execution Framework"
-            title="How we move from strategy to scale"
-            subtitle="A disciplined framework keeps every campaign accountable and adaptable."
-          />
-        </ScrollReveal>
+      <section className="mt-24 min-h-screen border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:p-8">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)] lg:overflow-hidden lg:pr-4">
+            <ScrollReveal className="h-full">
+              <div className="flex h-full flex-col justify-between">
+                <SectionHeader
+                  eyebrow="Execution Framework"
+                  title="How we move from strategy to scale"
+                  subtitle="A scrollytelling flow: each step enters as you move down, showing how strategy transforms into measurable growth."
+                />
+                <p className="mt-8 font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Scroll to progress through each step</p>
+              </div>
+            </ScrollReveal>
+          </div>
 
-        <div className="space-y-4">
-          {executionFramework.map((step, index) => {
-            const Icon = step.icon;
+          <div className="space-y-20 lg:space-y-28">
+            {executionFramework.map((step, index) => {
+              const Icon = step.icon;
 
-            return (
-              <ScrollReveal key={step.title} delay={index * 0.06}>
-                <Card className="group p-6">
-                  <div className="grid gap-4 md:grid-cols-[auto_1fr] md:items-start">
-                    <div className="flex h-10 w-10 items-center justify-center border border-(--color-bg-secondary) bg-white/50 text-(--color-accent)">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
+              return (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0.2, y: 60, scale: 0.97 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: false, amount: 0.45 }}
+                  transition={{ duration: 0.7, ease }}
+                  className="min-h-[75vh]"
+                >
+                  <Card className="h-full p-6 md:p-8">
+                    <div className="grid h-full gap-5 md:grid-cols-[auto_1fr] md:items-start">
+                      <div className="flex h-12 w-12 items-center justify-center border border-(--color-bg-secondary) bg-white/50 text-(--color-accent)">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </div>
+                      <div>
+                        <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Step {index + 1}</p>
+                        <h3 className="mt-3 text-3xl font-extrabold leading-tight">{step.title}</h3>
+                        <p className="mt-4 max-w-xl text-lg text-(--color-soft-gray)">{step.description}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Step {index + 1}</p>
-                      <h3 className="mt-2 text-2xl font-extrabold leading-tight">{step.title}</h3>
-                      <p className="mt-3 text-(--color-soft-gray)">{step.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              </ScrollReveal>
-            );
-          })}
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
