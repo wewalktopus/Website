@@ -149,8 +149,8 @@ export function ServicesExperience() {
   const activeGoal = useMemo(() => goalProfiles.find((goal) => goal.id === activeGoalId) ?? goalProfiles[0], [activeGoalId]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
-      <section className="relative flex min-h-screen items-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-12">
+    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-8 lg:py-10">
+      <section className="relative flex min-h-svh items-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-12">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-(--color-accent)/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-(--color-text)/10 blur-3xl" />
 
@@ -181,24 +181,26 @@ export function ServicesExperience() {
         </ScrollReveal>
       </section>
 
-      <ScrollReveal className="mt-24">
-        <div className="rounded-sm border border-(--color-bg-secondary) bg-(--color-text-dark) p-6">
-          <div className="flex flex-wrap items-center gap-3">
-            {platforms.map((platform) => (
-              <motion.span
-                key={platform}
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.25, ease }}
-                className="cursor-default border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-(--color-bg)"
-              >
-                {platform}
-              </motion.span>
-            ))}
+      <section className="flex min-h-svh items-center">
+        <ScrollReveal className="w-full">
+          <div className="rounded-sm border border-(--color-bg-secondary) bg-(--color-text-dark) p-8 md:p-10">
+            <div className="flex flex-wrap items-center gap-3">
+              {platforms.map((platform) => (
+                <motion.span
+                  key={platform}
+                  whileHover={{ scale: 1.04 }}
+                  transition={{ duration: 0.25, ease }}
+                  className="cursor-default border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-(--color-bg)"
+                >
+                  {platform}
+                </motion.span>
+              ))}
+            </div>
           </div>
-        </div>
-      </ScrollReveal>
+        </ScrollReveal>
+      </section>
 
-      <section className="mt-24 min-h-screen">
+      <section className="flex min-h-svh items-center">
         <ScrollReveal>
           <SectionHeader
             eyebrow="Three Pillars"
@@ -207,7 +209,7 @@ export function ServicesExperience() {
           />
         </ScrollReveal>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+        <div className="mt-10 grid w-full gap-6 lg:grid-cols-2 lg:items-stretch">
           <div className="space-y-4 border border-(--color-bg-secondary) bg-(--color-bg-light) p-4 md:p-6">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
@@ -277,9 +279,9 @@ export function ServicesExperience() {
         </div>
       </section>
 
-      <section className="mt-24 min-h-screen border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:p-8">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="lg:sticky lg:top-24 lg:h-[calc(100vh-7rem)] lg:overflow-hidden lg:pr-4">
+      <section className="h-svh border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:p-8">
+        <div className="grid h-full gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="h-full lg:pr-4">
             <ScrollReveal className="h-full">
               <div className="flex h-full flex-col justify-between">
                 <SectionHeader
@@ -292,7 +294,7 @@ export function ServicesExperience() {
             </ScrollReveal>
           </div>
 
-          <div className="space-y-20 lg:space-y-28">
+          <div className="h-full overflow-y-auto pr-2 snap-y snap-mandatory">
             {executionFramework.map((step, index) => {
               const Icon = step.icon;
 
@@ -303,7 +305,7 @@ export function ServicesExperience() {
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: false, amount: 0.45 }}
                   transition={{ duration: 0.7, ease }}
-                  className="min-h-[75vh]"
+                  className="h-full snap-start py-2"
                 >
                   <Card className="h-full p-6 md:p-8">
                     <div className="grid h-full gap-5 md:grid-cols-[auto_1fr] md:items-start">
@@ -324,128 +326,132 @@ export function ServicesExperience() {
         </div>
       </section>
 
-      <section className="mt-24">
-        <ScrollReveal>
-          <SectionHeader
-            eyebrow="Interactive Modules"
-            title="Inspect the core delivery modules"
-            subtitle="Click each module to see what is included in production delivery."
-          />
-        </ScrollReveal>
+      <section className="flex min-h-svh items-center">
+        <div className="w-full">
+          <ScrollReveal>
+            <SectionHeader
+              eyebrow="Interactive Modules"
+              title="Inspect the core delivery modules"
+              subtitle="Click each module to see what is included in production delivery."
+            />
+          </ScrollReveal>
 
-        <div className="mt-10 space-y-4">
-          {serviceModules.map((module) => {
-            const isOpen = module.id === openModuleId;
+          <div className="mt-10 max-h-[62vh] space-y-4 overflow-y-auto pr-2">
+            {serviceModules.map((module) => {
+              const isOpen = module.id === openModuleId;
 
-            return (
-              <div key={module.id} className="border border-(--color-bg-secondary) bg-(--color-bg-light)">
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between gap-4 p-6 text-left"
-                  onClick={() => setOpenModuleId((current) => (current === module.id ? null : module.id))}
-                  aria-expanded={isOpen}
-                >
-                  <div>
-                    <h3 className="text-2xl font-extrabold leading-tight">{module.title}</h3>
-                    <p className="mt-2 text-(--color-soft-gray)">{module.summary}</p>
-                  </div>
-                  <span
-                    className={[
-                      'inline-flex h-8 w-8 shrink-0 items-center justify-center border border-(--color-bg-secondary) font-mono text-lg transition-transform duration-300',
-                      isOpen ? 'rotate-45 border-(--color-accent) text-(--color-accent)' : '',
-                    ].join(' ')}
-                    aria-hidden="true"
+              return (
+                <div key={module.id} className="border border-(--color-bg-secondary) bg-(--color-bg-light)">
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between gap-4 p-6 text-left"
+                    onClick={() => setOpenModuleId((current) => (current === module.id ? null : module.id))}
+                    aria-expanded={isOpen}
                   >
-                    +
-                  </span>
-                </button>
-
-                <AnimatePresence>
-                  {isOpen ? (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.35, ease }}
-                      className="overflow-hidden"
+                    <div>
+                      <h3 className="text-2xl font-extrabold leading-tight">{module.title}</h3>
+                      <p className="mt-2 text-(--color-soft-gray)">{module.summary}</p>
+                    </div>
+                    <span
+                      className={[
+                        'inline-flex h-8 w-8 shrink-0 items-center justify-center border border-(--color-bg-secondary) font-mono text-lg transition-transform duration-300',
+                        isOpen ? 'rotate-45 border-(--color-accent) text-(--color-accent)' : '',
+                      ].join(' ')}
+                      aria-hidden="true"
                     >
-                      <div className="border-t border-(--color-bg-secondary) px-6 pb-6 pt-4">
-                        <ul className="space-y-3">
-                          {module.details.map((detail) => (
-                            <li key={detail} className="flex items-start gap-3 text-(--color-text)">
-                              <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                              <span>{detail}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+                      +
+                    </span>
+                  </button>
 
-      <section className="mt-24">
-        <ScrollReveal>
-          <SectionHeader
-            eyebrow="Outcome Mapping"
-            title="Pick a growth objective"
-            subtitle="Select your goal and preview the likely strategic outcomes we target."
-          />
-        </ScrollReveal>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          {goalProfiles.map((goal) => {
-            const isActive = goal.id === activeGoalId;
-
-            return (
-              <button
-                key={goal.id}
-                type="button"
-                className={[
-                  'border px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em] transition-colors duration-300',
-                  isActive
-                    ? 'border-(--color-accent) bg-(--color-accent) text-white'
-                    : 'border-(--color-bg-secondary) bg-(--color-bg-light) hover:border-(--color-accent)',
-                ].join(' ')}
-                onClick={() => setActiveGoalId(goal.id)}
-                aria-pressed={isActive}
-              >
-                {goal.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <motion.div
-          key={activeGoal.id}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.4, ease }}
-          className="mt-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6"
-        >
-          <div className="flex items-start gap-3">
-            <Users className="mt-1 h-5 w-5 text-(--color-accent)" aria-hidden="true" />
-            <div>
-              <h3 className="text-2xl font-extrabold">{activeGoal.label} Outcomes</h3>
-              <ul className="mt-4 space-y-3">
-                {activeGoal.outcomes.map((outcome) => (
-                  <li key={outcome} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                    <span>{outcome}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  <AnimatePresence>
+                    {isOpen ? (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.35, ease }}
+                        className="overflow-hidden"
+                      >
+                        <div className="border-t border-(--color-bg-secondary) px-6 pb-6 pt-4">
+                          <ul className="space-y-3">
+                            {module.details.map((detail) => (
+                              <li key={detail} className="flex items-start gap-3 text-(--color-text)">
+                                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
+                                <span>{detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      <section className="mt-24 border border-(--color-bg-secondary) bg-(--color-text-dark) p-8 text-(--color-bg) md:p-10">
+      <section className="flex min-h-svh items-center">
+        <div className="w-full">
+          <ScrollReveal>
+            <SectionHeader
+              eyebrow="Outcome Mapping"
+              title="Pick a growth objective"
+              subtitle="Select your goal and preview the likely strategic outcomes we target."
+            />
+          </ScrollReveal>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            {goalProfiles.map((goal) => {
+              const isActive = goal.id === activeGoalId;
+
+              return (
+                <button
+                  key={goal.id}
+                  type="button"
+                  className={[
+                    'border px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em] transition-colors duration-300',
+                    isActive
+                      ? 'border-(--color-accent) bg-(--color-accent) text-white'
+                      : 'border-(--color-bg-secondary) bg-(--color-bg-light) hover:border-(--color-accent)',
+                  ].join(' ')}
+                  onClick={() => setActiveGoalId(goal.id)}
+                  aria-pressed={isActive}
+                >
+                  {goal.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <motion.div
+            key={activeGoal.id}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.4, ease }}
+            className="mt-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6"
+          >
+            <div className="flex items-start gap-3">
+              <Users className="mt-1 h-5 w-5 text-(--color-accent)" aria-hidden="true" />
+              <div>
+                <h3 className="text-2xl font-extrabold">{activeGoal.label} Outcomes</h3>
+                <ul className="mt-4 space-y-3">
+                  {activeGoal.outcomes.map((outcome) => (
+                    <li key={outcome} className="flex items-start gap-3">
+                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="flex min-h-svh items-center border border-(--color-bg-secondary) bg-(--color-text-dark) p-8 text-(--color-bg) md:p-10">
         <ScrollReveal>
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-accent)">Ready to Engage</p>
           <h2 className="mt-3 max-w-3xl text-4xl font-extrabold leading-tight md:text-5xl">
@@ -467,4 +473,5 @@ export function ServicesExperience() {
     </div>
   );
 }
+
 
