@@ -181,36 +181,35 @@ export function ServicesExperience() {
         </ScrollReveal>
       </section>
 
-      <section className="flex min-h-svh items-center">
-        <ScrollReveal className="w-full">
-          <div className="rounded-sm border border-(--color-bg-secondary) bg-(--color-text-dark) p-8 md:p-10">
-            <div className="flex flex-wrap items-center gap-3">
-              {platforms.map((platform) => (
-                <motion.span
-                  key={platform}
-                  whileHover={{ scale: 1.04 }}
-                  transition={{ duration: 0.25, ease }}
-                  className="cursor-default border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-(--color-bg)"
-                >
-                  {platform}
-                </motion.span>
-              ))}
+      <section className="min-h-svh">
+        <div className="flex min-h-svh flex-col justify-center">
+          <ScrollReveal className="max-w-3xl">
+            <SectionHeader
+              eyebrow="Three Pillars"
+              title="Choose your growth pillar"
+              subtitle="Explore each pillar to see how strategy, creative execution, and performance intelligence work together."
+            />
+          </ScrollReveal>
+
+          <ScrollReveal className="mt-8">
+            <div className="rounded-sm border border-(--color-bg-secondary) bg-(--color-text-dark) p-6">
+              <div className="flex flex-wrap items-center gap-3">
+                {platforms.map((platform) => (
+                  <motion.span
+                    key={platform}
+                    whileHover={{ scale: 1.04 }}
+                    transition={{ duration: 0.25, ease }}
+                    className="cursor-default border border-white/20 bg-white/5 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-(--color-bg)"
+                  >
+                    {platform}
+                  </motion.span>
+                ))}
+              </div>
             </div>
-          </div>
-        </ScrollReveal>
-      </section>
+          </ScrollReveal>
 
-      <section className="flex min-h-svh items-center">
-        <ScrollReveal>
-          <SectionHeader
-            eyebrow="Three Pillars"
-            title="Choose your growth pillar"
-            subtitle="Explore each pillar to see how strategy, creative execution, and performance intelligence work together."
-          />
-        </ScrollReveal>
-
-        <div className="mt-10 grid w-full gap-6 lg:grid-cols-2 lg:items-stretch">
-          <div className="space-y-4 border border-(--color-bg-secondary) bg-(--color-bg-light) p-4 md:p-6">
+          <div className="mt-8 grid w-full gap-6 lg:grid-cols-2 lg:items-stretch">
+            <div className="space-y-4 border border-(--color-bg-secondary) bg-(--color-bg-light) p-4 md:p-6">
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
               const isActive = pillar.id === activePillarId;
@@ -239,43 +238,44 @@ export function ServicesExperience() {
                 </motion.button>
               );
             })}
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activePillar.id}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.4, ease }}
+                className="grid gap-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:grid-cols-[1fr_1.1fr]"
+              >
+                <div className="space-y-6">
+                  <h4 className="text-3xl font-extrabold leading-tight">{activePillar.title}</h4>
+                  <p className="text-lg text-(--color-soft-gray)">{activePillar.description}</p>
+                  <ul className="space-y-3">
+                    {activePillar.bullets.map((bullet) => (
+                      <li key={bullet} className="flex items-start gap-3 text-base text-(--color-text)">
+                        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button href="/contact" variant="primary" className="group">
+                    Discuss this service <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </Button>
+                </div>
+
+                <PlaceholderImage
+                  seed={activePillar.imageSeed}
+                  width={1200}
+                  height={800}
+                  alt={activePillar.imageAlt}
+                  className="h-80 md:h-full"
+                  sizes="(min-width: 768px) 55vw, 100vw"
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePillar.id}
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.4, ease }}
-              className="grid gap-8 border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:grid-cols-[1fr_1.1fr]"
-            >
-              <div className="space-y-6">
-                <h4 className="text-3xl font-extrabold leading-tight">{activePillar.title}</h4>
-                <p className="text-lg text-(--color-soft-gray)">{activePillar.description}</p>
-                <ul className="space-y-3">
-                  {activePillar.bullets.map((bullet) => (
-                    <li key={bullet} className="flex items-start gap-3 text-base text-(--color-text)">
-                      <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button href="/contact" variant="primary" className="group">
-                  Discuss this service <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Button>
-              </div>
-
-              <PlaceholderImage
-                seed={activePillar.imageSeed}
-                width={1200}
-                height={800}
-                alt={activePillar.imageAlt}
-                className="h-80 md:h-full"
-                sizes="(min-width: 768px) 55vw, 100vw"
-              />
-            </motion.div>
-          </AnimatePresence>
         </div>
       </section>
 
