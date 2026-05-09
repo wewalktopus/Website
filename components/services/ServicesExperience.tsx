@@ -150,33 +150,26 @@ export function ServicesExperience() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-8 lg:py-10">
-      <section className="relative flex min-h-svh items-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-12">
+      <section className="relative flex h-svh flex-col justify-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-14">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-(--color-accent)/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-(--color-text)/10 blur-3xl" />
 
-        <ScrollReveal className="relative z-10 space-y-8">
-          <div className="max-w-3xl">
-            <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-accent)">Services Portfolio</p>
-            <h1 className="mt-3 text-4xl font-extrabold leading-tight md:text-6xl">Strategic services built to grow your market share</h1>
-            <div className="mt-4 h-0.75 w-12 bg-(--color-accent)" />
-            <p className="mt-6 text-lg text-(--color-soft-gray)">
-              From social channels to conversion systems, Walktopus builds growth infrastructure that helps businesses and creators move from visibility to
-              measurable outcomes.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-end">
-            <p className="max-w-2xl text-lg text-(--color-soft-gray)">
-              We do not run disconnected tactics. We architect integrated systems where content, channels, and conversion pathways support one another.
-            </p>
-            <div className="flex flex-wrap gap-4 md:justify-end">
-              <Button href="/for-businesses" variant="primary" className="group">
-                Solutions for Businesses <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Button>
-              <Button href="/contact" variant="secondary">
-                Book a Strategy Call
-              </Button>
-            </div>
+        <ScrollReveal className="relative z-10">
+          <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-accent)">Services Portfolio</p>
+          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
+            Strategic services built to grow your market share
+          </h1>
+          <div className="mt-4 h-0.75 w-12 bg-(--color-accent)" />
+          <p className="mt-5 max-w-2xl text-base text-(--color-soft-gray) md:text-lg">
+            From social channels to conversion systems, Walktopus architects integrated systems where content, channels, and conversion pathways support one another — moving you from visibility to measurable outcomes.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Button href="/for-businesses" variant="primary" className="group">
+              Solutions for Businesses <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Button>
+            <Button href="/contact" variant="secondary">
+              Book a Strategy Call
+            </Button>
           </div>
         </ScrollReveal>
       </section>
@@ -279,41 +272,41 @@ export function ServicesExperience() {
         </div>
       </section>
 
-      <section className="h-svh border border-(--color-bg-secondary) bg-(--color-bg-light) p-6 md:p-8">
-        <div className="grid h-full gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="h-full lg:pr-4">
-            <ScrollReveal className="h-full">
-              <div className="flex h-full flex-col justify-between">
-                <SectionHeader
-                  eyebrow="Execution Framework"
-                  title="How we move from strategy to scale"
-                  subtitle="A scrollytelling flow: each step enters as you move down, showing how strategy transforms into measurable growth."
-                />
-                <p className="mt-8 font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Scroll to progress through each step</p>
-              </div>
+      <section className="relative border border-(--color-bg-secondary) bg-(--color-bg-light)">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
+          {/* Sticky left — stays in view while right-side steps scroll past */}
+          <div className="px-6 py-8 md:px-8 lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
+            <ScrollReveal className="flex h-full flex-col justify-between py-4">
+              <SectionHeader
+                eyebrow="Execution Framework"
+                title="How we move from strategy to scale"
+                subtitle="Each step animates into view as you scroll down — showing how strategy transforms into measurable growth."
+              />
+              <p className="mt-auto pt-8 font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Scroll to progress through each step</p>
             </ScrollReveal>
           </div>
 
-          <div className="h-full overflow-y-auto pr-2 snap-y snap-mandatory">
+          {/* Right: each step is exactly one viewport tall so page scroll drives animations */}
+          <div className="border-l border-(--color-bg-secondary)">
             {executionFramework.map((step, index) => {
               const Icon = step.icon;
 
               return (
                 <motion.div
                   key={step.title}
-                  initial={{ opacity: 0.2, y: 60, scale: 0.97 }}
+                  initial={{ opacity: 0, y: 48, scale: 0.97 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: false, amount: 0.45 }}
-                  transition={{ duration: 0.7, ease }}
-                  className="h-full snap-start py-2"
+                  viewport={{ once: false, amount: 0.4 }}
+                  transition={{ duration: 0.65, ease }}
+                  className="flex h-svh items-center px-6 py-8 md:px-8"
                 >
-                  <Card className="h-full p-6 md:p-8">
-                    <div className="grid h-full gap-5 md:grid-cols-[auto_1fr] md:items-start">
+                  <Card className="w-full p-6 md:p-8">
+                    <div className="grid gap-5 md:grid-cols-[auto_1fr] md:items-start">
                       <div className="flex h-12 w-12 items-center justify-center border border-(--color-bg-secondary) bg-white/50 text-(--color-accent)">
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </div>
                       <div>
-                        <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Step {index + 1}</p>
+                        <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Step {index + 1} / {executionFramework.length}</p>
                         <h3 className="mt-3 text-3xl font-extrabold leading-tight">{step.title}</h3>
                         <p className="mt-4 max-w-xl text-lg text-(--color-soft-gray)">{step.description}</p>
                       </div>
