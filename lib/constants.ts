@@ -26,18 +26,21 @@ export const TEAM = [
     title: 'Operations Lead',
     bio: 'Driving Walktopus campaigns and client relationships with precision and passion.',
     placeholderSeed: 'walktopus-sneha',
+    imagePath: null,
   },
   {
     name: 'Sukomal Debnath',
     title: 'Co-founder and Director, Dgen Technologies',
     bio: 'The mind behind Walktopus. Started with one travel account, built a company.',
     placeholderSeed: 'walktopus-sukomal',
+    imagePath: '/images/team/sukomal-debnath.jpg',
   },
   {
     name: 'Sagnik Mandal',
     title: 'Co-founder',
     bio: 'Co-architect of the Walktopus vision and growth strategy.',
     placeholderSeed: 'walktopus-sagnik',
+    imagePath: '/images/team/sagnik-mandal.png',
   },
 ] as const;
 

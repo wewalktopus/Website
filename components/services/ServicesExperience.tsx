@@ -319,65 +319,125 @@ export function ServicesExperience() {
         </div>
       </section>
 
-      <section className="relative border border-(--color-bg-secondary) bg-(--color-bg-light)">
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
-          {/* Sticky left — stays in view while right-side modules scroll past */}
-          <div className="px-6 py-8 md:px-8 lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
-            <ScrollReveal className="flex h-full flex-col justify-center">
-              <SectionHeader
-                eyebrow="Interactive Modules"
-                title="Inspect the core delivery modules"
-                subtitle="Scroll through each module — it expands automatically as it comes into view."
-              />
-              <p className="mt-auto pt-8 font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Scroll to reveal each module</p>
-            </ScrollReveal>
+      <section className="relative overflow-hidden">
+        <div className="grid lg:grid-cols-[1fr_1.2fr]">
+          {/* Sticky left — light bg, section header + numbered progress tracker */}
+          <div className="border-r border-(--color-bg-secondary) bg-(--color-bg-light) px-6 py-8 md:px-10 lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
+            <div className="flex h-full flex-col justify-between py-4">
+              <ScrollReveal>
+                <SectionHeader
+                  eyebrow="Delivery Modules"
+                  title="Inspect the core delivery modules"
+                  subtitle="Each module is a production-ready system deployed for every client engagement."
+                />
+              </ScrollReveal>
+
+              {/* Numbered progress tracker */}
+              <div className="mt-auto space-y-5 border-t border-(--color-bg-secondary) pt-8">
+                {serviceModules.map((m, i) => {
+                  const isCurrent = m.id === openModuleId;
+                  return (
+                    <div key={m.id} className="flex items-center gap-4">
+                      <span
+                        className={[
+                          'shrink-0 font-mono text-sm font-bold tracking-[0.15em] transition-colors duration-300',
+                          isCurrent ? 'text-(--color-accent)' : 'text-(--color-soft-gray)',
+                        ].join(' ')}
+                      >
+                        0{i + 1}
+                      </span>
+                      <div
+                        className={[
+                          'h-px flex-1 transition-all duration-500',
+                          isCurrent ? 'bg-(--color-accent)' : 'bg-(--color-bg-secondary)',
+                        ].join(' ')}
+                      />
+                      <span
+                        className={[
+                          'text-right text-xs font-semibold uppercase tracking-[0.08em] transition-colors duration-300',
+                          isCurrent ? 'text-(--color-text)' : 'text-(--color-soft-gray)',
+                        ].join(' ')}
+                      >
+                        {m.title.split(' and')[0]}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          {/* Right: each module is h-svh tall and auto-opens when scrolled into view */}
-          <div className="border-l border-(--color-bg-secondary)">
-            {serviceModules.map((module, index) => {
-              const isOpen = module.id === openModuleId;
-
-              return (
-                <motion.div
-                  key={module.id}
-                  className="flex h-svh items-center px-6 py-8 md:px-8"
-                  onViewportEnter={() => setOpenModuleId(module.id)}
-                  viewport={{ amount: 0.5 }}
+          {/* Right: dark editorial panels, one per module, each h-svh */}
+          <div className="bg-(--color-text-dark)">
+            {serviceModules.map((module, index) => (
+              <motion.div
+                key={module.id}
+                className="relative flex h-svh flex-col justify-center overflow-hidden px-8 py-12 md:px-12"
+                onViewportEnter={() => setOpenModuleId(module.id)}
+                viewport={{ amount: 0.5 }}
+              >
+                {/* Giant faded index watermark */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-6 bottom-0 select-none font-display text-[18rem] leading-none text-white/5"
                 >
-                  <div className="w-full border border-(--color-bg-secondary) bg-(--color-bg)">
-                    <div className="p-6 md:p-8">
-                      <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Module {index + 1} / {serviceModules.length}</p>
-                      <h3 className="mt-3 text-2xl font-extrabold leading-tight">{module.title}</h3>
-                      <p className="mt-2 text-(--color-soft-gray)">{module.summary}</p>
-                    </div>
+                  0{index + 1}
+                </span>
 
-                    <AnimatePresence>
-                      {isOpen ? (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.4, ease }}
-                          className="overflow-hidden"
-                        >
-                          <div className="border-t border-(--color-bg-secondary) px-6 pb-6 pt-4 md:px-8 md:pb-8">
-                            <ul className="space-y-3">
-                              {module.details.map((detail) => (
-                                <li key={detail} className="flex items-start gap-3 text-(--color-text)">
-                                  <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                                  <span>{detail}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </motion.div>
-                      ) : null}
-                    </AnimatePresence>
-                  </div>
-                </motion.div>
-              );
-            })}
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ duration: 0.4 }}
+                  className="relative font-mono text-xs uppercase tracking-[0.2em] text-white/40"
+                >
+                  Module {index + 1} of {serviceModules.length}
+                </motion.p>
+
+                <motion.h3
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ duration: 0.6, delay: 0.1, ease }}
+                  className="relative mt-4 max-w-lg text-4xl font-extrabold leading-tight text-white md:text-5xl"
+                >
+                  {module.title}
+                </motion.h3>
+
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ duration: 0.5, delay: 0.22, ease }}
+                  className="relative mt-5 h-0.75 w-14 origin-left bg-(--color-accent)"
+                />
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ duration: 0.45, delay: 0.3 }}
+                  className="relative mt-5 max-w-md text-base text-white/55"
+                >
+                  {module.summary}
+                </motion.p>
+
+                <ul className="relative mt-8 space-y-4">
+                  {module.details.map((detail, i) => (
+                    <motion.li
+                      key={detail}
+                      initial={{ opacity: 0, x: 28 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: false, amount: 0.5 }}
+                      transition={{ duration: 0.45, delay: 0.38 + i * 0.1, ease }}
+                      className="flex items-start gap-4 border-l-2 border-(--color-accent) pl-4"
+                    >
+                      <span className="text-sm text-white/75 md:text-base">{detail}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

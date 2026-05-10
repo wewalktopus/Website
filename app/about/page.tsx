@@ -1,6 +1,7 @@
 export const dynamic = 'force-static';
 
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { TEAM } from '@/lib/constants';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -49,14 +50,27 @@ export default function AboutPage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {TEAM.map((member) => (
             <article key={member.name} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4">
-              <PlaceholderImage
-                seed={member.placeholderSeed}
-                width={400}
-                height={400}
-                alt={`${member.name}, ${member.title} at Walktopus`}
-                className="h-56"
-                sizes="(min-width: 768px) 33vw, 100vw"
-              />
+              {member.imagePath ? (
+                <div className="relative h-56 overflow-hidden">
+                  <Image
+                    src={member.imagePath}
+                    alt={`${member.name}, ${member.title} at Walktopus`}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover object-top grayscale-[20%]"
+                  />
+                  <div className="absolute inset-0 bg-[var(--color-bg)]/15 mix-blend-multiply" />
+                </div>
+              ) : (
+                <PlaceholderImage
+                  seed={member.placeholderSeed}
+                  width={400}
+                  height={400}
+                  alt={`${member.name}, ${member.title} at Walktopus`}
+                  className="h-56"
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                />
+              )}
               <h3 className="mt-4 text-xl font-bold">{member.name}</h3>
               <p className="text-sm font-semibold text-[var(--color-accent)]">{member.title}</p>
               <p className="mt-2 text-sm text-[var(--color-soft-gray)]">{member.bio}</p>
