@@ -149,8 +149,8 @@ export function ServicesExperience() {
   const activeGoal = useMemo(() => goalProfiles.find((goal) => goal.id === activeGoalId) ?? goalProfiles[0], [activeGoalId]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-8 lg:py-10">
-      <section className="relative flex h-svh flex-col justify-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-14">
+    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 pb-8 pt-0 lg:pb-10">
+      <section className="relative flex h-[calc(100svh-5rem)] flex-col justify-center overflow-hidden border border-(--color-bg-secondary) bg-(--color-bg-light) p-8 md:p-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-(--color-accent)/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-(--color-text)/10 blur-3xl" />
 
@@ -319,66 +319,63 @@ export function ServicesExperience() {
         </div>
       </section>
 
-      <section className="flex min-h-svh items-center">
-        <div className="w-full">
-          <ScrollReveal>
-            <SectionHeader
-              eyebrow="Interactive Modules"
-              title="Inspect the core delivery modules"
-              subtitle="Click each module to see what is included in production delivery."
-            />
-          </ScrollReveal>
+      <section className="relative border border-(--color-bg-secondary) bg-(--color-bg-light)">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
+          {/* Sticky left — stays in view while right-side modules scroll past */}
+          <div className="px-6 py-8 md:px-8 lg:sticky lg:top-0 lg:h-svh lg:overflow-hidden">
+            <ScrollReveal className="flex h-full flex-col justify-center">
+              <SectionHeader
+                eyebrow="Interactive Modules"
+                title="Inspect the core delivery modules"
+                subtitle="Scroll through each module — it expands automatically as it comes into view."
+              />
+              <p className="mt-auto pt-8 font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Scroll to reveal each module</p>
+            </ScrollReveal>
+          </div>
 
-          <div className="mt-10 max-h-[62vh] space-y-4 overflow-y-auto pr-2">
-            {serviceModules.map((module) => {
+          {/* Right: each module is h-svh tall and auto-opens when scrolled into view */}
+          <div className="border-l border-(--color-bg-secondary)">
+            {serviceModules.map((module, index) => {
               const isOpen = module.id === openModuleId;
 
               return (
-                <div key={module.id} className="border border-(--color-bg-secondary) bg-(--color-bg-light)">
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between gap-4 p-6 text-left"
-                    onClick={() => setOpenModuleId((current) => (current === module.id ? null : module.id))}
-                    aria-expanded={isOpen}
-                  >
-                    <div>
-                      <h3 className="text-2xl font-extrabold leading-tight">{module.title}</h3>
+                <motion.div
+                  key={module.id}
+                  className="flex h-svh items-center px-6 py-8 md:px-8"
+                  onViewportEnter={() => setOpenModuleId(module.id)}
+                  viewport={{ amount: 0.5 }}
+                >
+                  <div className="w-full border border-(--color-bg-secondary) bg-(--color-bg)">
+                    <div className="p-6 md:p-8">
+                      <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-soft-gray)">Module {index + 1} / {serviceModules.length}</p>
+                      <h3 className="mt-3 text-2xl font-extrabold leading-tight">{module.title}</h3>
                       <p className="mt-2 text-(--color-soft-gray)">{module.summary}</p>
                     </div>
-                    <span
-                      className={[
-                        'inline-flex h-8 w-8 shrink-0 items-center justify-center border border-(--color-bg-secondary) font-mono text-lg transition-transform duration-300',
-                        isOpen ? 'rotate-45 border-(--color-accent) text-(--color-accent)' : '',
-                      ].join(' ')}
-                      aria-hidden="true"
-                    >
-                      +
-                    </span>
-                  </button>
 
-                  <AnimatePresence>
-                    {isOpen ? (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease }}
-                        className="overflow-hidden"
-                      >
-                        <div className="border-t border-(--color-bg-secondary) px-6 pb-6 pt-4">
-                          <ul className="space-y-3">
-                            {module.details.map((detail) => (
-                              <li key={detail} className="flex items-start gap-3 text-(--color-text)">
-                                <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
-                                <span>{detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </motion.div>
-                    ) : null}
-                  </AnimatePresence>
-                </div>
+                    <AnimatePresence>
+                      {isOpen ? (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.4, ease }}
+                          className="overflow-hidden"
+                        >
+                          <div className="border-t border-(--color-bg-secondary) px-6 pb-6 pt-4 md:px-8 md:pb-8">
+                            <ul className="space-y-3">
+                              {module.details.map((detail) => (
+                                <li key={detail} className="flex items-start gap-3 text-(--color-text)">
+                                  <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-(--color-accent)" aria-hidden="true" />
+                                  <span>{detail}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
               );
             })}
           </div>
