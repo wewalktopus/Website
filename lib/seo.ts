@@ -32,6 +32,9 @@ export function pageMetadata({
   keywords?: readonly string[];
 }): Metadata {
   const url = absoluteUrl(pathname);
+  // Ensure canonical URL doesn't have trailing slash (except for root)
+  const canonicalPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
+  const canonicalUrl = absoluteUrl(canonicalPath);
 
   return {
     metadataBase: new URL(siteUrl),
@@ -39,7 +42,7 @@ export function pageMetadata({
     description,
     keywords: [...defaultKeywords, ...keywords],
     alternates: {
-      canonical: pathname,
+      canonical: canonicalUrl,
     },
     openGraph: {
       type: 'website',
