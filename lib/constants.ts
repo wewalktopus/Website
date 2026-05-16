@@ -26,7 +26,7 @@ export const TEAM = [
     title: 'Operations Lead',
     bio: 'Driving Walktopus campaigns and client relationships with precision and passion.',
     placeholderSeed: 'walktopus-sneha',
-    imagePath: null,
+    imagePath: '/images/team/sneha-dey.png',
   },
   {
     name: 'Sukomal Debnath',
