@@ -18,7 +18,7 @@
     }
   ],
   "redirects": [
-    { "source": "/(.*)", "destination": "https://walktopus.in/:1", "permanent": true, "has": [{ "type": "host", "value": "www.walktopus.in" }] },
+    { "source": "/:path*", "destination": "https://walktopus.in/:path*", "permanent": true, "has": [{ "type": "host", "value": "www.walktopus.in" }] },
     { "source": "/home", "destination": "/", "permanent": true },
     { "source": "/services/social-media", "destination": "/services#social-media", "permanent": false },
     { "source": "/:path((?!_next).*)\/", "destination": "/:path", "permanent": true }
