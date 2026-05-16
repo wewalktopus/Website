@@ -16,6 +16,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function AboutPage() {
+  const leaderPaths = {
+    'Sneha Dey': '/about/sneha',
+    'Sukomal Debnath': '/about/sukomal',
+    'Sagnik Mandal': '/about/sagnik',
+  };
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
       <section>
@@ -49,32 +55,40 @@ export default function AboutPage() {
         <h2 className="text-4xl font-extrabold">Leadership</h2>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {TEAM.map((member) => (
-            <article key={member.name} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4">
-              {member.imagePath ? (
-                <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src={member.imagePath}
+            <a
+              key={member.name}
+              href={leaderPaths[member.name as keyof typeof leaderPaths]}
+              className="group cursor-pointer transition-all duration-300 hover:shadow-lg"
+            >
+              <article className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4">
+                {member.imagePath ? (
+                  <div className="relative h-80 overflow-hidden">
+                    <Image
+                      src={member.imagePath}
+                      alt={`${member.name}, ${member.title} at Walktopus`}
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="object-cover object-top grayscale-[20%] transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[var(--color-bg)]/15 mix-blend-multiply" />
+                  </div>
+                ) : (
+                  <PlaceholderImage
+                    seed={member.placeholderSeed}
+                    width={400}
+                    height={400}
                     alt={`${member.name}, ${member.title} at Walktopus`}
-                    fill
+                    className="h-80"
                     sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover object-top grayscale-[20%]"
                   />
-                  <div className="absolute inset-0 bg-[var(--color-bg)]/15 mix-blend-multiply" />
-                </div>
-              ) : (
-                <PlaceholderImage
-                  seed={member.placeholderSeed}
-                  width={400}
-                  height={400}
-                  alt={`${member.name}, ${member.title} at Walktopus`}
-                  className="h-56"
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                />
-              )}
-              <h3 className="mt-4 text-xl font-bold">{member.name}</h3>
-              <p className="text-sm font-semibold text-[var(--color-accent)]">{member.title}</p>
-              <p className="mt-2 text-sm text-[var(--color-soft-gray)]">{member.bio}</p>
-            </article>
+                )}
+                <h3 className="mt-4 text-xl font-bold group-hover:text-[var(--color-accent)] transition-colors">
+                  {member.name}
+                </h3>
+                <p className="text-sm font-semibold text-[var(--color-accent)]">{member.title}</p>
+                <p className="mt-2 text-sm text-[var(--color-soft-gray)]">{member.bio}</p>
+              </article>
+            </a>
           ))}
         </div>
       </section>
