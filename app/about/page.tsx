@@ -61,27 +61,16 @@ export default function AboutPage() {
               className="group cursor-pointer transition-all duration-300 hover:shadow-lg"
             >
               <article className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4">
-                {member.imagePath ? (
-                  <div className="relative h-80 overflow-hidden">
-                    <Image
-                      src={member.imagePath}
-                      alt={`${member.name}, ${member.title} at Walktopus`}
-                      fill
-                      sizes="(min-width: 768px) 33vw, 100vw"
-                      className="object-cover object-top grayscale-[20%] transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-[var(--color-bg)]/15 mix-blend-multiply" />
-                  </div>
-                ) : (
-                  <PlaceholderImage
-                    seed={member.placeholderSeed}
-                    width={400}
-                    height={400}
+                <div className="relative h-80 overflow-hidden">
+                  <Image
+                    src={member.imagePath}
                     alt={`${member.name}, ${member.title} at Walktopus`}
-                    className="h-80"
+                    fill
                     sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover object-top grayscale-[20%] transition-transform duration-300 group-hover:scale-105"
                   />
-                )}
+                  <div className="absolute inset-0 bg-[var(--color-bg)]/15 mix-blend-multiply" />
+                </div>
                 <h3 className="mt-4 text-xl font-bold group-hover:text-[var(--color-accent)] transition-colors">
                   {member.name}
                 </h3>
