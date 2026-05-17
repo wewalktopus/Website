@@ -16,6 +16,9 @@ const config: Config = {
           gray: '#8D8782',
         },
       },
+      fontFamily: {
+        anton: ['var(--font-anton)'],
+      },
     },
   },
 };

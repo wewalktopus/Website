@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Bebas_Neue, DM_Sans, Space_Mono, Syne } from 'next/font/google';
+import { Anton, Bebas_Neue, DM_Sans, Space_Mono, Syne } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -12,6 +12,7 @@ const display = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--fon
 const heading = Syne({ subsets: ['latin'], variable: '--font-heading' });
 const body = DM_Sans({ subsets: ['latin'], variable: '--font-body' });
 const mono = Space_Mono({ subsets: ['latin'], variable: '--font-mono', weight: ['400', '700'] });
+const anton = Anton({ subsets: ['latin'], variable: '--font-anton', weight: '400' });
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -71,7 +72,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${display.variable} ${heading.variable} ${body.variable} ${mono.variable}`}>
+      <body className={`${display.variable} ${heading.variable} ${body.variable} ${mono.variable} ${anton.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

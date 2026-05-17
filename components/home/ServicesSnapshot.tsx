@@ -18,6 +18,7 @@ export function ServicesSnapshot() {
           eyebrow="Service Pillars"
           title="Built for growth at every stage"
           subtitle="From social reach to full funnel performance, our systems are designed to create measurable business outcomes."
+          titleClassName="[font-family:var(--font-anton)]"
         />
       </ScrollReveal>
       <div className="mt-12 grid gap-6 md:grid-cols-3">
