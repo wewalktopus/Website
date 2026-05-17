@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { FieldValue } from 'firebase-admin/firestore';
 import { ContactSchema } from '@/lib/validations';
 import { contactRateLimit } from '@/lib/upstash';
 import { getResend } from '@/lib/resend';
-import { supabaseAdmin } from '@/lib/supabase';
+import { getFirebaseAdminDb } from '@/lib/firebase-admin';
 import { ContactConfirmation } from '@/emails/ContactConfirmation';
 import { ContactNotification } from '@/emails/ContactNotification';
+
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,21 +49,25 @@ export async function POST(req: NextRequest) {
       ]);
     }
 
-    if (supabaseAdmin) {
-      await supabaseAdmin.from('leads').insert({
-        type: data.type,
-        name: data.name,
-        company: data.company ?? null,
-        email: data.email,
-        phone: data.phone,
-        services: data.services,
-        budget_range: data.budgetRange ?? null,
-        message: data.message,
-      });
-    }
+    const db = getFirebaseAdminDb();
+    await db.collection('leads').add({
+      type: data.type,
+      name: data.name,
+      company: data.company ?? null,
+      email: data.email,
+      phone: data.phone,
+      services: data.services,
+      budgetRange: data.budgetRange ?? null,
+      message: data.message,
+      source: 'contact-form',
+      status: 'new',
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
 
     return NextResponse.json({ success: true, message: "We'll be in touch within 24 hours." });
-  } catch {
+  } catch (error) {
+    console.error('[contact] Unexpected error:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }

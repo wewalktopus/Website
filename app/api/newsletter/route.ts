@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { FieldValue } from 'firebase-admin/firestore';
 import { NewsletterSchema } from '@/lib/validations';
 import { newsletterRateLimit } from '@/lib/upstash';
+import { getFirebaseAdminDb } from '@/lib/firebase-admin';
+
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,8 +23,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
 
+    const db = getFirebaseAdminDb();
+    const docId = Buffer.from(result.data.email).toString('base64');
+    const docRef = db.collection('newsletter_subscribers').doc(docId);
+    const existing = await docRef.get();
+
+    if (!existing.exists) {
+      await docRef.set({
+        email: result.data.email,
+        active: true,
+        source: 'newsletter-form',
+        subscribedAt: FieldValue.serverTimestamp(),
+      });
+    }
+
     return NextResponse.json({ success: true, message: 'Subscribed successfully.' });
-  } catch {
+  } catch (error) {
+    console.error('[newsletter] Unexpected error:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }
