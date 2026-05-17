@@ -156,7 +156,7 @@ export function ServicesExperience() {
 
         <ScrollReveal className="relative z-10">
           <p className="font-mono text-xs uppercase tracking-[0.15em] text-(--color-accent)">Services Portfolio</p>
-          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
+          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight [font-family:var(--font-anton)] md:text-5xl">
             Strategic services built to grow your market share
           </h1>
           <div className="mt-4 h-0.75 w-12 bg-(--color-accent)" />
@@ -165,7 +165,7 @@ export function ServicesExperience() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Button href="/for-businesses" variant="primary" className="group">
-              Solutions for Businesses <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              Unified Solutions <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
             <Button href="/contact" variant="secondary">
               Book a Strategy Call
@@ -514,8 +514,8 @@ export function ServicesExperience() {
             <Button href="/contact" variant="primary" className="group">
               Book a Free Consultation <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
-            <Button href="/for-individuals" variant="secondary" className="border-white text-white hover:bg-white hover:text-(--color-text-dark)">
-              Solutions for Individuals
+            <Button href="/for-businesses" variant="secondary" className="border-white text-white hover:bg-white hover:text-(--color-text-dark)">
+              Unified Solutions
             </Button>
           </div>
         </ScrollReveal>

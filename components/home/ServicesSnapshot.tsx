@@ -27,11 +27,11 @@ export function ServicesSnapshot() {
           return (
             <ScrollReveal key={service.id} delay={index * 0.1}>
               <Card className="h-full">
-                <div className="flex h-12 w-12 items-center justify-center border border-[var(--color-bg-secondary)] bg-white/60 text-[var(--color-accent)]">
+                <div className="flex h-12 w-12 items-center justify-center border border-(--color-bg-secondary) bg-white/60 text-(--color-accent)">
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-2xl font-bold">{service.title}</h3>
-                <p className="mt-4 text-[var(--color-soft-gray)]">{service.description}</p>
+                <p className="mt-4 text-(--color-soft-gray)">{service.description}</p>
               </Card>
             </ScrollReveal>
           );

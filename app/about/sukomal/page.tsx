@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SectionHeader } from '@/components/ui/SectionHeader';
+import { TEAM } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 import { pageMetadata } from '@/lib/seo';
+
+const sukomal = TEAM.find((member) => member.name === 'Sukomal Debnath');
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sukomal Debnath - Co-founder & Director, DGEN Technologies',
@@ -22,7 +24,7 @@ export default function SukomalPage() {
       <section className="grid gap-16 md:grid-cols-2">
         <div className="relative h-96">
           <Image
-            src="/images/team/sukomal-debnath.jpg"
+            src={sukomal?.imagePath ?? '/images/team/sukomal-debnath.jpeg'}
             alt="Sukomal Debnath, Co-founder and Director at Walktopus"
             fill
             className="object-cover object-top"

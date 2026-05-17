@@ -48,12 +48,10 @@ export const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
   { label: 'Products', href: '/products' },
-  { label: 'For Businesses', href: '/for-businesses' },
-  { label: 'For Individuals', href: '/for-individuals' },
+  { label: 'Solutions', href: '/for-businesses' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Blogs', href: '/blogs' },
   { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
 ] as const;
 
 export const SERVICES = [
