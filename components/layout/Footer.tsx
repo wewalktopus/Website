@@ -10,7 +10,7 @@ export function Footer() {
           <p className="font-display text-3xl uppercase">Walktopus</p>
           <p className="mt-4 text-sm text-[var(--color-bg-secondary)]">{BRAND.tagline}</p>
           <p className="mt-4 text-xs uppercase tracking-[0.08em] text-[var(--color-bg-secondary)]">
-            A subsidiary of Dgen Technologies Pvt. Ltd.
+            Walktopus - A proud Initiative By Dgen Technologies Private Limited
           </p>
         </div>
 

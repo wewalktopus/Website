@@ -54,10 +54,7 @@ export default function ContactPage() {
           <span>Response Promise: Within 24 hours.</span>
         </p>
         <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
-          A subsidiary of Dgen Technologies Private Limited
-                <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
-                  A Proud Initiative by Dgen Technologies Private Limited
-                </p>
+          Walktopus - A proud Initiative By Dgen Technologies Private Limited
         </p>
       </aside>
     </div>

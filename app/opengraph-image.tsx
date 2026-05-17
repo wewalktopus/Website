@@ -101,7 +101,7 @@ export default async function OgImage() {
               textTransform: 'uppercase',
             }}
           >
-            A subsidiary of Dgen Technologies Pvt. Ltd.
+            Walktopus - A proud Initiative By Dgen Technologies Private Limited
           </div>
           <div
             style={{

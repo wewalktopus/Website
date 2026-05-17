@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     'Learn how Walktopus started in Kolkata, how Dgen Technologies Private Limited powers the company, and why our mission is built around helping small businesses and creators grow online.',
   pathname: '/about',
-  keywords: ['about Walktopus', 'Dgen Technologies subsidiary', 'Kolkata marketing agency story'],
+  keywords: ['about Walktopus', 'Walktopus initiative by Dgen Technologies', 'Kolkata marketing agency story'],
 });
 
 const teamSchemas = TEAM.map((member) =>
@@ -62,8 +62,7 @@ export default function AboutPage() {
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-4 text-[var(--color-soft-gray)]">
           <p>Co-founded by Sukomal Debnath and Sagnik Mandal, Walktopus evolved from a practical idea into a growth partner for small businesses and individuals.</p>
-          <p>As a subsidiary of Dgen Technologies Private Limited, Walktopus combines technical infrastructure with strategic marketing execution.</p>
-                    <p>As a proud initiative by Dgen Technologies Private Limited, Walktopus combines technical infrastructure with strategic marketing execution.</p>
+          <p>Walktopus - A proud Initiative By Dgen Technologies Private Limited.</p>
           <p className="font-semibold text-[var(--color-text)]">Every small business deserves a big digital presence.</p>
         </div>
         <PlaceholderImage
