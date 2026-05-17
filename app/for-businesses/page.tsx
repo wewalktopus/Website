@@ -9,7 +9,14 @@ import { pageMetadata } from '@/lib/seo';
 
 const packageIcons = [Rocket, Megaphone, Crown] as const;
 
-const monthlyPackages = [
+type MonthlyPackage = {
+  name: string;
+  price: string;
+  details: readonly string[];
+  popular?: boolean;
+};
+
+const monthlyPackages: readonly MonthlyPackage[] = [
   {
     name: 'Core',
     price: '₹5,499 / month',
@@ -45,7 +52,7 @@ const monthlyPackages = [
       'Weekly reporting',
     ],
   },
-] as const;
+];
 
 const premiumPackage = {
   name: 'Premium',
