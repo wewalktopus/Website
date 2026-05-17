@@ -15,7 +15,7 @@ export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
           <Section style={{ backgroundColor: '#ffffff', padding: '24px', border: '1px solid #D9D2BF' }}>
             <Text>Hello {name},</Text>
             <Text>Thanks for contacting Walktopus. We received your {type} inquiry and our team will respond within 24 hours.</Text>
-            <Text style={{ color: '#EF4D30', fontWeight: 700 }}>A subsidiary of DGEN Technologies Pvt. Ltd.</Text>
+            <Text style={{ color: '#EF4D30', fontWeight: 700 }}>A Proud Initiative by Dgen Technologies Private Limited</Text>
           </Section>
         </Container>
       </Body>

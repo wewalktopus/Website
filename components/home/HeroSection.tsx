@@ -39,7 +39,7 @@ export function HeroSection() {
             transition={{ duration: 0.65, delay: 0.24, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mt-8 flex flex-wrap gap-4"
           >
-            <Button href="/for-businesses">Solutions for Businesses and Individuals</Button>
+            <Button href="/services">Explore Services</Button>
             <Button href="/contact" variant="secondary">
               Book a Free Consultation
             </Button>

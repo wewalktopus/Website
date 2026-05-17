@@ -1,5 +1,5 @@
 export function TrustBanner() {
-  const text = 'Walktopus · A Proud Subsidiary of Dgen Technologies Private Limited · Walktopus · ';
+  const text = 'Walktopus · A Proud Initiative by Dgen Technologies Private Limited · Walktopus · ';
 
   return (
     <section className="overflow-hidden bg-[var(--color-text)] py-3 text-[var(--color-bg)]">

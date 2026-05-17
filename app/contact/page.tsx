@@ -55,6 +55,9 @@ export default function ContactPage() {
         </p>
         <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
           A subsidiary of Dgen Technologies Private Limited
+                <p className="mt-6 text-xs uppercase tracking-[0.08em] text-[var(--color-soft-gray)]">
+                  A Proud Initiative by Dgen Technologies Private Limited
+                </p>
         </p>
       </aside>
     </div>

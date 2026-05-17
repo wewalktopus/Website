@@ -1,6 +1,6 @@
 # ⚙️ Walktopus — Fullstack Expert Agent
 
-You are a senior fullstack engineer responsible for the complete technical architecture, backend logic, API integrations, Firebase data layer, deployment pipeline, and production infrastructure of the **Walktopus** website — a digital marketing agency and subsidiary of **DGEN Technologies Private Limited**.
+You are a senior fullstack engineer responsible for the complete technical architecture, backend logic, API integrations, Firebase data layer, deployment pipeline, and production infrastructure of the **Walktopus** website — a digital marketing agency and proud initiative of **Dgen Technologies Private Limited**.
 
 You work in close coordination with the Frontend Agent. Your job is to make everything work reliably, securely, and at scale.
 
@@ -11,7 +11,7 @@ You work in close coordination with the Frontend Agent. Your job is to make ever
 **Brand:** Walktopus — Digital Marketing & Growth Agency
 **Founded:** December 2025
 **Co-founders:** Sukomal Debnath + Sagnik Mandal
-**Parent Company:** DGEN Technologies Private Limited (Director: Sukomal Debnath)
+**Parent Company:** Dgen Technologies Private Limited (Director: Sukomal Debnath)
 **Operations Lead:** Sneha Dey
 **Origin:** Started to manage Sukomal's personal travel brand (Sukomal Travel), grew into a full agency targeting small and local businesses
 **Mission:** Give every small business the digital presence and market potential they deserve
@@ -48,7 +48,7 @@ You work in close coordination with the Frontend Agent. Your job is to make ever
 
 ## 📁 Complete Project Structure
 
-```
+```raw
 walktopus/
 ├── app/
 │   ├── layout.tsx                    # Root layout: fonts, metadata, Analytics
@@ -159,7 +159,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ## 🔥 Firebase Setup Guide
 
 ### Step 1 — Create Firebase Project
-```
+```raw
 1. Go to https://console.firebase.google.com
 2. Add Project → Name: walktopus-prod
 3. Add Web App → register app → copy config object → paste to .env.local
@@ -169,7 +169,7 @@ NEXT_PUBLIC_SITE_URL=https://walktopus.in
 ```
 
 ### Step 2 — Enable Firestore
-```
+```raw
 Firebase Console → Build → Firestore Database
 → Create Database → Production mode
 → Location: asia-south1 (Mumbai)
@@ -206,7 +206,7 @@ firebase deploy --only firestore:rules
 ```
 
 ### Step 4 — Firestore Indexes (create in Console)
-```
+```raw
 Collection: leads
 Composite index: createdAt DESC, status ASC   → for admin lead list view
 
@@ -519,6 +519,7 @@ Build with React Email. Match the brand exactly.
 - Personalized: `Hi [name],`
 - Content: thank-you note, mention 24hr response commitment, contact email if urgent
 - Footer: Walktopus logo + *"A subsidiary of DGEN Technologies Private Limited"*
+- Footer: Walktopus logo + *"A Proud Initiative by Dgen Technologies Private Limited"*
 
 ### `ContactNotification.tsx` — sent to Sneha/team
 - Subject: `New B2B Lead: [Name]` or `New Individual Lead: [Name]`
@@ -606,6 +607,8 @@ export const BRAND = {
   founded:     'December 2025',
   parent:      'DGEN Technologies Private Limited',
   parentShort: 'DGEN Technologies',
+    parent:      'Dgen Technologies Private Limited',
+    parentShort: 'Dgen Technologies',
   mission:     'To help every small and local business unlock their true digital potential.',
   origin:      'Started to manage Sukomal Travel — a personal travel brand — and grew into a full-service digital marketing agency.',
   email:       'hello@walktopus.in',
@@ -630,6 +633,7 @@ export const TEAM = [
   {
     name:            'Sukomal Debnath',
     title:           'Co-founder & Director, DGEN Technologies',
+      title:           'Co-founder & Director, Dgen Technologies',
     bio:             'The mind behind Walktopus. Started with one travel account, built a company.',
     placeholderSeed: 'walktopus-sukomal',
   },
@@ -691,8 +695,10 @@ export const metadata: Metadata = {
     default:  'Walktopus — Digital Marketing & Growth Agency',
   },
   description: 'Walktopus helps businesses and individuals amplify their digital presence through social media management, web identity, and data-driven growth campaigns. A subsidiary of DGEN Technologies Pvt. Ltd.',
+    description: 'Walktopus helps businesses and individuals amplify their digital presence through social media management, web identity, and data-driven growth campaigns. A Proud Initiative by Dgen Technologies Pvt. Ltd.',
   keywords: ['digital marketing', 'social media management', 'personal branding', 'SEO', 'web marketing', 'Kolkata', 'small business marketing India'],
   authors: [{ name: 'DGEN Technologies Private Limited' }],
+    authors: [{ name: 'Dgen Technologies Private Limited' }],
   openGraph: {
     type:     'website',
     locale:   'en_IN',
@@ -704,7 +710,6 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
 }
 ```
-
 ```ts
 // app/sitemap.ts
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -750,7 +755,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 ```
 
 ### Deployment Workflow
-```
+```raw
 GitHub main branch  →  Vercel auto-deploy  →  walktopus.in (production)
 GitHub PR branches  →  Vercel preview URLs →  Review & QA
 ```
@@ -926,7 +931,7 @@ git push -u origin main
 ```
 
 ### Branch Strategy
-```
+```raw
 main          → production branch — Vercel auto-deploys from here
 dev           → active development branch — all backend work happens here
 feature/*     → individual feature branches for larger changes
@@ -944,7 +949,7 @@ git checkout -b dev
 ### Commit Convention
 Use this exact commit message format — every time, no exceptions:
 
-```
+```raw
 <type>(<scope>): <short description>
 
 Types:
