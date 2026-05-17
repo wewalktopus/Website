@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Anton, Bebas_Neue, DM_Sans, Space_Mono, Syne } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -71,8 +72,18 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const gaMeasurementId = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
+
   return (
     <html lang="en">
+      {gaMeasurementId ? (
+        <>
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="afterInteractive" />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${gaMeasurementId}');`}
+          </Script>
+        </>
+      ) : null}
       <body className={`${display.variable} ${heading.variable} ${body.variable} ${mono.variable} ${anton.variable}`}>
         <script
           type="application/ld+json"
