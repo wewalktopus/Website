@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SectionHeader } from '@/components/ui/SectionHeader';
+import { TEAM } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 import { pageMetadata } from '@/lib/seo';
+
+const sagnik = TEAM.find((member) => member.name === 'Sagnik Mandal');
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sagnik Mandal - Co-founder, Walktopus',
@@ -22,7 +24,7 @@ export default function SagnikPage() {
       <section className="grid gap-16 md:grid-cols-2">
         <div className="relative h-96">
           <Image
-            src="/images/team/sagnik-mandal.png"
+            src={sagnik?.imagePath ?? '/images/team/sagnik-mandal.png'}
             alt="Sagnik Mandal, Co-founder at Walktopus"
             fill
             className="object-cover object-top"
