@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { TEAM } from '@/lib/constants';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 import { SectionHeader } from '@/components/ui/SectionHeader';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, personSchema, breadcrumbSchema, absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
   title: 'About Walktopus',
@@ -15,6 +15,21 @@ export const metadata: Metadata = pageMetadata({
   keywords: ['about Walktopus', 'Dgen Technologies subsidiary', 'Kolkata marketing agency story'],
 });
 
+const teamSchemas = TEAM.map((member) =>
+  personSchema(
+    member.name,
+    member.title,
+    member.bio,
+    absoluteUrl(member.imagePath),
+    absoluteUrl(`/about/${member.name.toLowerCase().split(' ').pop()}`),
+  ),
+);
+
+const crumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+]);
+
 export default function AboutPage() {
   const leaderPaths = {
     'Sneha Dey': '/about/sneha',
@@ -23,7 +38,16 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
+    <>
+      {teamSchemas.map((schema, idx) => (
+        <script
+          key={`team-${idx}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
+      <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
       <section>
         <SectionHeader
           eyebrow="Our Story"
@@ -81,6 +105,7 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

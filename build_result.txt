@@ -1,0 +1,51 @@
+﻿
+> walktopus-website@1.0.0 build
+> next build
+
+Γû▓ Next.js 16.2.6 (Turbopack)
+- Experiments (use with caution):
+  ┬╖ optimizePackageImports
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 27.8s
+  Running TypeScript ...
+  Finished TypeScript in 27.6s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/22) ...
+  Generating static pages using 11 workers (5/22) 
+  Generating static pages using 11 workers (10/22) 
+  Generating static pages using 11 workers (16/22) 
+Γ£ô Generating static pages using 11 workers (22/22) in 8.6s
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ Γùï /about
+Γö£ Γùï /about/sagnik
+Γö£ Γùï /about/sneha
+Γö£ Γùï /about/sukomal
+Γö£ ╞Æ /api/contact
+Γö£ ╞Æ /api/health
+Γö£ ╞Æ /api/newsletter
+Γö£ ╞Æ /apple-icon
+Γö£ Γùï /blogs
+Γö£ ΓùÅ /blogs/[slug]
+Γöé Γö£ /blogs/digital-marketing-for-local-businesses-in-kolkata
+Γöé Γö£ /blogs/youtube-instagram-seo-for-small-brands
+Γöé Γöö /blogs/personal-branding-seo-for-founders-and-creators
+Γö£ Γùï /contact
+Γö£ Γùï /faq
+Γö£ Γùï /for-businesses
+Γö£ Γùï /for-individuals
+Γö£ ╞Æ /icon
+Γö£ ╞Æ /opengraph-image
+Γö£ Γùï /robots.txt
+Γö£ Γùï /services
+Γöö Γùï /sitemap.xml
+
+
+Γùï  (Static)   prerendered as static content
+ΓùÅ  (SSG)      prerendered as static HTML (uses generateStaticParams)
+╞Æ  (Dynamic)  server-rendered on demand
+

@@ -6,7 +6,7 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { BRAND } from '@/lib/constants';
-import { organizationSchema, localBusinessSchema, pageMetadata, siteUrl } from '@/lib/seo';
+import { organizationSchema, extendedOrganizationSchema, localBusinessSchema, pageMetadata, siteUrl } from '@/lib/seo';
 
 const display = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-display' });
 const heading = Syne({ subsets: ['latin'], variable: '--font-heading' });
@@ -66,6 +66,7 @@ export const metadata: Metadata = {
     'geo.placename': BRAND.location,
     'geo.position': '22.5726;88.3639',
     ICBM: '22.5726, 88.3639',
+    'article:publisher': BRAND.social.facebook,
   },
 };
 
@@ -75,7 +76,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${display.variable} ${heading.variable} ${body.variable} ${mono.variable} ${anton.variable}`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(extendedOrganizationSchema) }}
         />
         <script
           type="application/ld+json"

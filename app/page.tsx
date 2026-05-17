@@ -26,9 +26,27 @@ export const metadata: Metadata = pageMetadata({
   ],
 });
 
+const homePageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Walktopus',
+  url: 'https://walktopus.in',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://walktopus.in/services',
+    },
+  },
+};
+
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
+      />
       <HeroSection />
       <TrustBanner />
       <ServicesSnapshot />

@@ -5,7 +5,7 @@ import { ArrowUpRight, BriefcaseBusiness, CheckCircle2, Crown, Gem, Megaphone, R
 import { BUSINESS_BENEFITS, INDIVIDUAL_JOURNEY } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, aggregateOfferSchema, breadcrumbSchema } from '@/lib/seo';
 
 const packageIcons = [Rocket, Megaphone, Crown] as const;
 
@@ -79,9 +79,22 @@ export const metadata: Metadata = pageMetadata({
   ],
 });
 
+const allPackages = [...monthlyPackages, premiumPackage];
+const offerSchema = aggregateOfferSchema(
+  allPackages.map((pkg) => ({ name: pkg.name, price: pkg.price })),
+);
+
+const crumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'Solutions', path: '/for-businesses' },
+]);
+
 export default function ForBusinessesPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(offerSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
+      <div className="mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
       <h1 className="font-display text-5xl uppercase leading-tight sm:text-6xl lg:text-7xl">
         One Growth System for Businesses and Individuals.
       </h1>
@@ -223,6 +236,7 @@ export default function ForBusinessesPage() {
           View Service Pillars
         </Button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
