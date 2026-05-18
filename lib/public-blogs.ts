@@ -42,25 +42,33 @@ function mapBlog(doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.
 }
 
 export async function getPublishedBlogs(): Promise<BlogPost[]> {
-  const db = getFirebaseAdminDb();
-  const snapshot = await db
-    .collection('blogs')
-    .where('status', '==', 'published')
-    .orderBy('createdAt', 'desc')
-    .get();
+  try {
+    const db = getFirebaseAdminDb();
+    const snapshot = await db.collection('blogs').orderBy('createdAt', 'desc').get();
 
-  return snapshot.docs.map(mapBlog);
+    return snapshot.docs
+      .map(mapBlog)
+      .filter((blog) => blog.status === 'published');
+  } catch (error) {
+    console.error('[public-blogs] Failed to fetch published blogs:', error);
+    return [];
+  }
 }
 
 export async function getPublishedBlogBySlug(slug: string): Promise<BlogPost | null> {
-  const db = getFirebaseAdminDb();
-  const snapshot = await db.collection('blogs').where('slug', '==', slug).limit(1).get();
-  const doc = snapshot.docs[0];
+  try {
+    const db = getFirebaseAdminDb();
+    const snapshot = await db.collection('blogs').where('slug', '==', slug).limit(1).get();
+    const doc = snapshot.docs[0];
 
-  if (!doc) {
+    if (!doc) {
+      return null;
+    }
+
+    const blog = mapBlog(doc);
+    return blog.status === 'published' ? blog : null;
+  } catch (error) {
+    console.error(`[public-blogs] Failed to fetch blog by slug: ${slug}`, error);
     return null;
   }
-
-  const blog = mapBlog(doc);
-  return blog.status === 'published' ? blog : null;
 }
