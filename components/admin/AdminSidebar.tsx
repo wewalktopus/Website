@@ -91,7 +91,7 @@ export function AdminSidebar({ admin }: Props) {
         )}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -101,7 +101,7 @@ export function AdminSidebar({ admin }: Props) {
       {!collapsed && (
         <div className="px-4 py-3 border-b border-white/10">
           <p className="text-sm font-semibold text-white truncate">{admin.name}</p>
-          <p className="text-xs text-gray-400 truncate">{admin.email}</p>
+          <p className="text-xs text-gray-300 truncate">{admin.email}</p>
           <span className={`mt-1.5 inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${roleColor[admin.role] ?? 'bg-gray-500/20 text-gray-400'}`}>
             {admin.role}
           </span>
@@ -123,7 +123,7 @@ export function AdminSidebar({ admin }: Props) {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-orange-500/20 text-orange-400'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                      : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <Icon size={18} className="shrink-0" />
@@ -146,7 +146,7 @@ export function AdminSidebar({ admin }: Props) {
                         className={`block px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                           pathname === child.href
                             ? 'text-orange-400 bg-orange-500/10'
-                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            : 'text-gray-300 hover:text-white hover:bg-white/5'
                         }`}
                       >
                         {child.label}
@@ -166,7 +166,7 @@ export function AdminSidebar({ admin }: Props) {
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-orange-500/20 text-orange-400'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon size={18} className="shrink-0" />
@@ -180,7 +180,7 @@ export function AdminSidebar({ admin }: Props) {
       <div className="px-2 py-4 border-t border-white/10">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-colors"
         >
           <LogOut size={18} className="shrink-0" />
           {!collapsed && <span>Sign Out</span>}
@@ -203,7 +203,7 @@ export function AdminSidebar({ admin }: Props) {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-[#111111] border border-white/10 text-white"
+        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-[#111111] border border-white/10 text-gray-200"
       >
         <Menu size={20} />
       </button>
@@ -218,7 +218,7 @@ export function AdminSidebar({ admin }: Props) {
           <aside className="relative w-72 bg-[#111111] border-r border-white/10 flex flex-col h-full">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-300 hover:text-white"
             >
               <X size={20} />
             </button>
