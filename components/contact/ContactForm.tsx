@@ -21,6 +21,7 @@ export function ContactForm() {
       type: 'business',
       services: [],
       honeypot: '',
+      budgetRange: '' as never,
     },
   });
 
@@ -80,7 +81,7 @@ export function ContactForm() {
         company: '',
         email: '',
         phone: '',
-        budgetRange: undefined,
+        budgetRange: '' as never,
         message: '',
       });
       setStatus(data.message ?? "We'll be in touch within 24 hours.");
