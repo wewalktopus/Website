@@ -34,6 +34,11 @@ export function ContactForm() {
   const onSubmit = async (payload: ContactPayload) => {
     try {
       setStatus('Submitting...');
+      console.log('[contact-form] Submit started', {
+        type: payload.type,
+        email: payload.email,
+        servicesCount: payload.services.length,
+      });
 
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -41,10 +46,24 @@ export function ContactForm() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      let data: { error?: string; message?: string; success?: boolean; emailStatus?: string } = {};
+      const contentType = response.headers.get('content-type') ?? '';
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      }
+
+      console.log('[contact-form] Submit response', {
+        ok: response.ok,
+        status: response.status,
+        body: data,
+      });
 
       if (!response.ok) {
         setStatus(data.error ?? 'Something went wrong. Please try again.');
+        console.error('[contact-form] Submit failed', {
+          status: response.status,
+          error: data.error,
+        });
         return;
       }
 
@@ -60,8 +79,12 @@ export function ContactForm() {
         message: '',
       });
       setStatus(data.message ?? "We'll be in touch within 24 hours.");
+      console.log('[contact-form] Submit success', {
+        emailStatus: data.emailStatus ?? 'unknown',
+      });
     } catch {
       setStatus('Unable to submit right now. Please try again in a moment.');
+      console.error('[contact-form] Submit exception');
     }
   };
 

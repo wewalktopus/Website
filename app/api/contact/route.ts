@@ -30,6 +30,11 @@ export async function POST(req: NextRequest) {
     }
 
     const data = parsed.data;
+    console.log('[contact] Valid submission received', {
+      type: data.type,
+      email: data.email,
+      servicesCount: data.services.length,
+    });
 
     const db = getFirebaseAdminDb();
     const leadRef = await db.collection('leads').add({
@@ -46,12 +51,22 @@ export async function POST(req: NextRequest) {
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     });
+    console.log('[contact] Lead saved', { leadId: leadRef.id, email: data.email });
 
     if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL || !process.env.RESEND_TO_EMAIL) {
-      console.error('[contact] Missing Resend configuration', { leadId: leadRef.id });
+      console.error('[contact] Missing Resend configuration', {
+        leadId: leadRef.id,
+        hasApiKey: Boolean(process.env.RESEND_API_KEY),
+        hasFromEmail: Boolean(process.env.RESEND_FROM_EMAIL),
+        hasToEmail: Boolean(process.env.RESEND_TO_EMAIL),
+      });
       return NextResponse.json(
-        { error: 'Quote submitted, but confirmation email could not be sent. Please try again shortly.' },
-        { status: 503 },
+        {
+          success: true,
+          message: 'Quote submitted successfully. We will contact you shortly.',
+          emailStatus: 'failed-config',
+        },
+        { status: 200 },
       );
     }
 
@@ -79,8 +94,12 @@ export async function POST(req: NextRequest) {
         notificationError,
       });
       return NextResponse.json(
-        { error: 'Quote submitted, but email delivery failed. Please retry in a moment.' },
-        { status: 502 },
+        {
+          success: true,
+          message: 'Quote submitted successfully. We will contact you shortly.',
+          emailStatus: 'failed-send',
+        },
+        { status: 200 },
       );
     }
 
@@ -90,7 +109,7 @@ export async function POST(req: NextRequest) {
       notificationId: notificationData?.id,
     });
 
-    return NextResponse.json({ success: true, message: "We'll be in touch within 24 hours." });
+    return NextResponse.json({ success: true, message: "We'll be in touch within 24 hours.", emailStatus: 'sent' });
   } catch (error) {
     console.error('[contact] Unexpected error:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
