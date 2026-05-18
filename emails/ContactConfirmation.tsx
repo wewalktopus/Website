@@ -20,7 +20,6 @@ export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
           color: '#333333',
           fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
           WebkitTextSizeAdjust: '100%',
-          msTextSizeAdjust: '100%',
         }}
       >
         <Container style={{ margin: '0 auto', padding: '40px 10px' }}>
