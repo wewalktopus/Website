@@ -21,6 +21,7 @@ export function ContactForm() {
       type: 'business',
       services: [],
       budgetRange: '' as never,
+      honeypot: '',
     },
   });
 
@@ -75,6 +76,7 @@ export function ContactForm() {
       reset({
         type: 'business',
         services: [],
+        honeypot: '',
         name: '',
         company: '',
         email: '',
@@ -94,6 +96,15 @@ export function ContactForm() {
 
   return (
     <form className="space-y-5" noValidate onSubmit={handleSubmit(onSubmit, onInvalid)}>
+      <input
+        type="text"
+        {...register('honeypot')}
+        className="absolute left-[-9999px] top-auto h-0 w-0 opacity-0"
+        tabIndex={-1}
+        autoComplete="new-password"
+        aria-hidden="true"
+      />
+
       <div className="grid gap-3 md:grid-cols-2">
         <label className="border border-[var(--color-bg-secondary)] p-4">
           <input type="radio" value="business" {...register('type')} /> <span className="ml-2">I am a Business</span>

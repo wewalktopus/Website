@@ -20,8 +20,19 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    if (body?.honeypot) {
-      return NextResponse.json({ success: true });
+    const honeypotValue = typeof body?.honeypot === 'string' ? body.honeypot.trim() : '';
+    if (honeypotValue.length > 0) {
+      const autofillValues = [body?.name, body?.email, body?.phone, body?.company]
+        .filter((value): value is string => typeof value === 'string')
+        .map((value) => value.trim());
+
+      const looksLikeAutofill = autofillValues.includes(honeypotValue);
+      if (!looksLikeAutofill) {
+        console.warn('[contact] Honeypot triggered', { length: honeypotValue.length });
+        return NextResponse.json({ success: true });
+      }
+
+      console.warn('[contact] Honeypot filled by likely autofill, continuing');
     }
 
     const parsed = ContactSchema.safeParse(body);
@@ -30,28 +41,39 @@ export async function POST(req: NextRequest) {
     }
 
     const data = parsed.data;
+    const lead = {
+      type: data.type ?? 'business',
+      name: data.name?.trim() || 'Website Lead',
+      company: data.company?.trim() || null,
+      email: data.email?.trim() || '',
+      phone: data.phone?.trim() || '',
+      services: data.services ?? [],
+      budgetRange: data.budgetRange,
+      message: data.message,
+    };
+
     console.log('[contact] Valid submission received', {
-      type: data.type,
-      email: data.email,
-      servicesCount: data.services.length,
+      type: lead.type,
+      email: lead.email,
+      servicesCount: lead.services.length,
     });
 
     const db = getFirebaseAdminDb();
     const leadRef = await db.collection('leads').add({
-      type: data.type,
-      name: data.name,
-      company: data.company ?? null,
-      email: data.email,
-      phone: data.phone,
-      services: data.services,
-      budgetRange: data.budgetRange ?? null,
-      message: data.message,
+      type: lead.type,
+      name: lead.name,
+      company: lead.company,
+      email: lead.email,
+      phone: lead.phone,
+      services: lead.services,
+      budgetRange: lead.budgetRange ?? null,
+      message: lead.message,
       source: 'contact-form',
       status: 'new',
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     });
-    console.log('[contact] Lead saved', { leadId: leadRef.id, email: data.email });
+    console.log('[contact] Lead saved', { leadId: leadRef.id, email: lead.email });
 
     if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL || !process.env.RESEND_TO_EMAIL) {
       console.error('[contact] Missing Resend configuration', {
@@ -71,21 +93,38 @@ export async function POST(req: NextRequest) {
     }
 
     const resend = getResend();
-    const [{ data: confirmationData, error: confirmationError }, { data: notificationData, error: notificationError }] =
-      await Promise.all([
-        resend.emails.send({
+    const contactPayload = {
+      type: lead.type,
+      name: lead.name,
+      company: lead.company ?? undefined,
+      email: lead.email,
+      phone: lead.phone,
+      services: lead.services,
+      budgetRange: lead.budgetRange,
+      message: lead.message,
+    };
+
+    const confirmationPromise = lead.email
+      ? resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL,
-          to: data.email,
+          to: lead.email,
           subject: 'Welcome to Walktopus - We received your quote request',
-          react: ContactConfirmation({ name: data.name, type: data.type }),
-        }),
-        resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL,
-          to: process.env.RESEND_TO_EMAIL,
-          subject: `New ${data.type === 'business' ? 'B2B' : 'Individual'} Lead: ${data.name}`,
-          react: ContactNotification({ data }),
-        }),
-      ]);
+          react: ContactConfirmation({ name: lead.name, type: lead.type }),
+        })
+      : Promise.resolve({ data: null, error: null });
+
+    const [
+      { data: confirmationData, error: confirmationError },
+      { data: notificationData, error: notificationError },
+    ] = await Promise.all([
+      confirmationPromise,
+      resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL,
+        to: process.env.RESEND_TO_EMAIL,
+        subject: `New ${lead.type === 'business' ? 'B2B' : 'Individual'} Lead: ${lead.name}`,
+        react: ContactNotification({ data: contactPayload }),
+      }),
+    ]);
 
     if (confirmationError || notificationError) {
       console.error('[contact] Resend error', {
