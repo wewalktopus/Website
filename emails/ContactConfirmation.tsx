@@ -116,7 +116,7 @@ export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
                           borderRadius: '4px',
                         }}
                       >
-                        Let&apos;s Fix Your Marketing ->
+                        Let&apos;s Fix Your Marketing -&gt;
                       </Link>
                     </td>
                   </tr>
