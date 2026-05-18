@@ -11,5 +11,4 @@ export interface ContactPayload {
   services: string[];
   budgetRange?: BudgetRange;
   message: string;
-  honeypot?: string;
 }

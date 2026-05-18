@@ -20,7 +20,6 @@ export function ContactForm() {
     defaultValues: {
       type: 'business',
       services: [],
-      honeypot: '',
       budgetRange: '' as never,
     },
   });
@@ -76,7 +75,6 @@ export function ContactForm() {
       reset({
         type: 'business',
         services: [],
-        honeypot: '',
         name: '',
         company: '',
         email: '',
@@ -104,8 +102,6 @@ export function ContactForm() {
           <input type="radio" value="individual" {...register('type')} /> <span className="ml-2">I am an Individual</span>
         </label>
       </div>
-
-      <input type="text" {...register('honeypot')} className="absolute left-[-9999px] top-auto" tabIndex={-1} autoComplete="off" />
 
       <div>
         <input className="w-full border border-[var(--color-bg-secondary)] bg-white px-4 py-3" placeholder="Name" {...register('name')} />
