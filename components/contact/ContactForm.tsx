@@ -19,9 +19,11 @@ interface SubmissionStatus {
 const fieldBase =
   'w-full border border-[var(--color-bg-secondary)] bg-white px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-soft-gray)] transition-all duration-300 focus:border-[var(--color-accent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/20';
 
+const easeCurve: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94];
+
 const reveal = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeCurve } },
 };
 
 export function ContactForm() {
@@ -161,7 +163,7 @@ export function ContactForm() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.3, ease: easeCurve }}
                 className="md:col-span-2"
               >
                 <label htmlFor="company" className="mb-2 block text-sm font-medium text-[var(--color-text)]">
@@ -272,7 +274,7 @@ export function ContactForm() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.25, ease: easeCurve }}
             className={`flex items-start gap-3 border px-4 py-3 text-sm ${
               status.tone === 'success'
                 ? 'border-green-300 bg-green-50 text-green-800'
