@@ -12,6 +12,7 @@ export function ContactForm() {
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<ContactPayload>({
@@ -31,22 +32,37 @@ export function ContactForm() {
   );
 
   const onSubmit = async (payload: ContactPayload) => {
-    setStatus('Submitting...');
+    try {
+      setStatus('Submitting...');
 
-    const response = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      setStatus(data.error ?? 'Something went wrong. Please try again.');
-      return;
+      if (!response.ok) {
+        setStatus(data.error ?? 'Something went wrong. Please try again.');
+        return;
+      }
+
+      reset({
+        type: 'business',
+        services: [],
+        honeypot: '',
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        budgetRange: undefined,
+        message: '',
+      });
+      setStatus(data.message ?? "We'll be in touch within 24 hours.");
+    } catch {
+      setStatus('Unable to submit right now. Please try again in a moment.');
     }
-
-    setStatus(data.message ?? "We'll be in touch within 24 hours.");
   };
 
   return (
