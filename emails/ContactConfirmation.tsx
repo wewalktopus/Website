@@ -98,7 +98,7 @@ export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
               <table role="presentation" cellSpacing="0" cellPadding="0" border={0} style={{ margin: '10px 0' }}>
                 <tbody>
                   <tr>
-                    <td align="center" bgcolor="#333333" style={{ borderRadius: '4px' }}>
+                    <td align="center" style={{ borderRadius: '4px', backgroundColor: '#333333' }}>
                       <Link
                         href="https://www.walktopus.in/contact"
                         target="_blank"
