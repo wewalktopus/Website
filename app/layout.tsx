@@ -4,8 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Anton, Bebas_Neue, DM_Sans, Space_Mono, Syne } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
+import { LayoutWrapper } from '@/components/layout/LayoutWrapper';
 import { BRAND } from '@/lib/constants';
 import { organizationSchema, extendedOrganizationSchema, localBusinessSchema, pageMetadata, siteUrl } from '@/lib/seo';
 
@@ -93,9 +92,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
         <Analytics />
         <SpeedInsights />
       </body>
