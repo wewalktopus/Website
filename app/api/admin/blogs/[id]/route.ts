@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const body = await req.json();
   const updates: Record<string, unknown> = { updatedAt: FieldValue.serverTimestamp() };
 
-  for (const key of ['title', 'excerpt', 'content', 'status']) {
+  for (const key of ['title', 'excerpt', 'content', 'status', 'imageUrl']) {
     if (key in body) updates[key] = body[key];
   }
 

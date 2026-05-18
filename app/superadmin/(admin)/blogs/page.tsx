@@ -31,6 +31,7 @@ export default function BlogsPage() {
       title: editing.title,
       excerpt: editing.excerpt ?? '',
       content: editing.content,
+      imageUrl: editing.imageUrl ?? '',
       status: publish ? 'published' : (editing.status ?? 'draft'),
     };
 
@@ -146,7 +147,7 @@ export default function BlogsPage() {
                 value={editing.title ?? ''}
                 onChange={e => setEditing(p => ({ ...p, title: e.target.value }))}
                 placeholder="Post title…"
-                className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 transition-colors text-base font-medium"
+                className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 transition-colors text-base font-medium"
               />
             </div>
 
@@ -158,6 +159,16 @@ export default function BlogsPage() {
                 placeholder="Short description shown in blog listing…"
                 rows={2}
                 className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 resize-none transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5">Image Link (optional)</label>
+              <input
+                value={editing.imageUrl ?? ''}
+                onChange={e => setEditing(p => ({ ...p, imageUrl: e.target.value }))}
+                placeholder="https://..."
+                className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 transition-colors"
               />
             </div>
 

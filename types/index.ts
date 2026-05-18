@@ -68,10 +68,14 @@ export interface BlogPost {
   title: string;
   slug: string;
   excerpt: string;
+  description?: string;
   content: string;
   status: 'draft' | 'published';
   author: string;
   authorName: string;
+  category?: string;
+  readTime?: string;
+  imageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
 }

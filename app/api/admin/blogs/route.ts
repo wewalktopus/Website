@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (session.role === 'viewer') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-  const { title, excerpt, content, status: postStatus } = await req.json();
+  const { title, excerpt, content, imageUrl, status: postStatus } = await req.json();
 
   if (!title || !content) {
     return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
     slug,
     excerpt: excerpt ?? '',
     content,
+    imageUrl: imageUrl ?? null,
     status: postStatus === 'published' ? 'published' : 'draft',
     author: session.uid,
     authorName: session.name,
