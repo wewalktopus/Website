@@ -67,10 +67,13 @@ export function AdminSidebar({ admin }: Props) {
   };
 
   const roleColor: Record<string, string> = {
-    superadmin: 'bg-orange-500/20 text-orange-400',
-    moderator: 'bg-blue-500/20 text-blue-400',
-    viewer: 'bg-gray-500/20 text-gray-400',
+    superadmin: 'bg-orange-500/25 text-orange-200 border border-orange-500/30',
+    moderator: 'bg-blue-500/25 text-blue-200 border border-blue-500/30',
+    viewer: 'bg-gray-500/25 text-gray-200 border border-white/10',
   };
+
+  const activeItemClass = 'bg-orange-500/20 text-white shadow-[inset_3px_0_0_0_#f97316] ring-1 ring-orange-500/30';
+  const inactiveItemClass = 'text-gray-100/90 hover:text-white hover:bg-white/8';
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
@@ -91,7 +94,7 @@ export function AdminSidebar({ admin }: Props) {
         )}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+          className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md text-gray-100/90 hover:text-white hover:bg-white/10 transition-colors"
         >
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -101,7 +104,7 @@ export function AdminSidebar({ admin }: Props) {
       {!collapsed && (
         <div className="px-4 py-3 border-b border-white/10">
           <p className="text-sm font-semibold text-white truncate">{admin.name}</p>
-          <p className="text-xs text-gray-300 truncate">{admin.email}</p>
+          <p className="text-xs text-gray-100/80 truncate">{admin.email}</p>
           <span className={`mt-1.5 inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${roleColor[admin.role] ?? 'bg-gray-500/20 text-gray-400'}`}>
             {admin.role}
           </span>
@@ -122,11 +125,11 @@ export function AdminSidebar({ admin }: Props) {
                   onClick={() => setEmailExpanded(e => !e)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-orange-500/20 text-orange-400'
-                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      ? activeItemClass
+                      : inactiveItemClass
                   }`}
                 >
-                  <Icon size={18} className="shrink-0" />
+                  <Icon size={18} className={`shrink-0 ${isActive ? 'text-orange-300' : 'text-gray-100/90'}`} />
                   {!collapsed && (
                     <>
                       <span className="flex-1 text-left">{item.label}</span>
@@ -145,8 +148,8 @@ export function AdminSidebar({ admin }: Props) {
                         href={child.href}
                         className={`block px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                           pathname === child.href
-                            ? 'text-orange-400 bg-orange-500/10'
-                            : 'text-gray-300 hover:text-white hover:bg-white/5'
+                            ? 'bg-orange-500/15 text-white ring-1 ring-orange-500/25'
+                            : 'text-gray-100/85 hover:text-white hover:bg-white/8'
                         }`}
                       >
                         {child.label}
@@ -165,11 +168,11 @@ export function AdminSidebar({ admin }: Props) {
               title={collapsed ? item.label : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-orange-500/20 text-orange-400'
-                  : 'text-gray-300 hover:text-white hover:bg-white/5'
+                  ? activeItemClass
+                  : inactiveItemClass
               }`}
             >
-              <Icon size={18} className="shrink-0" />
+              <Icon size={18} className={`shrink-0 ${isActive ? 'text-orange-300' : 'text-gray-100/90'}`} />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
@@ -180,7 +183,7 @@ export function AdminSidebar({ admin }: Props) {
       <div className="px-2 py-4 border-t border-white/10">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-100/90 hover:text-red-300 hover:bg-red-500/12 transition-colors"
         >
           <LogOut size={18} className="shrink-0" />
           {!collapsed && <span>Sign Out</span>}
@@ -203,7 +206,7 @@ export function AdminSidebar({ admin }: Props) {
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-[#111111] border border-white/10 text-gray-200"
+        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-[#111111] border border-white/15 text-white shadow-lg shadow-black/20"
       >
         <Menu size={20} />
       </button>
@@ -218,7 +221,7 @@ export function AdminSidebar({ admin }: Props) {
           <aside className="relative w-72 bg-[#111111] border-r border-white/10 flex flex-col h-full">
             <button
               onClick={() => setMobileOpen(false)}
-              className="absolute top-4 right-4 text-gray-300 hover:text-white"
+              className="absolute top-4 right-4 text-gray-100/90 hover:text-white"
             >
               <X size={20} />
             </button>
