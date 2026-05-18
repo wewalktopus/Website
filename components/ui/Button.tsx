@@ -9,7 +9,7 @@ interface ButtonProps {
   variant?: Variant;
   children: React.ReactNode;
   type?: 'button' | 'submit';
-  onClick?: () => void;
+  onClick?: React.ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
 }
 
 const base =

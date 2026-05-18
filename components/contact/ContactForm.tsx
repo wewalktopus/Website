@@ -31,6 +31,11 @@ export function ContactForm() {
     [],
   );
 
+  const onInvalid = (formErrors: typeof errors) => {
+    console.warn('[contact-form] Validation failed', formErrors);
+    setStatus('Please fix the highlighted fields and try again.');
+  };
+
   const onSubmit = async (payload: ContactPayload) => {
     try {
       setStatus('Submitting...');
@@ -89,7 +94,7 @@ export function ContactForm() {
   };
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+    <form className="space-y-5" noValidate onSubmit={handleSubmit(onSubmit, onInvalid)}>
       <div className="grid gap-3 md:grid-cols-2">
         <label className="border border-[var(--color-bg-secondary)] p-4">
           <input type="radio" value="business" {...register('type')} /> <span className="ml-2">I am a Business</span>
@@ -154,7 +159,7 @@ export function ContactForm() {
         {errors.message ? <p className="mt-1 text-sm text-red-600">{errors.message.message}</p> : null}
       </div>
 
-      <Button type="submit" className="w-full md:w-auto" onClick={() => undefined}>
+      <Button type="submit" className="w-full md:w-auto">
         {isSubmitting ? 'Submitting...' : 'Book a Free Consultation'}
       </Button>
 
