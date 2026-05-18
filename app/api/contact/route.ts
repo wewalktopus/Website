@@ -31,26 +31,8 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data;
 
-    if (process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL && process.env.RESEND_TO_EMAIL) {
-      const resend = getResend();
-      await Promise.all([
-        resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL,
-          to: data.email,
-          subject: 'Thanks for reaching out - Walktopus',
-          react: ContactConfirmation({ name: data.name, type: data.type }),
-        }),
-        resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL,
-          to: process.env.RESEND_TO_EMAIL,
-          subject: `New ${data.type === 'business' ? 'B2B' : 'Individual'} Lead: ${data.name}`,
-          react: ContactNotification({ data }),
-        }),
-      ]);
-    }
-
     const db = getFirebaseAdminDb();
-    await db.collection('leads').add({
+    const leadRef = await db.collection('leads').add({
       type: data.type,
       name: data.name,
       company: data.company ?? null,
@@ -64,6 +46,39 @@ export async function POST(req: NextRequest) {
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     });
+
+    if (process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL && process.env.RESEND_TO_EMAIL) {
+      const resend = getResend();
+      const [{ data: confirmationData, error: confirmationError }, { data: notificationData, error: notificationError }] =
+        await Promise.all([
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL,
+            to: data.email,
+            subject: 'Welcome to Walktopus - We received your quote request',
+            react: ContactConfirmation({ name: data.name, type: data.type }),
+          }),
+          resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL,
+            to: process.env.RESEND_TO_EMAIL,
+            subject: `New ${data.type === 'business' ? 'B2B' : 'Individual'} Lead: ${data.name}`,
+            react: ContactNotification({ data }),
+          }),
+        ]);
+
+      if (confirmationError || notificationError) {
+        console.error('[contact] Resend error', {
+          leadId: leadRef.id,
+          confirmationError,
+          notificationError,
+        });
+      } else {
+        console.log('[contact] Resend accepted', {
+          leadId: leadRef.id,
+          confirmationId: confirmationData?.id,
+          notificationId: notificationData?.id,
+        });
+      }
+    }
 
     return NextResponse.json({ success: true, message: "We'll be in touch within 24 hours." });
   } catch (error) {
