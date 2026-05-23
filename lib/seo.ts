@@ -204,6 +204,11 @@ export function personSchema(
   bio: string,
   imageUrl: string,
   url?: string,
+  options?: {
+    worksFor?: string;
+    worksForUrl?: string;
+    sameAs?: string[];
+  },
 ) {
   return {
     '@context': 'https://schema.org',
@@ -215,10 +220,10 @@ export function personSchema(
     url: url || siteUrl,
     worksFor: {
       '@type': 'Organization',
-      name: BRAND.name,
-      url: siteUrl,
+      name: options?.worksFor ?? BRAND.name,
+      url: options?.worksForUrl ?? siteUrl,
     },
-    sameAs: [
+    sameAs: options?.sameAs ?? [
       'https://linkedin.com/company/walktopus',
       'https://www.instagram.com/walktopus',
     ],

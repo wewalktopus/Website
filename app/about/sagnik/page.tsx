@@ -3,20 +3,45 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { TEAM } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
-import { pageMetadata } from '@/lib/seo';
+import { absoluteUrl, breadcrumbSchema, pageMetadata, personSchema } from '@/lib/seo';
 
 const sagnik = TEAM.find((member) => member.name === 'Sagnik Mandal');
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sagnik Mandal - Co-founder, Walktopus',
   description:
-    'Sagnik Mandal co-founded Walktopus and serves as co-architect of the platform and growth strategy. Learn about his vision for digital marketing.',
+    'Sagnik Mandal co-founded Walktopus in Kolkata and serves as co-architect of the platform and growth strategy. Learn about his vision for digital marketing.',
   pathname: '/about/sagnik',
+  keywords: ['Sagnik Mandal Walktopus', 'co-founder Kolkata', 'growth strategy India'],
 });
+
+const sagnikSchema = personSchema(
+  'Sagnik Mandal',
+  'Co-founder, Walktopus',
+  'Sagnik Mandal co-founded Walktopus in Kolkata and shapes the platform and growth strategy behind the brand.',
+  absoluteUrl(sagnik?.imagePath ?? '/images/team/sagnik-mandal.png'),
+  absoluteUrl('/about/sagnik'),
+  {
+    worksFor: 'Walktopus',
+    sameAs: [
+      'https://linkedin.com/company/walktopus',
+      'https://www.instagram.com/walktopus',
+    ],
+  },
+);
+
+const sagnikCrumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Sagnik Mandal', path: '/about/sagnik' },
+]);
 
 export default function SagnikPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sagnikSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sagnikCrumbs) }} />
+      <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
       <Link href="/about" className="inline-flex items-center gap-2 text-[var(--color-accent)] hover:underline">
         ← Back to Leadership
       </Link>
@@ -37,14 +62,14 @@ export default function SagnikPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Leadership</p>
             <h1 className="mt-2 text-5xl font-extrabold leading-tight">Sagnik Mandal</h1>
-            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Co-founder</p>
+            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Co-founder at Walktopus, Kolkata, India</p>
           </div>
 
           <div className="space-y-4 text-[var(--color-text)]">
             <p>
               Sagnik Mandal is the co-architect of Walktopus's vision and growth strategy. Working alongside Sukomal Debnath, 
               Sagnik brings a strategic mindset and operational expertise that has been instrumental in transforming the 
-              company's initial idea into a scalable, results-driven growth agency.
+              company's initial idea into a scalable, results-driven growth agency based in Kolkata.
             </p>
             <p>
               With a deep focus on strategy, market positioning, and sustainable growth, Sagnik ensures that every decision 
@@ -119,6 +144,7 @@ export default function SagnikPage() {
           ← Back to Leadership
         </Link>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

@@ -3,20 +3,45 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { TEAM } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
-import { pageMetadata } from '@/lib/seo';
+import { absoluteUrl, breadcrumbSchema, pageMetadata, personSchema } from '@/lib/seo';
 
 const sukomal = TEAM.find((member) => member.name === 'Sukomal Debnath');
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sukomal Debnath - Co-founder & Director, DGEN Technologies',
   description:
-    'Sukomal Debnath co-founded Walktopus and serves as Director of DGEN Technologies. Learn about his vision for digital marketing and entrepreneurship.',
+    'Sukomal Debnath co-founded Walktopus in Kolkata and serves as Director of Dgen Technologies Private Limited. Learn about his vision for digital marketing and entrepreneurship.',
   pathname: '/about/sukomal',
+  keywords: ['Sukomal Debnath Walktopus', 'co-founder Kolkata', 'Dgen Technologies Private Limited'],
 });
+
+const sukomalSchema = personSchema(
+  'Sukomal Debnath',
+  'Co-founder and Director, Dgen Technologies Private Limited',
+  'Sukomal Debnath co-founded Walktopus in Kolkata and leads the strategy and infrastructure behind Dgen Technologies Private Limited.',
+  absoluteUrl(sukomal?.imagePath ?? '/images/team/sukomal-debnath.jpeg'),
+  absoluteUrl('/about/sukomal'),
+  {
+    worksFor: 'Dgen Technologies Private Limited',
+    sameAs: [
+      'https://linkedin.com/company/walktopus',
+      'https://www.instagram.com/walktopus',
+    ],
+  },
+);
+
+const sukomalCrumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Sukomal Debnath', path: '/about/sukomal' },
+]);
 
 export default function SukomalPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sukomalSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(sukomalCrumbs) }} />
+      <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
       <Link href="/about" className="inline-flex items-center gap-2 text-[var(--color-accent)] hover:underline">
         ← Back to Leadership
       </Link>
@@ -37,7 +62,7 @@ export default function SukomalPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Leadership</p>
             <h1 className="mt-2 text-5xl font-extrabold leading-tight">Sukomal Debnath</h1>
-            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Co-founder & Director, DGEN Technologies</p>
+            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Co-founder & Director, Dgen Technologies Private Limited, Kolkata</p>
           </div>
 
           <div className="space-y-4 text-[var(--color-text)]">
@@ -48,7 +73,7 @@ export default function SukomalPage() {
             </p>
             <p>
               That spark of an idea in December 2025 evolved into Walktopus—a full-service growth agency dedicated to helping 
-              small businesses and creators build their digital presence. As Director of DGEN Technologies Private Limited, 
+              small businesses and creators build their digital presence. As Director of Dgen Technologies Private Limited, 
               Sukomal provides the strategic and technical infrastructure that powers Walktopus at scale.
             </p>
           </div>
@@ -70,7 +95,7 @@ export default function SukomalPage() {
         <div className="space-y-4 text-[var(--color-text)]">
           <p>
             Sukomal's entrepreneurial journey is deeply personal. Managing Sukomal Travel—a personal travel and lifestyle 
-            brand—he realized the gap between having great content and struggling to amplify it effectively through existing 
+            brand in Kolkata—he realized the gap between having great content and struggling to amplify it effectively through existing 
             platforms and agencies.
           </p>
           <p>
@@ -79,7 +104,7 @@ export default function SukomalPage() {
             business and creator</span> achieve the same level of digital amplification.
           </p>
           <p>
-            Walktopus was born from this vision in December 2025, and with the backing of DGEN Technologies Private Limited, 
+            Walktopus was born from this vision in December 2025, and with the backing of Dgen Technologies Private Limited, 
             it quickly grew into a trusted partner for growth-focused brands across India.
           </p>
         </div>
@@ -126,6 +151,7 @@ export default function SukomalPage() {
           ← Back to Leadership
         </Link>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

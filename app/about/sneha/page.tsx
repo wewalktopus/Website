@@ -3,20 +3,45 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { TEAM } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
-import { pageMetadata } from '@/lib/seo';
+import { absoluteUrl, breadcrumbSchema, pageMetadata, personSchema } from '@/lib/seo';
 
 const sneha = TEAM.find((member) => member.name === 'Sneha Dey');
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sneha Dey - Operations Lead, Walktopus',
   description:
-    'Sneha Dey drives Walktopus campaigns and client relationships with precision and passion. Learn about her journey and vision.',
+    'Sneha Dey drives Walktopus campaigns and client relationships from Kolkata, India with precision and passion. Learn about her journey and vision.',
   pathname: '/about/sneha',
+  keywords: ['Sneha Dey Walktopus', 'operations lead Kolkata', 'Walktopus Kolkata India'],
 });
+
+const snehaSchema = personSchema(
+  'Sneha Dey',
+  'Operations Lead',
+  'Sneha Dey drives Walktopus campaigns and client relationships from Kolkata, India with precision and measurable execution.',
+  absoluteUrl(sneha?.imagePath ?? '/images/team/sneha-dey.png'),
+  absoluteUrl('/about/sneha'),
+  {
+    worksFor: 'Walktopus',
+    sameAs: [
+      'https://linkedin.com/company/walktopus',
+      'https://www.instagram.com/walktopus',
+    ],
+  },
+);
+
+const snehaCrumbs = breadcrumbSchema([
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about' },
+  { name: 'Sneha Dey', path: '/about/sneha' },
+]);
 
 export default function SnehaPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(snehaSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(snehaCrumbs) }} />
+      <div className="mx-auto w-full max-w-7xl space-y-24 px-6 py-24 lg:py-32">
       <Link href="/about" className="inline-flex items-center gap-2 text-[var(--color-accent)] hover:underline">
         ← Back to Leadership
       </Link>
@@ -37,18 +62,18 @@ export default function SnehaPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Leadership</p>
             <h1 className="mt-2 text-5xl font-extrabold leading-tight">Sneha Dey</h1>
-            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Operations Lead</p>
+            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Operations Lead at Walktopus, Kolkata, India</p>
           </div>
 
           <div className="space-y-4 text-[var(--color-text)]">
             <p>
               Sneha Dey is the operational backbone of Walktopus, driving campaigns and client relationships with precision, 
-              strategic thinking, and a passion for delivering measurable results.
+              strategic thinking, and a passion for delivering measurable results from Kolkata, India.
             </p>
             <p>
               With a focus on execution excellence and team leadership, Sneha ensures that every client receives the highest 
               level of attention and strategy. She bridges the gap between vision and reality, turning growth ambitions into 
-              tangible outcomes.
+              tangible outcomes for businesses across India.
             </p>
           </div>
 
@@ -68,7 +93,7 @@ export default function SnehaPage() {
         <h2 className="text-2xl font-bold">Philosophy & Approach</h2>
         <p className="text-[var(--color-text)]">
           Sneha believes that the best marketing comes from understanding your clients deeply—their goals, their challenges, 
-          and their market realities. She approaches every campaign with a data-driven mindset while maintaining the creativity 
+          and their market realities in Kolkata, West Bengal, and beyond. She approaches every campaign with a data-driven mindset while maintaining the creativity 
           and adaptability that modern marketing demands.
         </p>
         <p className="text-[var(--color-text)]">
@@ -103,6 +128,7 @@ export default function SnehaPage() {
           ← Back to Leadership
         </Link>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

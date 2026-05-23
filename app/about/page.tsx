@@ -12,8 +12,19 @@ export const metadata: Metadata = pageMetadata({
   description:
     'Learn how Walktopus started in Kolkata, how Dgen Technologies Private Limited powers the company, and why our mission is built around helping small businesses and creators grow online.',
   pathname: '/about',
-  keywords: ['about Walktopus', 'Walktopus initiative by Dgen Technologies', 'Kolkata marketing agency story'],
+  keywords: [
+    'about Walktopus',
+    'Walktopus founders Kolkata',
+    'Walktopus initiative by Dgen Technologies',
+    'Kolkata marketing agency story',
+  ],
 });
+
+const leaderPaths = {
+  'Sneha Dey': '/about/sneha',
+  'Sukomal Debnath': '/about/sukomal',
+  'Sagnik Mandal': '/about/sagnik',
+} as const;
 
 const teamSchemas = TEAM.map((member) =>
   personSchema(
@@ -21,7 +32,7 @@ const teamSchemas = TEAM.map((member) =>
     member.title,
     member.bio,
     absoluteUrl(member.imagePath),
-    absoluteUrl(`/about/${member.name.toLowerCase().split(' ').pop()}`),
+    absoluteUrl(leaderPaths[member.name as keyof typeof leaderPaths]),
   ),
 );
 
@@ -31,12 +42,6 @@ const crumbs = breadcrumbSchema([
 ]);
 
 export default function AboutPage() {
-  const leaderPaths = {
-    'Sneha Dey': '/about/sneha',
-    'Sukomal Debnath': '/about/sukomal',
-    'Sagnik Mandal': '/about/sagnik',
-  };
-
   return (
     <>
       {teamSchemas.map((schema, idx) => (
@@ -61,8 +66,8 @@ export default function AboutPage() {
 
       <section className="grid gap-10 md:grid-cols-2">
         <div className="space-y-4 text-[var(--color-soft-gray)]">
-          <p>Co-founded by Sukomal Debnath and Sagnik Mandal, Walktopus evolved from a practical idea into a growth partner for small businesses and individuals.</p>
-          <p>Walktopus - A proud Initiative By Dgen Technologies Private Limited.</p>
+          <p>Co-founded by Sukomal Debnath and Sagnik Mandal, Walktopus evolved in Kolkata from a practical idea into a growth partner for small businesses and individuals across India.</p>
+          <p>Walktopus is a proud initiative by Dgen Technologies Private Limited.</p>
           <p className="font-semibold text-[var(--color-text)]">Every small business deserves a big digital presence.</p>
         </div>
         <PlaceholderImage
@@ -88,7 +93,7 @@ export default function AboutPage() {
                 <div className="relative h-80 overflow-hidden">
                   <Image
                     src={member.imagePath}
-                    alt={`${member.name}, ${member.title} at Walktopus`}
+                    alt={`${member.name}, ${member.title} at Walktopus in Kolkata, India`}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="object-cover object-top grayscale-[20%] transition-transform duration-300 group-hover:scale-105"
