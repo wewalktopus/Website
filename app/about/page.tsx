@@ -72,10 +72,12 @@ export default function AboutPage() {
         </div>
         <PlaceholderImage
           seed="walktopus-about"
+          src="/images/from-one-travel-to-growth-agency.jpg"
           width={1200}
           height={800}
           alt="Walktopus team story and digital marketing agency roots in Kolkata"
           className="h-72"
+          imageClassName="object-left"
           sizes="(min-width: 768px) 50vw, 100vw"
         />
       </section>

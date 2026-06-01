@@ -8,11 +8,22 @@ interface PlaceholderImageProps {
   alt: string;
   src?: string | null;
   className?: string;
+  imageClassName?: string;
   overlay?: boolean;
   sizes?: string;
 }
 
-export function PlaceholderImage({ seed, width, height, alt, src, className, overlay = true, sizes = '100vw' }: PlaceholderImageProps) {
+export function PlaceholderImage({
+  seed,
+  width,
+  height,
+  alt,
+  src,
+  className,
+  imageClassName,
+  overlay = true,
+  sizes = '100vw',
+}: PlaceholderImageProps) {
   const resolvedSrc = src ?? `https://picsum.photos/seed/${seed}/${width}/${height}`;
 
   return (
@@ -28,7 +39,7 @@ export function PlaceholderImage({ seed, width, height, alt, src, className, ove
           alt={alt}
           width={width}
           height={height}
-          className="h-full w-full object-cover grayscale-30"
+          className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
         />
       ) : (
         <Image
@@ -37,7 +48,7 @@ export function PlaceholderImage({ seed, width, height, alt, src, className, ove
           width={width}
           height={height}
           sizes={sizes}
-          className="h-full w-full object-cover grayscale-30"
+          className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
         />
       )}
       {overlay ? <div className="absolute inset-0 bg-(--color-bg)/20 mix-blend-multiply" /> : null}

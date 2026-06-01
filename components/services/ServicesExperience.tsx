@@ -1,11 +1,5 @@
 ﻿'use client';
 
-// TODO IMAGES: Replace placeholders before launch
-// - services-hero: needs custom editorial brand visual
-// - social-pillar: needs platform strategy illustration
-// - web-pillar: needs website analytics and CRO mockup
-// - growth-pillar: needs campaign dashboard render
-
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -38,6 +32,8 @@ const pillars = [
     bullets: ['Channel-specific content calendars', 'Community and inbox management', 'Creative direction and storytelling systems'],
     icon: Megaphone,
     imageSeed: 'walktopus-services-social-pillar',
+    imageSrc: '/images/services-social-media-management.jpg',
+    imageClassName: 'object-center',
     imageAlt: 'Omnichannel social media campaign planning board',
   },
   {
@@ -49,6 +45,8 @@ const pillars = [
     bullets: ['SEO and metadata architecture', 'Landing page conversion optimization', 'Domain, hosting, and technical hygiene audits'],
     icon: Globe2,
     imageSeed: 'walktopus-services-web-pillar',
+    imageSrc: '/images/growth-agency-city-analytics.jpg',
+    imageClassName: 'object-center',
     imageAlt: 'Website performance and SEO dashboard for service brand',
   },
   {
@@ -60,6 +58,8 @@ const pillars = [
     bullets: ['Paid media planning and optimization', 'Launch funnels and offer positioning', 'Weekly performance reporting and iteration'],
     icon: TrendingUp,
     imageSeed: 'walktopus-services-growth-pillar',
+    imageSrc: '/images/built-for-ambitious-local-businesses-and-creators.jpg',
+    imageClassName: 'object-center',
     imageAlt: 'Campaign analytics chart and growth projection interface',
   },
 ] as const;
@@ -260,10 +260,12 @@ export function ServicesExperience() {
 
                 <PlaceholderImage
                   seed={activePillar.imageSeed}
+                  src={activePillar.imageSrc}
                   width={1200}
                   height={800}
                   alt={activePillar.imageAlt}
                   className="h-80 md:h-full"
+                  imageClassName={activePillar.imageClassName}
                   sizes="(min-width: 768px) 55vw, 100vw"
                 />
               </motion.div>

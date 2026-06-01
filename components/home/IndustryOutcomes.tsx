@@ -4,9 +4,6 @@ import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage';
 
-// TODO IMAGES: Replace placeholders before launch
-// - outcomes-main: needs branded campaign dashboard visual
-
 const outcomes = [
   { industry: 'Local Retail', result: '4.2x', detail: 'Footfall growth after localized campaign cycles' },
   { industry: 'Professional Services', result: '68%', detail: 'Qualified lead lift from funnel redesign' },
@@ -29,10 +26,12 @@ export function IndustryOutcomes() {
         <ScrollReveal>
           <PlaceholderImage
             seed="walktopus-outcomes"
+            src="/images/built-for-ambitious-local-businesses-and-creators.jpg"
             width={1200}
             height={800}
             alt="Walktopus campaign outcomes dashboard"
             className="h-full min-h-[360px]"
+            imageClassName="object-center"
           />
         </ScrollReveal>
 
