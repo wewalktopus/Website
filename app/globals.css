@@ -9,6 +9,7 @@
   --color-accent: #ef4d30;
   --color-accent-hover: #ff6a47;
   --color-soft-gray: #8d8782;
+  --font-body: 'Canva Sans', 'DM Sans', 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 }
 
 * {
@@ -24,7 +25,7 @@ body {
 }
 
 body {
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-body);
   line-height: 1.6;
 }
 
@@ -34,7 +35,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading), sans-serif;
+  font-family: var(--font-heading), 'Anton', sans-serif;
   letter-spacing: -0.02em;
 }
 

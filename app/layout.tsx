@@ -1,16 +1,15 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Anton, Bebas_Neue, DM_Sans, Space_Mono, Syne } from 'next/font/google';
+import { Anton, Space_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { LayoutWrapper } from '@/components/layout/LayoutWrapper';
 import { BRAND } from '@/lib/constants';
 import { organizationSchema, extendedOrganizationSchema, localBusinessSchema, pageMetadata, siteUrl } from '@/lib/seo';
 
-const display = Bebas_Neue({ weight: '400', subsets: ['latin'], variable: '--font-display' });
-const heading = Syne({ subsets: ['latin'], variable: '--font-heading' });
-const body = DM_Sans({ subsets: ['latin'], variable: '--font-body' });
+const display = Anton({ subsets: ['latin'], variable: '--font-display', weight: '400' });
+const heading = Anton({ subsets: ['latin'], variable: '--font-heading', weight: '400' });
 const mono = Space_Mono({ subsets: ['latin'], variable: '--font-mono', weight: ['400', '700'] });
 const anton = Anton({ subsets: ['latin'], variable: '--font-anton', weight: '400' });
 
@@ -83,7 +82,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </Script>
         </>
       ) : null}
-      <body className={`${display.variable} ${heading.variable} ${body.variable} ${mono.variable} ${anton.variable}`}>
+      <body className={`${display.variable} ${heading.variable} ${mono.variable} ${anton.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(extendedOrganizationSchema) }}

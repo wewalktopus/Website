@@ -17,6 +17,9 @@ const config: Config = {
         },
       },
       fontFamily: {
+        display: ['var(--font-display)', 'Anton', 'sans-serif'],
+        heading: ['var(--font-heading)', 'Anton', 'sans-serif'],
+        body: ['var(--font-body)'],
         anton: ['var(--font-anton)'],
       },
     },
