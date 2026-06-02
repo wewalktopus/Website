@@ -187,7 +187,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                     ))}
                   </ul>
 
-                  <div className="mt-6 border-t border-white/20 pt-5">
+                  <div className="mt-auto border-t border-white/20 pt-5">
                     <Button
                       href={`/contact?plan=${plan.id}#quote-form`}
                       variant={isPremium ? 'secondary' : 'primary'}
