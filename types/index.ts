@@ -86,3 +86,44 @@ export interface AdminSession {
   name: string;
   role: AdminRole;
 }
+
+export type PricingAudience = 'india' | 'international';
+
+export interface PricingMonthlyPlan {
+  id: string;
+  name: string;
+  price: string;
+  tagline: string;
+  mostPopular?: boolean;
+  highlights: string[];
+}
+
+export interface PricingProjectService {
+  id: string;
+  title: string;
+  price: string;
+  deliverables: string[];
+}
+
+export interface PricingServiceCategory {
+  id: string;
+  label: string;
+  subtitle: string;
+  services: PricingProjectService[];
+}
+
+export interface PricingAudienceContent {
+  monthlyPlans: PricingMonthlyPlan[];
+  serviceCategories: PricingServiceCategory[];
+  notes: {
+    upgradeNote: string;
+    adSpendNote: string;
+  };
+}
+
+export interface PricingConfig {
+  india: PricingAudienceContent;
+  international: PricingAudienceContent;
+  updatedAt?: string | null;
+  updatedBy?: string | null;
+}

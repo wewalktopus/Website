@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type ComponentType, type SVGProps } from 'react';
+import { useEffect, useMemo, useState, type ComponentType, type SVGProps } from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -22,263 +22,9 @@ import {
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-
-type MonthlyPlan = {
-  id: 'core' | 'boost' | 'prime' | 'premium';
-  name: string;
-  price: string;
-  tagline: string;
-  mostPopular?: boolean;
-  highlights: string[];
-};
-
-type ProjectService = {
-  title: string;
-  price: string;
-  deliverables: string[];
-};
-
-type ServiceCategory = {
-  id: 'branding' | 'websites' | 'content' | 'campaigns';
-  label: string;
-  subtitle: string;
-  services: ProjectService[];
-};
+import type { PricingAudience, PricingAudienceContent, PricingServiceCategory } from '@/types';
 
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
-
-const monthlyPlans: MonthlyPlan[] = [
-  {
-    id: 'core',
-    name: 'CORE',
-    price: 'Rs5,000 - Rs18,000/month',
-    tagline: 'Beginner-friendly launch tier for consistent presence.',
-    highlights: [
-      '1 platform managed (Instagram or Facebook)',
-      '8 posts/month (~2/week) with branded copy and custom graphics',
-      'Basic branding kit included + monthly performance report',
-      'Email and WhatsApp support (48hr response)',
-    ],
-  },
-  {
-    id: 'boost',
-    name: 'BOOST',
-    price: 'Rs21,000 - Rs38,000/month',
-    tagline: 'Momentum tier for multi-channel growth and stronger output.',
-    mostPopular: true,
-    highlights: [
-      '2 platforms managed + 12-16 posts/month',
-      '2-4 Reels/short-form videos scripted, edited, captioned',
-      'Google Business Profile management + bi-weekly analytics',
-      'Basic Meta/Google ad management (+15-20% on ad spend)',
-    ],
-  },
-  {
-    id: 'prime',
-    name: 'PRIME',
-    price: 'Rs45,000 - Rs60,000/month',
-    tagline: 'Scale tier with ad operations and dedicated ownership.',
-    highlights: [
-      '3-4 platforms + 25-30 posts/month + 6-8 premium Reels',
-      'Advanced content creation and platform-native formats',
-      'Basic website included (design + hosting setup)',
-      'Weekly KPI dashboard + dedicated account manager',
-    ],
-  },
-  {
-    id: 'premium',
-    name: 'PREMIUM',
-    price: 'Rs80,000 - Rs1,20,000/month',
-    tagline: 'Exclusive growth engine with full-channel command.',
-    highlights: [
-      'All platforms managed + unlimited posts + 12+ premium Reels',
-      'Full multi-page website + comprehensive SEO',
-      'End-to-end ad campaigns with A/B testing (+15-20% on ad spend)',
-      'Live analytics dashboard + weekly strategy calls + escalation team',
-    ],
-  },
-];
-
-const serviceCategories: ServiceCategory[] = [
-  {
-    id: 'branding',
-    label: 'Branding and Identity',
-    subtitle: 'Own your brand language before you scale your reach.',
-    services: [
-      {
-        title: 'Logo Design',
-        price: 'Rs7,000 - Rs10,000',
-        deliverables: [
-          '3-5 distinct logo concepts with 2-3 revision rounds',
-          'AI, EPS, SVG, PNG, JPG file handover',
-          'Brand guideline notes for colors, fonts, and usage rules',
-          '50% deposit upfront and 50% on final approval',
-        ],
-      },
-      {
-        title: 'Basic Branding Kit',
-        price: 'Rs12,000 - Rs19,000',
-        deliverables: [
-          'Primary, secondary, and monochrome logo variants',
-          'Defined palette in HEX, RGB, and CMYK',
-          '2-3 font pairings with practical usage guidance',
-          '1-2 page style board PDF with up to 3 revisions',
-        ],
-      },
-      {
-        title: 'Brand Identity Kit',
-        price: 'Rs25,000 - Rs32,000',
-        deliverables: [
-          'Full Brand Bible multi-page guideline document',
-          'Business card, letterhead, and envelope print-ready designs',
-          'Email signature + Canva/Figma social templates',
-          'Presentation master template + collateral revisions',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'websites',
-    label: 'Websites and Digital Assets',
-    subtitle: 'From fast brochures to full marketplace infrastructure.',
-    services: [
-      {
-        title: 'Static Website',
-        price: 'Rs14,000 - Rs25,000',
-        deliverables: [
-          '4-6 page responsive custom design (no templates)',
-          'Fast pre-rendered architecture with on-page SEO',
-          'Contact form, Google Maps, and social link setup',
-          '14-day post-launch bug warranty with managed deployment',
-        ],
-      },
-      {
-        title: 'Dynamic Website (CMS)',
-        price: 'Rs20,000 - Rs35,000',
-        deliverables: [
-          'WordPress or equivalent CMS with custom backend dashboard',
-          'Dynamic modules for blogs, team directory, and portfolio',
-          'Integrated SEO tools (Yoast/RankMath) in scalable build',
-          'Admin training + recorded tutorial + 30-day warranty',
-        ],
-      },
-      {
-        title: 'Marketplace / E-Commerce Website',
-        price: 'Rs40,000 - Rs1,00,000',
-        deliverables: [
-          'Custom storefront with filtering, cart, and checkout',
-          'Payment gateway, inventory, and customer/vendor dashboards',
-          'Master admin panel with SSL and data encryption',
-          '30-day warranty with 40% - 30% - 30% milestone billing',
-        ],
-      },
-      {
-        title: 'Website Management',
-        price: 'Rs2,999/month',
-        deliverables: [
-          'Core/plugin updates and proactive security patching',
-          '24/7 uptime monitoring and automated database backups',
-          'Up to 2 hours/month minor content updates',
-          'Monthly health report; cancel anytime with 30-day notice',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'content',
-    label: 'Content and Social Media',
-    subtitle: 'Creative output engineered for discoverability and conversion.',
-    services: [
-      {
-        title: 'Single Social Media Post',
-        price: 'Rs500 - Rs1,500',
-        deliverables: [
-          'Custom graphic/carousel up to 5 slides',
-          'Platform-optimized sizes (Instagram, LinkedIn, and more)',
-          'Caption + CTA + hashtag research included',
-          '2-3 day delivery, 1 revision, 100% upfront payment',
-        ],
-      },
-      {
-        title: 'Reel / Shorts Video',
-        price: 'Rs2,000 - Rs8,000',
-        deliverables: [
-          'Script with high-retention first 3-second hook',
-          'Editing with transitions, color grade, and effects',
-          'Animated captions, trending audio, and sound design',
-          '5-7 day turnaround and 2 revisions after footage receipt',
-        ],
-      },
-      {
-        title: 'Content Calendar',
-        price: 'Rs4,000 - Rs7,000',
-        deliverables: [
-          '30-day plan with channels, cadence, and content pillars',
-          'Post concepts with hooks and visual direction per slot',
-          'Timing recommendations with hashtag pools',
-          'Delivered in Notion/Trello/Sheets in 7-10 days',
-        ],
-      },
-      {
-        title: 'Social Media Audit',
-        price: 'Rs3,000 - Rs6,000',
-        deliverables: [
-          'Profile optimization and performance deep-dive',
-          'Competitor benchmarking across 2-3 competitors',
-          'Bottleneck mapping for hooks, timing, hashtags, branding',
-          'Actionable PDF growth roadmap + 30-minute consultation',
-        ],
-      },
-    ],
-  },
-  {
-    id: 'campaigns',
-    label: 'Campaigns and Creatives',
-    subtitle: 'Launch-focused production and measurable campaign execution.',
-    services: [
-      {
-        title: 'Ad Campaign Setup',
-        price: 'Rs5,000 - Rs15,000',
-        deliverables: [
-          'Pixel/Tag setup for Meta, Google, and LinkedIn',
-          'Audience architecture with Core, Custom, Lookalike pools',
-          'Campaign structure, budget logic, and A/B framework',
-          'Ad policy checks; ongoing optimization is separate retainer',
-        ],
-      },
-      {
-        title: 'Product Photoshoot',
-        price: 'Rs8,000 - Rs20,000',
-        deliverables: [
-          'Pre-shoot strategy with mood board and art direction',
-          'Studio-grade capture with professional lighting setup',
-          'Retouching with color correction/background cleanup',
-          'High-res and web-ready delivery with one revision round',
-        ],
-      },
-      {
-        title: 'Festive / Promo Campaign',
-        price: 'Rs8,000 - Rs20,000',
-        deliverables: [
-          'Theme strategy for festive, launch, or promo cycles',
-          'Hero banners and social creative suite',
-          'Urgency-led copywriting and rollout sequencing',
-          '2 revisions with strict 24-48 hour feedback windows',
-        ],
-      },
-      {
-        title: 'Influencer Coordination',
-        price: 'Rs10,000 - Rs30,000 (management fee only)',
-        deliverables: [
-          'Influencer discovery and authenticity vetting',
-          'Outreach, negotiation, and contract workflow',
-          'Briefing, deliverable QA, and go-live governance',
-          'Analytics report with 50% deposit and 50% launch billing',
-        ],
-      },
-    ],
-  },
-];
 
 const trustPillars = [
   {
@@ -326,20 +72,38 @@ const processSteps = [
   },
 ] as const;
 
-const categoryIcons: Record<ServiceCategory['id'], ComponentType<SVGProps<SVGSVGElement>>> = {
+const categoryIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   branding: Sparkles,
   websites: Globe2,
   content: Megaphone,
   campaigns: BriefcaseBusiness,
 };
 
-export function ServicesExperience() {
-  const [activeCategory, setActiveCategory] = useState<ServiceCategory['id']>('branding');
+function getCategoryIcon(categoryId: string): ComponentType<SVGProps<SVGSVGElement>> {
+  return categoryIcons[categoryId] ?? Sparkles;
+}
+
+interface ServicesExperienceProps {
+  content: PricingAudienceContent;
+  audience: PricingAudience;
+  countryCode?: string;
+}
+
+export function ServicesExperience({ content, audience, countryCode }: ServicesExperienceProps) {
+  const [activeCategory, setActiveCategory] = useState<string>(content.serviceCategories[0]?.id ?? '');
+
+  useEffect(() => {
+    if (!content.serviceCategories.some((category) => category.id === activeCategory)) {
+      setActiveCategory(content.serviceCategories[0]?.id ?? '');
+    }
+  }, [activeCategory, content.serviceCategories]);
 
   const selectedCategory = useMemo(
-    () => serviceCategories.find((category) => category.id === activeCategory) ?? serviceCategories[0],
-    [activeCategory],
+    () => content.serviceCategories.find((category) => category.id === activeCategory) ?? content.serviceCategories[0],
+    [activeCategory, content.serviceCategories],
   );
+
+  const currencyLabel = audience === 'india' ? 'INR' : 'USD';
 
   return (
     <div className="relative mx-auto w-full max-w-7xl scroll-smooth space-y-24 px-6 pb-10 pt-6 lg:space-y-28">
@@ -358,7 +122,8 @@ export function ServicesExperience() {
             From a single social post to a full-scale marketplace - Walktopus handles it all under one roof.
           </p>
           <p className="mt-4 max-w-2xl text-sm font-medium uppercase tracking-[0.08em] text-[#505050]">
-            More than marketing. We build growth engines.
+            Showing prices for {audience === 'india' ? 'India' : 'International'} clients ({currencyLabel})
+            {countryCode ? ` | Country: ${countryCode}` : ''}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Button href="/contact" variant="primary" className="bg-[#D94F2B] hover:bg-[#BE3F1F]">
@@ -382,7 +147,7 @@ export function ServicesExperience() {
 
         <div className="-mx-6 overflow-x-auto px-6 pb-2">
           <div className="grid min-w-6xl grid-cols-4 gap-5 lg:min-w-0 lg:grid-cols-4">
-            {monthlyPlans.map((plan, index) => {
+            {content.monthlyPlans.map((plan, index) => {
               const isPremium = plan.id === 'premium';
               const isCore = plan.id === 'core';
 
@@ -449,10 +214,10 @@ export function ServicesExperience() {
         <Card className="border-[#D8CEBC] bg-[#FBF7EF] p-6">
           <div className="grid gap-4 lg:grid-cols-2">
             <p className="text-sm text-[#3C3C3C]">
-              <span className="font-semibold text-[#1A1A1A]">Important note:</span> Upgrading your plan never removes your existing services - new tier features are added on top.
+              <span className="font-semibold text-[#1A1A1A]">Important note:</span> {content.notes.upgradeNote}
             </p>
             <p className="text-sm text-[#3C3C3C]">
-              <span className="font-semibold text-[#1A1A1A]">Ad Spend Note:</span> Ad spend is billed directly to you by the platforms. Walktopus charges a 15-20% management fee on total ad spend.
+              <span className="font-semibold text-[#1A1A1A]">Ad Spend Note:</span> {content.notes.adSpendNote}
             </p>
           </div>
         </Card>
@@ -468,8 +233,8 @@ export function ServicesExperience() {
         </ScrollReveal>
 
         <div className="flex flex-wrap gap-3">
-          {serviceCategories.map((category) => {
-            const Icon = categoryIcons[category.id];
+          {content.serviceCategories.map((category: PricingServiceCategory) => {
+            const Icon = getCategoryIcon(category.id);
             const isActive = category.id === activeCategory;
 
             return (
@@ -492,46 +257,48 @@ export function ServicesExperience() {
           })}
         </div>
 
-        <motion.div
-          key={selectedCategory.id}
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease }}
-          className="space-y-6"
-        >
-          <Card className="border-[#D8CEBC] bg-[#FCF9F2] p-5">
-            <div className="flex items-center gap-3">
-              <span className="h-2 w-10 bg-[#D94F2B]" />
-              <p className="font-semibold text-[#2B2B2B]">{selectedCategory.subtitle}</p>
-            </div>
-          </Card>
+        {selectedCategory ? (
+          <motion.div
+            key={selectedCategory.id}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease }}
+            className="space-y-6"
+          >
+            <Card className="border-[#D8CEBC] bg-[#FCF9F2] p-5">
+              <div className="flex items-center gap-3">
+                <span className="h-2 w-10 bg-[#D94F2B]" />
+                <p className="font-semibold text-[#2B2B2B]">{selectedCategory.subtitle}</p>
+              </div>
+            </Card>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            {selectedCategory.services.map((service) => (
-              <motion.article
-                key={service.title}
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.25, ease }}
-                className="border border-[#D8CEBC] bg-[#FCF8F0] p-6"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-2xl font-extrabold text-[#1A1A1A]">{service.title}</h3>
-                  <span className="shrink-0 border border-[#D94F2B]/30 bg-[#D94F2B]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#B73B1F]">
-                    {service.price}
-                  </span>
-                </div>
-                <ul className="mt-5 space-y-3">
-                  {service.deliverables.map((deliverable) => (
-                    <li key={deliverable} className="flex items-start gap-2 text-sm text-[#2A2A2A]">
-                      <Zap className="mt-0.5 h-4 w-4 shrink-0 text-[#D94F2B]" />
-                      <span>{deliverable}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.article>
-            ))}
-          </div>
-        </motion.div>
+            <div className="grid gap-5 md:grid-cols-2">
+              {selectedCategory.services.map((service) => (
+                <motion.article
+                  key={service.id}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.25, ease }}
+                  className="border border-[#D8CEBC] bg-[#FCF8F0] p-6"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-2xl font-extrabold text-[#1A1A1A]">{service.title}</h3>
+                    <span className="shrink-0 border border-[#D94F2B]/30 bg-[#D94F2B]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#B73B1F]">
+                      {service.price}
+                    </span>
+                  </div>
+                  <ul className="mt-5 space-y-3">
+                    {service.deliverables.map((deliverable) => (
+                      <li key={deliverable} className="flex items-start gap-2 text-sm text-[#2A2A2A]">
+                        <Zap className="mt-0.5 h-4 w-4 shrink-0 text-[#D94F2B]" />
+                        <span>{deliverable}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.article>
+              ))}
+            </div>
+          </motion.div>
+        ) : null}
       </section>
 
       <section className="space-y-6 rounded-sm border border-[#D8CEBC] bg-[#2B2B2B] p-8 text-white md:p-10">

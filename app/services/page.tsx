@@ -1,8 +1,11 @@
-export const dynamic = 'force-static';
-
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { ServicesExperience } from '@/components/services/ServicesExperience';
 import { pageMetadata, breadcrumbSchema, absoluteUrl } from '@/lib/seo';
+import { DEFAULT_PRICING_CONFIG, resolveAudienceFromCountry } from '@/lib/pricing-config';
+import type { PricingAudience, PricingAudienceContent } from '@/types';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = pageMetadata({
   title: 'Digital Marketing Services and Pricing',
@@ -23,91 +26,83 @@ const crumbs = breadcrumbSchema([
   { name: 'Services', path: '/services' },
 ]);
 
-const servicesPageSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Service',
-  name: 'Walktopus Growth Services',
-  serviceType: 'Digital Marketing Services',
-  areaServed: ['Kolkata', 'West Bengal', 'India'],
-  provider: {
-    '@type': 'Organization',
-    name: 'Walktopus',
-    url: absoluteUrl('/'),
-    parentOrganization: {
+function extractPriceRange(raw: string): { min: number; max: number } {
+  const matches = raw.match(/\d[\d,]*/g) ?? [];
+  const numbers = matches
+    .map((value) => Number.parseInt(value.replace(/,/g, ''), 10))
+    .filter((value) => Number.isFinite(value));
+
+  if (!numbers.length) return { min: 0, max: 0 };
+  if (numbers.length === 1) return { min: numbers[0], max: numbers[0] };
+
+  return {
+    min: Math.min(...numbers),
+    max: Math.max(...numbers),
+  };
+}
+
+function createServicesPageSchema(content: PricingAudienceContent, audience: PricingAudience) {
+  const currency = audience === 'india' ? 'INR' : 'USD';
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Walktopus Growth Services',
+    serviceType: 'Digital Marketing Services',
+    areaServed: ['India', 'International'],
+    provider: {
       '@type': 'Organization',
-      name: 'Dgen Technologies Private Limited',
+      name: 'Walktopus',
+      url: absoluteUrl('/'),
+      parentOrganization: {
+        '@type': 'Organization',
+        name: 'Dgen Technologies Private Limited',
+      },
     },
-  },
-  description:
-    'Monthly growth partnerships and one-time project services for branding, websites, social media, ad campaigns, and performance-led growth.',
-  hasOfferCatalog: {
-    '@type': 'OfferCatalog',
-    name: 'Walktopus Services Catalog',
-    itemListElement: [
-      {
-        '@type': 'OfferCatalog',
-        name: 'Monthly Growth Partnerships',
-        itemListElement: [
-          {
-            '@type': 'Offer',
-            name: 'CORE',
-            priceSpecification: {
-              '@type': 'PriceSpecification',
-              minPrice: 5000,
-              maxPrice: 18000,
-              priceCurrency: 'INR',
-              billingDuration: 'P1M',
-            },
-          },
-          {
-            '@type': 'Offer',
-            name: 'BOOST',
-            priceSpecification: {
-              '@type': 'PriceSpecification',
-              minPrice: 21000,
-              maxPrice: 38000,
-              priceCurrency: 'INR',
-              billingDuration: 'P1M',
-            },
-          },
-          {
-            '@type': 'Offer',
-            name: 'PRIME',
-            priceSpecification: {
-              '@type': 'PriceSpecification',
-              minPrice: 45000,
-              maxPrice: 60000,
-              priceCurrency: 'INR',
-              billingDuration: 'P1M',
-            },
-          },
-          {
-            '@type': 'Offer',
-            name: 'PREMIUM',
-            priceSpecification: {
-              '@type': 'PriceSpecification',
-              minPrice: 80000,
-              maxPrice: 120000,
-              priceCurrency: 'INR',
-              billingDuration: 'P1M',
-            },
-          },
-        ],
-      },
-      {
-        '@type': 'OfferCatalog',
-        name: 'One-Time and Project Services',
-        itemListElement: [
-          { '@type': 'Offer', name: 'Logo Design', priceCurrency: 'INR', price: '7000-10000' },
-          { '@type': 'Offer', name: 'Static Website', priceCurrency: 'INR', price: '14000-25000' },
-          { '@type': 'Offer', name: 'Reel / Shorts Video', priceCurrency: 'INR', price: '2000-8000' },
-          { '@type': 'Offer', name: 'Ad Campaign Setup', priceCurrency: 'INR', price: '5000-15000' },
-          { '@type': 'Offer', name: 'Influencer Coordination (Management Fee)', priceCurrency: 'INR', price: '10000-30000' },
-        ],
-      },
-    ],
-  },
-};
+    description:
+      'Monthly growth partnerships and one-time project services for branding, websites, social media, ad campaigns, and performance-led growth.',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Walktopus Services Catalog',
+      itemListElement: [
+        {
+          '@type': 'OfferCatalog',
+          name: 'Monthly Growth Partnerships',
+          itemListElement: content.monthlyPlans.map((plan) => {
+            const range = extractPriceRange(plan.price);
+            return {
+              '@type': 'Offer',
+              name: plan.name,
+              priceSpecification: {
+                '@type': 'PriceSpecification',
+                minPrice: range.min,
+                maxPrice: range.max,
+                priceCurrency: currency,
+                billingDuration: 'P1M',
+              },
+            };
+          }),
+        },
+        {
+          '@type': 'OfferCatalog',
+          name: 'One-Time and Project Services',
+          itemListElement: content.serviceCategories
+            .flatMap((category) => category.services)
+            .slice(0, 8)
+            .map((service) => {
+              const range = extractPriceRange(service.price);
+              return {
+                '@type': 'Offer',
+                name: service.title,
+                priceCurrency: currency,
+                price: range.min === range.max ? String(range.min) : `${range.min}-${range.max}`,
+              };
+            }),
+        },
+      ],
+    },
+  };
+}
 
 const servicesFaqSchema = {
   '@context': 'https://schema.org',
@@ -132,13 +127,69 @@ const servicesFaqSchema = {
   ],
 };
 
-export default function ServicesPage() {
+async function getPricingForRequest(): Promise<{
+  audience: PricingAudience;
+  countryCode: string;
+  content: PricingAudienceContent;
+}> {
+  const headerStore = await headers();
+  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host') ?? '';
+  const protocol = headerStore.get('x-forwarded-proto') ?? 'https';
+  const country = (headerStore.get('x-vercel-ip-country') ?? headerStore.get('cf-ipcountry') ?? '').toUpperCase();
+  const audience = resolveAudienceFromCountry(country);
+
+  if (!host) {
+    return {
+      audience,
+      countryCode: country,
+      content: DEFAULT_PRICING_CONFIG[audience],
+    };
+  }
+
+  try {
+    const response = await fetch(`${protocol}://${host}/api/pricing?country=${country}`, {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load public pricing payload');
+    }
+
+    const payload = (await response.json()) as {
+      audience?: PricingAudience;
+      country?: string;
+      content?: PricingAudienceContent;
+    };
+
+    return {
+      audience: payload.audience ?? audience,
+      countryCode: payload.country ?? country,
+      content: payload.content ?? DEFAULT_PRICING_CONFIG[payload.audience ?? audience],
+    };
+  } catch (error) {
+    console.error('[services/page] pricing fetch failed:', error);
+    return {
+      audience,
+      countryCode: country,
+      content: DEFAULT_PRICING_CONFIG[audience],
+    };
+  }
+}
+
+export default async function ServicesPage() {
+  const pricing = await getPricingForRequest();
+  const servicesPageSchema = createServicesPageSchema(pricing.content, pricing.audience);
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesPageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesFaqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
-      <ServicesExperience />
+      <ServicesExperience
+        content={pricing.content}
+        audience={pricing.audience}
+        countryCode={pricing.countryCode}
+      />
     </>
   );
 }

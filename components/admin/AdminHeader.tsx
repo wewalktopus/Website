@@ -7,6 +7,7 @@ const TITLES: Record<string, string> = {
   '/superadmin/analytics': 'Analytics',
   '/superadmin/leads': 'Leads',
   '/superadmin/subscribers': 'Newsletter Subscribers',
+  '/superadmin/pricing': 'Pricing & Services',
   '/superadmin/emails': 'Email Campaigns',
   '/superadmin/emails/templates': 'Email Templates',
   '/superadmin/blogs': 'Blog Posts',
