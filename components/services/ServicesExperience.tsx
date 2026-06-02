@@ -316,7 +316,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                 className="border border-white/20 bg-white/5 p-5"
               >
                 <Icon className="h-5 w-5 text-[#FFB39F]" />
-                <h3 className="mt-4 text-xl font-bold">{pillar.title}</h3>
+                <h3 className="mt-4 text-xl font-normal tracking-[0.01em]">{pillar.title}</h3>
                 <p className="mt-3 text-sm text-white/80">{pillar.description}</p>
               </motion.article>
             );
