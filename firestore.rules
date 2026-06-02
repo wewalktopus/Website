@@ -25,4 +25,8 @@ service cloud.firestore {
       allow read, write: if false;
     }
   }
+
+  match /site_settings/{docId} {
+    allow read, write: if false;
+  }
 }
