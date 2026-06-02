@@ -149,7 +149,6 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
           <div className="grid min-w-6xl grid-cols-4 gap-5 lg:min-w-0 lg:grid-cols-4">
             {content.monthlyPlans.map((plan, index) => {
               const isPremium = plan.id === 'premium';
-              const isCore = plan.id === 'core';
 
               return (
                 <motion.article
@@ -177,6 +176,9 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                   <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#D94F2B]">{plan.name}</p>
                   <p className={['mt-3 text-xl font-black', isPremium ? 'text-white' : 'text-[#1A1A1A]'].join(' ')}>{plan.price}</p>
                   <p className={['mt-3 text-sm', isPremium ? 'text-white/80' : 'text-[#555555]'].join(' ')}>{plan.tagline}</p>
+                  {plan.id === 'core' ? (
+                    <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[#6A6A6A]">Ideal starter tier</p>
+                  ) : null}
 
                   <ul className="mt-5 space-y-3">
                     {plan.highlights.map((highlight) => (
@@ -201,10 +203,6 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                       Choose {plan.name}
                     </Button>
                   </div>
-
-                  {isCore ? (
-                    <span className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[#6A6A6A]">Best for first-stage consistency</span>
-                  ) : null}
                 </motion.article>
               );
             })}
