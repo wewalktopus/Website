@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Building2, CircleCheckBig, LoaderCircle, Sparkles, UserRound } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
 import { ContactSchema } from '@/lib/validations';
 import type { ContactPayload } from '@/types';
 import { Button } from '@/components/ui/Button';
@@ -26,11 +27,44 @@ const reveal = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeCurve } },
 };
 
+type PlanId = 'core' | 'boost' | 'prime' | 'premium';
+
+const planPrefill: Record<PlanId, Pick<ContactPayload, 'services' | 'budgetRange' | 'message'>> = {
+  core: {
+    services: ['Social Media Mastery'],
+    budgetRange: '<25k',
+    message:
+      'I want to start with the CORE monthly growth partnership. Please share onboarding steps, expected deliverables, and monthly workflow.',
+  },
+  boost: {
+    services: ['Social Media Mastery', 'Growth and Promotion'],
+    budgetRange: '25k-1L',
+    message:
+      'I am interested in the BOOST monthly growth partnership. Please share timelines, reel workflow, and ad-management process.',
+  },
+  prime: {
+    services: ['Social Media Mastery', 'Web and Domain Management', 'Growth and Promotion'],
+    budgetRange: '25k-1L',
+    message:
+      'I would like the PRIME monthly growth partnership. Please share kickoff requirements and weekly KPI reporting structure.',
+  },
+  premium: {
+    services: ['Social Media Mastery', 'Web and Domain Management', 'Growth and Promotion'],
+    budgetRange: '1L-5L',
+    message:
+      'I am interested in the PREMIUM monthly growth partnership. Please prepare a custom execution plan with channel coverage and strategy cadence.',
+  },
+};
+
 export function ContactForm() {
   const [status, setStatus] = useState<SubmissionStatus | null>(null);
+  const hasAppliedPlanPrefill = useRef(false);
+  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
+    getValues,
+    setValue,
     reset,
     watch,
     formState: { errors, isSubmitting },
@@ -50,6 +84,27 @@ export function ContactForm() {
     () => ['Social Media Mastery', 'Web and Domain Management', 'Growth and Promotion'],
     [],
   );
+
+  useEffect(() => {
+    if (hasAppliedPlanPrefill.current) {
+      return;
+    }
+
+    const selected = searchParams.get('plan')?.toLowerCase();
+    if (!selected || !['core', 'boost', 'prime', 'premium'].includes(selected)) {
+      return;
+    }
+
+    const selectedPlan = selected as PlanId;
+    const prefill = planPrefill[selectedPlan];
+    const existingMessage = getValues('message');
+
+    setValue('type', 'business');
+    setValue('services', prefill.services);
+    setValue('budgetRange', prefill.budgetRange);
+    setValue('message', existingMessage && existingMessage.trim().length > 0 ? existingMessage : prefill.message);
+    hasAppliedPlanPrefill.current = true;
+  }, [getValues, searchParams, setValue]);
 
   const onInvalid = () => {
     setStatus({

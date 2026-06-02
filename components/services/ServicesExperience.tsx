@@ -11,10 +11,7 @@ import {
   ClipboardList,
   Gauge,
   Globe2,
-  Mail,
-  MapPin,
   Megaphone,
-  Phone,
   Rocket,
   Search,
   Sparkles,
@@ -399,8 +396,11 @@ export function ServicesExperience() {
                   whileHover={{ y: -6, scale: 1.01 }}
                   className={[
                     'relative flex h-full flex-col border p-6 transition-colors duration-300',
-                    plan.mostPopular ? 'border-[#D94F2B] bg-[#FFF8F4]' : 'border-[#D8CEBC] bg-[#FAF5EC]',
-                    isPremium ? 'bg-[#2B2B2B] text-[#FFFFFF]' : '',
+                    isPremium
+                      ? 'border-[#1F1F1F] bg-[#2B2B2B] text-white'
+                      : plan.mostPopular
+                        ? 'border-[#D94F2B] bg-[#FFF8F4]'
+                        : 'border-[#D8CEBC] bg-[#FAF5EC]',
                   ].join(' ')}
                 >
                   {plan.mostPopular ? (
@@ -424,9 +424,14 @@ export function ServicesExperience() {
 
                   <div className="mt-6 border-t border-white/20 pt-5">
                     <Button
-                      href="/contact"
-                      variant="ghost"
-                      className={isPremium ? 'text-white hover:text-[#F3A28E]' : 'text-[#D94F2B]'}
+                      href={`/contact?plan=${plan.id}#quote-form`}
+                      variant={isPremium ? 'secondary' : 'primary'}
+                      className={[
+                        'w-full justify-center border uppercase',
+                        isPremium
+                          ? 'border-white text-white hover:bg-white hover:text-[#111111]'
+                          : 'bg-[#D94F2B] text-white hover:bg-[#BE3F1F]',
+                      ].join(' ')}
                     >
                       Choose {plan.name}
                     </Button>
@@ -596,18 +601,12 @@ export function ServicesExperience() {
             We build bespoke scopes for unique requirements. Tell us your goal and we will build a package around it.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button href="/contact" variant="primary" className="bg-[#D94F2B] hover:bg-[#BE3F1F]">
+            <Button href="/contact#quote-form" variant="primary" className="bg-[#D94F2B] hover:bg-[#BE3F1F]">
               Book a Free Strategy Call <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <Button href="/contact" variant="secondary" className="border-white text-white hover:bg-white hover:text-[#111111]">
+            <Button href="/contact#quote-form" variant="secondary" className="border-white text-white hover:bg-white hover:text-[#111111]">
               Get a Custom Proposal
             </Button>
-          </div>
-          <div className="mt-8 grid gap-3 text-sm text-white/85 md:grid-cols-2">
-            <p className="inline-flex items-center gap-2"><Mail className="h-4 w-4 text-[#FFB39F]" /> wewalktopus@gmail.com</p>
-            <p className="inline-flex items-center gap-2"><Phone className="h-4 w-4 text-[#FFB39F]" /> +91 90646 06348</p>
-            <p className="inline-flex items-center gap-2"><Globe2 className="h-4 w-4 text-[#FFB39F]" /> walktopus.in</p>
-            <p className="inline-flex items-center gap-2"><MapPin className="h-4 w-4 text-[#FFB39F]" /> Kolkata, West Bengal</p>
           </div>
           <div className="mt-6 border-t border-white/20 pt-6">
             <p className="font-mono text-xs uppercase tracking-[0.13em] text-white/70">Proud Initiative by Dgen Technologies Private Limited</p>
