@@ -53,7 +53,6 @@ export function pageMetadata({
       siteName: BRAND.name,
       title,
       description,
-      modifiedTime: dateModified,
       images: [
         {
           url: absoluteUrl('/opengraph-image'),
