@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 const stats = [
-  { end: 200, suffix: '+', label: 'Clients Served' },
-  { end: 50, suffix: 'M+', label: 'Total Reach' },
-  { end: 3, suffix: '', label: 'Service Pillars' },
-  { end: 100, suffix: '%', label: 'Data-Driven' },
+  { end: 4.2, suffix: 'x', label: 'Average footfall growth across local retail clients' },
+  { end: 68, suffix: '%', label: 'Average qualified lead lift from funnel redesigns' },
+  { end: 3.1, suffix: 'x', label: 'Average repeat audience engagement increase for hospitality brands' },
+  { end: 5, suffix: 'x', label: 'Average monthly profile reach growth for personal brands' },
 ];
 
 export function SocialProof() {

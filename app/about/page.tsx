@@ -69,6 +69,14 @@ export default function AboutPage() {
           <p>Co-founded by Sukomal Debnath and Sagnik Mandal, Walktopus evolved in Kolkata from a practical idea into a growth partner for small businesses and individuals across India.</p>
           <p>Walktopus is a proud initiative by Dgen Technologies Private Limited.</p>
           <p className="font-semibold text-[var(--color-text)]">Every small business deserves a big digital presence.</p>
+          <p>
+            Need a factual entity profile?
+            {' '}
+            <a href="/about/walktopus" className="font-semibold text-[var(--color-accent)] underline-offset-4 hover:underline">
+              Review the Walktopus Brand Facts grounding page
+            </a>
+            .
+          </p>
         </div>
         <PlaceholderImage
           seed="walktopus-about"

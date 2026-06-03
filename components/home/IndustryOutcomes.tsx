@@ -17,7 +17,7 @@ export function IndustryOutcomes() {
       <ScrollReveal>
         <SectionHeader
           eyebrow="Industry Results"
-          title="Built for ambitious local businesses and creators"
+          title="How do Walktopus growth systems perform across industries?"
           subtitle="Our systems are designed to work across industries without losing the nuance that makes your brand unique."
         />
       </ScrollReveal>

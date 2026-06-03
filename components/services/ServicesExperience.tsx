@@ -1,87 +1,75 @@
-'use client';
-
-import { useEffect, useMemo, useState, type ComponentType, type SVGProps } from 'react';
-import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  Brain,
-  BriefcaseBusiness,
-  Brush,
-  CheckCircle2,
-  ClipboardList,
-  Gauge,
-  Globe2,
-  Megaphone,
-  Rocket,
-  Search,
-  Sparkles,
-  Target,
-  TrendingUp,
-  Zap,
-} from 'lucide-react';
-import { ScrollReveal } from '@/components/common/ScrollReveal';
+import Link from 'next/link';
+import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import type { PricingAudience, PricingAudienceContent, PricingServiceCategory } from '@/types';
 
-const ease = [0.25, 0.46, 0.45, 0.94] as const;
-
-const trustPillars = [
-  {
-    title: 'Strategic Thinking',
-    description: 'Data-driven strategies built around your actual goals.',
-    icon: Brain,
-  },
-  {
-    title: 'Creative Excellence',
-    description: 'Distinctive visuals that stop the scroll.',
-    icon: Brush,
-  },
-  {
-    title: 'Performance Driven',
-    description: 'Every decision is tied to measurable outcomes.',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Measurable Results',
-    description: 'Transparent reporting so ROI is always visible.',
-    icon: Target,
-  },
-] as const;
-
-const processSteps = [
-  {
-    title: 'Discovery and Audit',
-    description: 'We learn your business, audience, and goals with a full digital presence audit.',
-    icon: Search,
-  },
-  {
-    title: 'Strategy and Setup',
-    description: 'Data-backed channel plan, tools, and content framework designed from scratch.',
-    icon: ClipboardList,
-  },
-  {
-    title: 'Execution',
-    description: 'Content production, campaign launches, platform management, and audience engagement.',
-    icon: Rocket,
-  },
-  {
-    title: 'Optimization and Reporting',
-    description: 'Continuous improvement with transparent reporting on what is working and why.',
-    icon: Gauge,
-  },
-] as const;
-
-const categoryIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  branding: Sparkles,
-  websites: Globe2,
-  content: Megaphone,
-  campaigns: BriefcaseBusiness,
+export type ServicesFaqItem = {
+  question: string;
+  answer: string;
 };
 
-function getCategoryIcon(categoryId: string): ComponentType<SVGProps<SVGSVGElement>> {
-  return categoryIcons[categoryId] ?? Sparkles;
-}
+export const servicesFaqItems: ServicesFaqItem[] = [
+  {
+    question: 'What is included in Walktopus BOOST plan for social media management?',
+    answer:
+      'The BOOST plan includes an expanded managed content and optimization scope designed for businesses that need higher consistency and measurable momentum compared with entry plans. Deliverables typically include multi-platform content operations, structured posting rhythm, creative refinement cycles, and weekly performance review checkpoints tied to reach quality and lead intent. The plan focuses on outcome movement before volume expansion, which is why reporting clarity is built into delivery. Walktopus applies the same accountability structure that supports published growth outcomes such as 5x profile reach in authority programs and stronger inquiry quality when content and funnel systems are aligned over month-level cycles.',
+  },
+  {
+    question: 'Can I upgrade my Walktopus plan mid-month without losing current deliverables?',
+    answer:
+      'Walktopus supports plan upgrades without deleting or invalidating already delivered work, so continuity is preserved when growth requirements change. Mid-cycle upgrades are structured to add capability layers rather than replace completed outputs, which protects execution momentum and reporting consistency. The transition includes revised scope mapping, KPI alignment, and next-cycle prioritization so new deliverables begin with operational clarity. Businesses typically use this option when campaign traction improves faster than expected or when expansion requires additional channels. This no-reset upgrade logic aligns with the Walktopus service model where clients can scale execution intensity while keeping historical performance context and accountability intact.',
+  },
+  {
+    question: 'Does Walktopus charge separately for ad spend on Meta and Google campaigns?',
+    answer:
+      'Walktopus management fees and platform media spend are handled separately so ad budget ownership remains transparent for the client at all times. Businesses pay media spend directly to platforms such as Meta and Google from client-controlled ad accounts, while Walktopus manages strategy, optimization, and reporting. This structure prevents budget opacity and makes ROI assessment easier because platform invoices and management outputs are independently visible. Operationally, campaign performance is reviewed weekly against agreed KPIs, then adjusted based on audience response and conversion data. In integrated programs, this model has supported improved lead quality and sustained funnel efficiency when paired with disciplined creative testing and conversion optimization workflows.',
+  },
+  {
+    question: 'How does Walktopus handle content revisions?',
+    answer:
+      'Walktopus includes revision cycles in service delivery so content quality improves through structured iteration instead of ad hoc feedback loops. Revision handling starts with approved strategic direction, then moves through draft review, change requests, and final publishing readiness checks. This sequence is designed to reduce production waste while preserving brand consistency and speed. Weekly or bi-weekly reporting windows keep revision performance measurable and prevent bottlenecks from spreading across campaigns. Businesses receive practical governance over edits without losing deployment rhythm. Revision systems are especially important in multi-channel execution because consistent quality control supports stronger audience trust, repeat engagement behavior, and long-term conversion outcomes.',
+  },
+  {
+    question: 'What is the minimum contract length for a monthly growth partnership?',
+    answer:
+      'Monthly growth partnerships are structured to produce measurable momentum over operational cycles rather than one-off activity bursts, so the recommended commitment usually covers at least one full quarterly optimization period. A quarter allows enough time for baseline measurement, channel calibration, conversion refinement, and reporting-based iteration. Shorter windows can launch execution but often underrepresent actual performance potential because algorithm and audience response effects accumulate over time. Walktopus therefore positions monthly plans as ongoing systems with clear checkpoints instead of isolated monthly tasks. This approach aligns with published outcome patterns such as 68% lead lift and 5x reach growth that emerge when execution consistency is maintained.',
+  },
+  {
+    question: 'Does Walktopus work with businesses outside Kolkata?',
+    answer:
+      'Walktopus serves businesses across India and not only Kolkata, while maintaining strong strategic depth in regional West Bengal market behavior and local intent patterns. National engagements are supported through remote-first workflows, fixed reporting cadence, and unified KPI governance that keeps decision-makers aligned across locations. Geography-specific messaging, keyword targeting, and channel priority are adapted to each market rather than copied from one region to another. This allows the same delivery framework to support both city-level discovery goals and broader multi-state growth objectives. Outcome benchmarks used across engagements include 4.2x local footfall growth and 68% qualified lead lift when execution remains coordinated and accountable.',
+  },
+];
+
+const engagementStandards = [
+  'Dedicated account manager',
+  'Weekly or bi-weekly reporting',
+  'WhatsApp support',
+  'Revision cycles',
+  'Performance tracking setup',
+] as const;
+
+const tierNarratives: Record<string, string> = {
+  core: 'CORE delivers stable digital execution for businesses that need consistent market presence without operational complexity. The tier focuses on foundational channel discipline, clear monthly outputs, and clean reporting visibility. Businesses usually choose CORE when they need reliable publishing and management support that protects brand consistency while preparing for scale through measured, low-friction growth operations.',
+  boost:
+    'BOOST is built for businesses that need faster visibility growth and stronger lead-intent movement through expanded content and optimization intensity. The tier combines wider channel activity with tighter feedback loops so improvements are measured and acted on quickly. It is best suited for brands that have baseline traction and now need more aggressive, KPI-linked execution to accelerate momentum.',
+  prime:
+    'PRIME delivers multi-channel growth operations with advanced execution depth for businesses targeting predictable demand generation and better conversion quality. This tier emphasizes integrated planning, stronger campaign refinement, and higher strategic oversight so channel outputs contribute to a coherent growth system. PRIME is typically selected by organizations that need dependable performance progression across awareness and consideration stages.',
+  premium:
+    'PREMIUM is the highest-intensity delivery model for brands requiring full-spectrum growth management with senior-level strategy cadence. The tier is structured for businesses scaling aggressively across channels and needing rapid optimization decisions backed by transparent reporting. PREMIUM prioritizes commercial outcomes, operational accountability, and consistent performance compounding rather than isolated campaign activity.',
+};
+
+const categoryLeadCopy: Record<string, string> = {
+  branding:
+    'Branding services define market position first, then build visual and messaging assets that make every acquisition channel more efficient.',
+  websites:
+    'Website and domain services improve discoverability and conversion pathways so your digital storefront supports qualified demand generation.',
+  content:
+    'Content and media services convert brand strategy into channel-ready assets that sustain attention and reinforce trust over time.',
+  campaigns:
+    'Campaign services drive measurable pipeline movement through paid acquisition, optimization loops, and ROI-focused reporting governance.',
+};
 
 interface ServicesExperienceProps {
   content: PricingAudienceContent;
@@ -89,294 +77,155 @@ interface ServicesExperienceProps {
   countryCode?: string;
 }
 
-export function ServicesExperience({ content, audience, countryCode }: ServicesExperienceProps) {
-  const [activeCategory, setActiveCategory] = useState<string>(content.serviceCategories[0]?.id ?? '');
-
-  useEffect(() => {
-    if (!content.serviceCategories.some((category) => category.id === activeCategory)) {
-      setActiveCategory(content.serviceCategories[0]?.id ?? '');
-    }
-  }, [activeCategory, content.serviceCategories]);
-
-  const selectedCategory = useMemo(
-    () => content.serviceCategories.find((category) => category.id === activeCategory) ?? content.serviceCategories[0],
-    [activeCategory, content.serviceCategories],
-  );
-
-  const currencyLabel = audience === 'india' ? 'INR' : 'USD';
-
+function renderCategory(category: PricingServiceCategory) {
   return (
-    <div className="relative mx-auto w-full max-w-7xl scroll-smooth space-y-24 px-6 pb-10 pt-6 lg:space-y-28">
-      <section className="relative overflow-hidden border border-[#D8CEBC] bg-[#F5F0E8] p-8 md:p-12 lg:p-16">
-        <div className="pointer-events-none absolute -left-28 -top-24 h-72 w-72 rounded-full bg-[#D94F2B]/10 blur-3xl" />
-        <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-[#1A1A1A]/8 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_22%,rgba(217,79,43,0.16),transparent_48%),repeating-linear-gradient(90deg,rgba(26,26,26,0.05)_0_1px,transparent_1px_22px)]" />
+    <article key={category.id} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-6 md:p-8">
+      <h3 className="text-2xl font-bold text-[var(--color-text-dark)]">{category.label}</h3>
+      <p className="mt-3 text-[var(--color-text)]">
+        {categoryLeadCopy[category.id] ?? 'This service category is structured to produce measurable marketing outcomes with clear delivery ownership.'}
+      </p>
+      <p className="mt-2 text-sm text-[var(--color-soft-gray)]">{category.subtitle}</p>
 
-        <ScrollReveal className="relative z-10 max-w-4xl">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#D94F2B]">Vision. Precision. Velocity.</p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-black leading-[0.96] [font-family:var(--font-display)] text-[#1A1A1A] md:text-6xl">
-            Everything Your Brand Needs to Grow.
-          </h1>
-          <div className="mt-6 h-1 w-20 bg-[#D94F2B]" />
-          <p className="mt-7 max-w-2xl text-base text-[#353535] md:text-xl">
-            From a single social post to a full-scale marketplace - Walktopus handles it all under one roof.
-          </p>
-          <p className="mt-4 max-w-2xl text-sm font-medium uppercase tracking-[0.08em] text-[#505050]">
-            Showing prices for {audience === 'india' ? 'India' : 'International'} clients ({currencyLabel})
-            {countryCode ? ` | Country: ${countryCode}` : ''}
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Button href="/contact" variant="primary" className="bg-[#D94F2B] hover:bg-[#BE3F1F]">
-              Book a Free Strategy Call <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button href="#pricing" variant="secondary" className="border-[#1A1A1A] text-[#1A1A1A]">
-              View Pricing
-            </Button>
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        {category.services.map((service) => (
+          <div key={service.id} className="border border-[var(--color-bg-secondary)] bg-white/60 p-5">
+            <h4 className="text-xl font-semibold text-[var(--color-text-dark)]">{service.title}</h4>
+            <p className="mt-2 text-sm font-semibold text-[var(--color-accent)]">{service.price}</p>
+            <ul className="mt-4 space-y-2 text-sm text-[var(--color-text)]">
+              {service.deliverables.map((deliverable) => (
+                <li key={deliverable} className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[var(--color-accent)]" />
+                  <span>{deliverable}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        </ScrollReveal>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+export function ServicesExperience({ content, audience, countryCode }: ServicesExperienceProps) {
+  return (
+    <div className="mx-auto w-full max-w-7xl space-y-20 px-6 py-24 lg:space-y-24 lg:py-32">
+      <section className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8 md:p-12">
+        <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">Services Hub</p>
+        <p className="mt-2 text-sm font-semibold text-[var(--color-soft-gray)]">Last updated: June 2026</p>
+        <h1 className="mt-4 text-4xl font-extrabold leading-tight text-[var(--color-text-dark)] md:text-6xl">Digital Marketing Services and Pricing</h1>
+        <p className="mt-6 max-w-4xl text-[var(--color-text)]">
+          Walktopus services are defined as individual, specialized digital marketing capabilities including social media management, website development, content production, and ad campaign management that can be engaged independently or bundled into a complete solution. Each service has a fixed scope, transparent pricing, and a dedicated execution team.
+        </p>
+        <p className="mt-3 text-sm text-[var(--color-soft-gray)]">
+          Showing prices for {audience === 'india' ? 'India' : 'International'} clients ({audience === 'india' ? 'INR' : 'USD'})
+          {countryCode ? ` | Country: ${countryCode}` : ''}
+        </p>
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Button href="/contact">Book a Free Strategy Call</Button>
+          <Button href="/solutions" variant="secondary">Compare outcome-focused solutions</Button>
+        </div>
       </section>
 
-      <section id="pricing" className="scroll-mt-28 space-y-8">
-        <ScrollReveal>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#D94F2B]">Monthly Growth Partnerships</p>
-          <h2 className="mt-3 max-w-3xl text-4xl font-black leading-tight text-[#1A1A1A] md:text-5xl">Choose your growth tier</h2>
-          <p className="mt-4 max-w-3xl text-lg text-[#4B4B4B]">
-            Choose your growth tier - upgrade anytime, keep everything you had.
-          </p>
-        </ScrollReveal>
-
-        <div className="-mx-6 overflow-x-auto px-6 pb-2">
-          <div className="grid min-w-6xl grid-cols-4 gap-5 lg:min-w-0 lg:grid-cols-4">
-            {content.monthlyPlans.map((plan, index) => {
-              const isPremium = plan.id === 'premium';
-
-              return (
-                <motion.article
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 32 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ duration: 0.45, delay: index * 0.08, ease }}
-                  whileHover={{ y: -6, scale: 1.01 }}
-                  className={[
-                    'relative flex h-full flex-col border p-6 transition-colors duration-300',
-                    isPremium
-                      ? 'border-[#1F1F1F] bg-[#2B2B2B] text-white'
-                      : plan.mostPopular
-                        ? 'border-[#D94F2B] bg-[#FFF8F4]'
-                        : 'border-[#D8CEBC] bg-[#FAF5EC]',
-                  ].join(' ')}
-                >
-                  {plan.mostPopular ? (
-                    <span className="absolute right-4 top-4 bg-[#D94F2B] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white">
-                      Most Popular
-                    </span>
-                  ) : null}
-
-                  <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#D94F2B]">{plan.name}</p>
-                  <p className={['mt-3 text-xl font-black', isPremium ? 'text-white' : 'text-[#1A1A1A]'].join(' ')}>{plan.price}</p>
-                  <p className={['mt-3 text-sm', isPremium ? 'text-white/80' : 'text-[#555555]'].join(' ')}>{plan.tagline}</p>
-                  {plan.id === 'core' ? (
-                    <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[#6A6A6A]">Ideal starter tier</p>
-                  ) : null}
-
-                  <ul className="mt-5 space-y-3">
-                    {plan.highlights.map((highlight) => (
-                      <li key={highlight} className="flex items-start gap-2 text-sm leading-relaxed">
-                        <CheckCircle2 className={['mt-0.5 h-4 w-4 shrink-0', isPremium ? 'text-[#F3A28E]' : 'text-[#D94F2B]'].join(' ')} />
-                        <span className={isPremium ? 'text-white/90' : 'text-[#1F1F1F]'}>{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto border-t border-white/20 pt-5">
-                    <Button
-                      href={`/contact?plan=${plan.id}#quote-form`}
-                      variant={isPremium ? 'secondary' : 'primary'}
-                      className={[
-                        'w-full justify-center border uppercase',
-                        isPremium
-                          ? 'border-white text-white hover:bg-white hover:text-[#111111]'
-                          : 'bg-[#D94F2B] text-white hover:bg-[#BE3F1F]',
-                      ].join(' ')}
-                    >
-                      Choose {plan.name}
-                    </Button>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </div>
-        </div>
-
-        <Card className="border-[#D8CEBC] bg-[#FBF7EF] p-6">
-          <div className="grid gap-4 lg:grid-cols-2">
-            <p className="text-sm text-[#3C3C3C]">
-              <span className="font-semibold text-[#1A1A1A]">Important note:</span> {content.notes.upgradeNote}
-            </p>
-            <p className="text-sm text-[#3C3C3C]">
-              <span className="font-semibold text-[#1A1A1A]">Ad Spend Note:</span> {content.notes.adSpendNote}
-            </p>
-          </div>
-        </Card>
+      <section className="border border-[var(--color-bg-secondary)] bg-white/50 p-8 md:p-10">
+        <h2 className="text-3xl font-bold text-[var(--color-text-dark)]">What is included in every Walktopus engagement?</h2>
+        <p className="mt-4 max-w-4xl text-[var(--color-text)]">
+          Every engagement starts with accountability basics so service outcomes are measurable from day one. The items below are included to protect transparency, decision speed, and delivery quality across monthly and project scopes.
+        </p>
+        <ul className="mt-6 grid gap-3 md:grid-cols-2">
+          {engagementStandards.map((item) => (
+            <li key={item} className="flex items-start gap-3 border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-4 text-[var(--color-text)]">
+              <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[var(--color-accent)]" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      <section id="project-services" className="scroll-mt-28 space-y-8">
-        <ScrollReveal>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#D94F2B]">One-Time and Project Services</p>
-          <h2 className="mt-3 max-w-4xl text-4xl font-black text-[#1A1A1A] md:text-5xl">Need something specific? We have it covered.</h2>
-          <p className="mt-4 max-w-3xl text-lg text-[#4B4B4B]">
-            From a logo to a full marketplace, pick a category and inspect pricing with key deliverables.
-          </p>
-        </ScrollReveal>
+      <section>
+        <h2 className="text-4xl font-extrabold text-[var(--color-text-dark)]">Which monthly partnership tier matches your current growth objective?</h2>
+        <p className="mt-4 max-w-4xl text-[var(--color-text)]">
+          Each tier below leads with the business outcome it is designed to deliver, then specifies the operational scope and pricing model. Plan pricing is unchanged from current Walktopus service architecture.
+        </p>
 
-        <div className="flex flex-wrap gap-3">
-          {content.serviceCategories.map((category: PricingServiceCategory) => {
-            const Icon = getCategoryIcon(category.id);
-            const isActive = category.id === activeCategory;
-
-            return (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() => setActiveCategory(category.id)}
-                className={[
-                  'inline-flex items-center gap-2 border px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] transition-colors duration-300',
-                  isActive
-                    ? 'border-[#D94F2B] bg-[#D94F2B] text-white'
-                    : 'border-[#D8CEBC] bg-[#F5F0E8] text-[#1A1A1A] hover:border-[#D94F2B]',
-                ].join(' ')}
-                aria-pressed={isActive}
-              >
-                <Icon className="h-4 w-4" />
-                {category.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {selectedCategory ? (
-          <motion.div
-            key={selectedCategory.id}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease }}
-            className="space-y-6"
-          >
-            <Card className="border-[#D8CEBC] bg-[#FCF9F2] p-5">
-              <div className="flex items-center gap-3">
-                <span className="h-2 w-10 bg-[#D94F2B]" />
-                <p className="font-semibold text-[#2B2B2B]">{selectedCategory.subtitle}</p>
+        <div className="mt-10 grid gap-6 lg:grid-cols-4">
+          {content.monthlyPlans.map((plan) => (
+            <Card key={plan.id} className={[plan.mostPopular ? 'border-[var(--color-accent)]' : '', plan.id === 'premium' ? 'bg-[var(--color-text-dark)] text-[var(--color-bg)]' : ''].join(' ')}>
+              <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">{plan.name}</p>
+              <p className="mt-3 text-2xl font-bold">{plan.price}</p>
+              <p className="mt-4 text-sm leading-7">{tierNarratives[plan.id] ?? plan.tagline}</p>
+              <ul className="mt-5 space-y-2 text-sm">
+                {plan.highlights.map((highlight) => (
+                  <li key={highlight} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[var(--color-accent)]" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 border-t border-[var(--color-bg-secondary)] pt-4">
+                <Button href={`/contact?plan=${plan.id}#quote-form`} className="w-full justify-center">Choose {plan.name}</Button>
               </div>
             </Card>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              {selectedCategory.services.map((service) => (
-                <motion.article
-                  key={service.id}
-                  whileHover={{ y: -5 }}
-                  transition={{ duration: 0.25, ease }}
-                  className="border border-[#D8CEBC] bg-[#FCF8F0] p-6"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="text-2xl font-extrabold text-[#1A1A1A]">{service.title}</h3>
-                    <span className="shrink-0 border border-[#D94F2B]/30 bg-[#D94F2B]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#B73B1F]">
-                      {service.price}
-                    </span>
-                  </div>
-                  <ul className="mt-5 space-y-3">
-                    {service.deliverables.map((deliverable) => (
-                      <li key={deliverable} className="flex items-start gap-2 text-sm text-[#2A2A2A]">
-                        <Zap className="mt-0.5 h-4 w-4 shrink-0 text-[#D94F2B]" />
-                        <span>{deliverable}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.article>
-              ))}
-            </div>
-          </motion.div>
-        ) : null}
-      </section>
-
-      <section className="space-y-6 rounded-sm border border-[#D8CEBC] bg-[#2B2B2B] p-8 text-white md:p-10">
-        <ScrollReveal>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#FFB39F]">Why Walktopus?</p>
-          <h2 className="mt-3 text-4xl font-black md:text-5xl">Growth execution with strategic discipline.</h2>
-        </ScrollReveal>
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {trustPillars.map((pillar) => {
-            const Icon = pillar.icon;
-            return (
-              <motion.article
-                key={pillar.title}
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-                className="border border-white/20 bg-white/5 p-5"
-              >
-                <Icon className="h-5 w-5 text-[#FFB39F]" />
-                <h3 className="mt-4 text-xl font-normal tracking-[0.01em]">{pillar.title}</h3>
-                <p className="mt-3 text-sm text-white/80">{pillar.description}</p>
-              </motion.article>
-            );
-          })}
+          ))}
         </div>
 
-        <p className="text-sm text-white/85">
-          Integrated team of strategists, designers, developers and marketers - end-to-end solutions under one roof.
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
+          <div className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-5 text-sm text-[var(--color-text)]">
+            <p className="font-semibold text-[var(--color-text-dark)]">Upgrade policy:</p>
+            <p className="mt-2">{content.notes.upgradeNote}</p>
+          </div>
+          <div className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-5 text-sm text-[var(--color-text)]">
+            <p className="font-semibold text-[var(--color-text-dark)]">Ad spend policy:</p>
+            <p className="mt-2">{content.notes.adSpendNote}</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-4xl font-extrabold text-[var(--color-text-dark)]">Which one-time services can you engage independently?</h2>
+        <p className="mt-4 max-w-4xl text-[var(--color-text)]">
+          One-time and project services are outcome-specific executions for businesses that need targeted implementation without a full monthly partnership.
         </p>
+        <div className="mt-10 grid gap-6">{content.serviceCategories.map((category) => renderCategory(category))}</div>
       </section>
 
-      <section className="space-y-8">
-        <ScrollReveal>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#D94F2B]">Our Process</p>
-          <h2 className="mt-3 max-w-3xl text-4xl font-black text-[#1A1A1A] md:text-5xl">How It Works</h2>
-        </ScrollReveal>
-
-        <div className="grid gap-4 lg:grid-cols-4">
-          {processSteps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <motion.article
-                key={step.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.45, delay: index * 0.08, ease }}
-                className="border border-[#D8CEBC] bg-[#F9F3E8] p-6"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs tracking-[0.2em] text-[#A24A34]">0{index + 1}</span>
-                  <Icon className="h-5 w-5 text-[#D94F2B]" />
-                </div>
-                <h3 className="mt-4 text-2xl font-extrabold text-[#1A1A1A]">{step.title}</h3>
-                <p className="mt-3 text-sm text-[#373737]">{step.description}</p>
-              </motion.article>
-            );
-          })}
+      <section>
+        <h2 className="text-4xl font-extrabold text-[var(--color-text-dark)]">What do businesses ask before selecting a Walktopus service plan?</h2>
+        <p className="mt-4 max-w-4xl text-[var(--color-text)]">
+          These service-level answers are written for direct extraction by AI answer engines and for practical buyer-side decision making.
+        </p>
+        <div className="mt-8 grid gap-4">
+          {servicesFaqItems.map((item, index) => (
+            <article key={item.question} className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-6 md:p-8">
+              <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">Question {index + 1}</p>
+              <h3 className="mt-2 text-2xl font-bold text-[var(--color-text-dark)]">{item.question}</h3>
+              <p className="mt-4 text-[var(--color-text)]">{item.answer}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section id="contact" className="scroll-mt-28 border border-[#D8CEBC] bg-[#111111] p-8 text-white md:p-12">
-        <ScrollReveal className="max-w-4xl">
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#FFB39F]">Need Something Custom?</p>
-          <h2 className="mt-3 text-4xl font-black leading-tight md:text-5xl">Need Something Custom?</h2>
-          <p className="mt-5 max-w-3xl text-base text-white/80 md:text-lg">
-            We build bespoke scopes for unique requirements. Tell us your goal and we will build a package around it.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Button href="/contact#quote-form" variant="primary" className="bg-[#D94F2B] hover:bg-[#BE3F1F]">
-              Book a Free Strategy Call <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-            <Button href="/contact#quote-form" variant="secondary" className="border-white text-white hover:bg-white hover:text-[#111111]">
-              Get a Custom Proposal
-            </Button>
-          </div>
-          <div className="mt-6 border-t border-white/20 pt-6">
-            <p className="font-mono text-xs uppercase tracking-[0.13em] text-white/70">Proud Initiative by Dgen Technologies Private Limited</p>
-          </div>
-        </ScrollReveal>
+      <section className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8 md:p-10">
+        <h2 className="text-3xl font-bold text-[var(--color-text-dark)]">Which spoke pages explain execution detail beyond service cards?</h2>
+        <p className="mt-4 max-w-3xl text-[var(--color-text)]">
+          Use these deep dives to evaluate fit before engagement. Each spoke links back to the services and solutions hubs as part of Walktopus internal knowledge architecture.
+        </p>
+        <ul className="mt-6 list-disc space-y-2 pl-5 text-[var(--color-text)]">
+          <li>
+            <Link href="/blog/what-is-local-seo-for-indian-businesses" className="text-[var(--color-accent)] underline-offset-4 hover:underline">
+              What local SEO for small businesses in India includes and how it improves discoverability
+            </Link>
+          </li>
+          <li>
+            <Link href="/blog/social-media-management-for-local-businesses-india" className="text-[var(--color-accent)] underline-offset-4 hover:underline">
+              Social media management frameworks that support local business demand generation
+            </Link>
+          </li>
+          <li>
+            <Link href="/blog/personal-branding-guide-for-indian-professionals" className="text-[var(--color-accent)] underline-offset-4 hover:underline">
+              Personal branding system design for Indian founders and professionals
+            </Link>
+          </li>
+        </ul>
       </section>
     </div>
   );

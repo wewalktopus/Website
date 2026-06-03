@@ -13,6 +13,7 @@ export function AnimatedCounter({ end, suffix = '', label }: AnimatedCounterProp
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const decimalPlaces = Number.isInteger(end) ? 0 : 1;
 
   useEffect(() => {
     if (!isInView) return;
@@ -23,7 +24,7 @@ export function AnimatedCounter({ end, suffix = '', label }: AnimatedCounterProp
       frame += 1;
       // Ease-out cubic for natural deceleration
       const progress = 1 - Math.pow(1 - frame / totalFrames, 3);
-      setCount(Math.round(end * progress));
+      setCount(Number((end * progress).toFixed(decimalPlaces)));
       if (frame >= totalFrames) {
         clearInterval(timer);
         setCount(end);
@@ -31,7 +32,7 @@ export function AnimatedCounter({ end, suffix = '', label }: AnimatedCounterProp
     }, 20);
 
     return () => clearInterval(timer);
-  }, [isInView, end]);
+  }, [isInView, end, decimalPlaces]);
 
   return (
     <div ref={ref}>

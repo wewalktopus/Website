@@ -12,6 +12,11 @@ const SESSION_COOKIE_NAME = 'walktopus_admin_session';
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  if (pathname === '/for-businesses') {
+    const solutionsUrl = new URL('/solutions', req.url);
+    return NextResponse.redirect(solutionsUrl, 301);
+  }
+
   // Protect all /superadmin/* routes except the login page itself
   if (pathname.startsWith('/superadmin') && pathname !== '/superadmin') {
     const sessionCookie = req.cookies.get(SESSION_COOKIE_NAME);
@@ -36,5 +41,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/superadmin/:path*', '/api/admin/:path*'],
+  matcher: ['/for-businesses', '/superadmin/:path*', '/api/admin/:path*'],
 };

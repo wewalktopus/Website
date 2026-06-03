@@ -25,11 +25,13 @@ export function pageMetadata({
   description,
   pathname,
   keywords = [],
+  dateModified = '2026-06-03',
 }: {
   title: string;
   description: string;
   pathname: string;
   keywords?: readonly string[];
+  dateModified?: string;
 }): Metadata {
   const url = absoluteUrl(pathname);
   // Ensure canonical URL doesn't have trailing slash (except for root)
@@ -51,6 +53,7 @@ export function pageMetadata({
       siteName: BRAND.name,
       title,
       description,
+      modifiedTime: dateModified,
       images: [
         {
           url: absoluteUrl('/opengraph-image'),
@@ -67,6 +70,9 @@ export function pageMetadata({
       images: [absoluteUrl('/opengraph-image')],
       creator: '@walktopus',
       site: '@walktopus',
+    },
+    other: {
+      dateModified,
     },
   };
 }

@@ -61,6 +61,7 @@ export const metadata: Metadata = {
     google: '1XQm0DhR9qM77JVkoEiCaLNKNuUTgs39FMtwFh5uM_M',
   },
   other: {
+    dateModified: '2026-06-03',
     'geo.region': 'IN-WB',
     'geo.placename': BRAND.location,
     'geo.position': '22.5726;88.3639',

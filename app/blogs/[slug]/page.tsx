@@ -77,6 +77,9 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
         <span>{new Date(post.createdAt).toLocaleDateString('en-IN')}</span>
         <span>{post.readTime ?? '5 min read'}</span>
       </div>
+      <p className="mt-2 text-sm font-semibold text-(--color-soft-gray)">
+        Last reviewed: {new Date(post.updatedAt || post.createdAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+      </p>
       <p className="mt-6 max-w-3xl text-lg leading-8 text-(--color-soft-gray)">{post.excerpt}</p>
 
       <PlaceholderImage

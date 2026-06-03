@@ -15,8 +15,8 @@ export function ServicesSnapshot() {
     <section className="mx-auto flex w-full max-w-7xl flex-col px-6 py-24 lg:min-h-screen lg:justify-center lg:py-28">
       <ScrollReveal>
         <SectionHeader
-          eyebrow="Service Pillars"
-          title="Built for growth at every stage"
+          eyebrow="Core Services"
+          title="What are Walktopus core service pillars for measurable digital growth?"
           subtitle="From social reach to full funnel performance, our systems are designed to create measurable business outcomes."
           titleStyle={{ fontFamily: 'var(--font-anton), sans-serif', letterSpacing: '-0.01em' }}
         />

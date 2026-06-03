@@ -47,7 +47,7 @@ export const TEAM = [
 export const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Services', href: '/services' },
-  { label: 'Solutions', href: '/for-businesses' },
+  { label: 'Solutions', href: '/solutions' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Blogs', href: '/blogs' },
   { label: 'About', href: '/about' },

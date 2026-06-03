@@ -36,15 +36,19 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
       {
-        userAgent: 'Claude-Web', // Anthropic Claude
+        userAgent: 'ClaudeBot', // Anthropic Claude
+        allow: '/',
+      },
+      {
+        userAgent: 'Google-Extended', // Google AI crawlers
+        allow: '/',
+      },
+      {
+        userAgent: 'Applebot-Extended', // Apple AI crawlers
         allow: '/',
       },
       {
         userAgent: 'anthropic-ai', // Anthropic crawlers
-        allow: '/',
-      },
-      {
-        userAgent: 'Googlebot-Extended', // Google Extended for AI
         allow: '/',
       },
       {

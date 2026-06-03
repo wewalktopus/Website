@@ -39,7 +39,7 @@ export function CapabilityMatrix() {
       <ScrollReveal>
         <SectionHeader
           eyebrow="Operating System"
-          title="A premium growth stack built for serious brands"
+          title="How does the Walktopus growth operating system create measurable outcomes?"
           subtitle="Walktopus combines strategic thinking, sharp creative execution, and performance operations in one compact team."
         />
       </ScrollReveal>

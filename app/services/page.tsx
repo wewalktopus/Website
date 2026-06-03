@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { ServicesExperience } from '@/components/services/ServicesExperience';
+import { ServicesExperience, servicesFaqItems } from '@/components/services/ServicesExperience';
 import { pageMetadata, breadcrumbSchema, absoluteUrl } from '@/lib/seo';
 import { DEFAULT_PRICING_CONFIG, resolveAudienceFromCountry } from '@/lib/pricing-config';
 import type { PricingAudience, PricingAudienceContent } from '@/types';
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = pageMetadata({
   title: 'Digital Marketing Services and Pricing',
   description:
-    'Explore Walktopus monthly growth partnerships and one-time digital marketing services with transparent pricing for branding, websites, social media content, ad campaigns, and influencer coordination.',
+    'Walktopus offers transparent digital marketing plans from Rs.5,000 per month, covering social media management, website SEO, ad campaigns, and branding for Indian businesses.',
   pathname: '/services',
   keywords: [
     'digital marketing services pricing Kolkata',
@@ -19,6 +19,7 @@ export const metadata: Metadata = pageMetadata({
     'ad campaign management services India',
     'growth marketing retainer plans',
   ],
+  dateModified: '2026-06-03',
 });
 
 const crumbs = breadcrumbSchema([
@@ -107,22 +108,39 @@ function createServicesPageSchema(content: PricingAudienceContent, audience: Pri
 const servicesFaqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
+  mainEntity: servicesFaqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+
+const servicesHowToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to engage Walktopus services',
+  description: 'Select a service model, confirm deliverable scope, execute, and optimize with recurring performance reporting.',
+  step: [
     {
-      '@type': 'Question',
-      name: 'Does upgrading remove current services?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. Upgrading your plan never removes your existing services. New tier features are added on top.',
-      },
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Select engagement model',
+      text: 'Choose either fixed-scope services or monthly growth partnerships based on your current business objective.',
     },
     {
-      '@type': 'Question',
-      name: 'Is ad spend included in monthly plan pricing?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. Ad spend is billed directly to the client by ad platforms. Walktopus charges a 15-20% management fee on top of total ad spend.',
-      },
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Define deliverables and KPIs',
+      text: 'Lock scope, reporting cadence, and measurable outcomes before production starts.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Execute and review',
+      text: 'Run delivery with weekly or bi-weekly reviews, then optimize based on performance data.',
     },
   ],
 };
@@ -184,6 +202,7 @@ export default async function ServicesPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesPageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesFaqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesHowToSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
       <ServicesExperience
         content={pricing.content}

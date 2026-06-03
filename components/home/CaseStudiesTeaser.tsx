@@ -30,7 +30,7 @@ export function CaseStudiesTeaser() {
       <ScrollReveal>
         <SectionHeader
           eyebrow="Selected Work"
-          title="Growth stories in motion"
+          title="What growth results have Walktopus clients achieved?"
           subtitle="A preview of campaign systems and execution frameworks we deploy to deliver predictable momentum."
         />
       </ScrollReveal>
