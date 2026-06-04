@@ -150,41 +150,17 @@ const crumbs = breadcrumbSchema([
 ]);
 
 export default function FaqPage() {
-  const topicCount = FAQS.reduce<Record<string, number>>((acc, item) => {
-    const key = item.topic ?? 'General';
-    acc[key] = (acc[key] ?? 0) + 1;
-    return acc;
-  }, {});
-
   return (
     <div className="relative mx-auto w-full max-w-7xl px-6 py-20 lg:py-28">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
 
-      <div className="overflow-hidden border border-(--color-bg-secondary) bg-linear-to-br from-[#f7f4ea] via-[#efe8d4] to-[#e7ddc5] p-8 shadow-[0_20px_70px_-32px_rgba(43,41,41,0.5)] lg:p-12">
+      <div>
         <SectionHeader
           eyebrow="FAQ"
           title="Walktopus Growth FAQ"
           subtitle="A modern, decision-ready knowledge base for businesses and creators evaluating digital marketing execution in India."
         />
-
-        <div className="mt-8 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-widest text-(--color-soft-gray)">
-          <span className="border border-(--color-bg-secondary) bg-white/70 px-3 py-1.5">Last updated: {LAST_UPDATED_LABEL}</span>
-          <span className="border border-(--color-bg-secondary) bg-white/70 px-3 py-1.5">Last reviewed: {LAST_REVIEWED_LABEL}</span>
-          <span className="border border-(--color-bg-secondary) bg-white/70 px-3 py-1.5">{FAQS.length} validated questions</span>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-2">
-          {Object.entries(topicCount).map(([topic, count]) => (
-            <span key={topic} className="border border-(--color-bg-secondary) bg-(--color-bg-light)/90 px-3 py-1 text-xs font-semibold text-(--color-text)">
-              {topic}: {count}
-            </span>
-          ))}
-        </div>
-
-        <p className="mt-6 max-w-3xl text-sm leading-6 text-(--color-soft-gray)">
-          This page is audited quarterly for search behavior changes, platform updates, and India-market pricing context so decision-makers can rely on current recommendations.
-        </p>
       </div>
 
       <div className="mt-10 space-y-4">
