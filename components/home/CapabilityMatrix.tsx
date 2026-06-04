@@ -35,7 +35,7 @@ const capabilities = [
 
 export function CapabilityMatrix() {
   return (
-    <section className="mx-auto flex w-full max-w-7xl items-center px-6 py-24 lg:min-h-screen lg:py-28">
+    <section className="mx-auto flex w-full max-w-7xl flex-col px-6 py-24 lg:min-h-screen lg:py-28">
       <ScrollReveal>
         <SectionHeader
           eyebrow="Operating System"
@@ -44,7 +44,7 @@ export function CapabilityMatrix() {
         />
       </ScrollReveal>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2">
+      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
         {capabilities.map((capability, index) => (
           <ScrollReveal key={capability.title} delay={index * 0.08}>
             <Card className="group h-full">

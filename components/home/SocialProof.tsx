@@ -19,7 +19,7 @@ export function SocialProof() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="grid gap-10 md:grid-cols-4"
+          className="grid grid-cols-2 gap-10 md:grid-cols-4"
         >
           {stats.map((stat, index) => (
             <motion.div

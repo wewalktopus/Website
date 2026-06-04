@@ -21,7 +21,7 @@ export function ServicesSnapshot() {
           titleStyle={{ fontFamily: 'var(--font-anton), sans-serif', letterSpacing: '-0.01em' }}
         />
       </ScrollReveal>
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
+      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {SERVICES.map((service, index) => {
           const Icon = serviceIcons[service.id];
           return (

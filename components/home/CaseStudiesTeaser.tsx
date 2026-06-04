@@ -26,7 +26,7 @@ const studies = [
 
 export function CaseStudiesTeaser() {
   return (
-    <section className="mx-auto flex w-full max-w-7xl items-center px-6 py-24 lg:min-h-screen lg:py-28">
+    <section className="mx-auto flex w-full max-w-7xl flex-col px-6 py-24 lg:min-h-screen lg:py-28">
       <ScrollReveal>
         <SectionHeader
           eyebrow="Selected Work"
@@ -34,7 +34,7 @@ export function CaseStudiesTeaser() {
           subtitle="A preview of campaign systems and execution frameworks we deploy to deliver predictable momentum."
         />
       </ScrollReveal>
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
+      <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {studies.map((study, index) => (
           <ScrollReveal key={study.seed} delay={index * 0.08}>
             <Card className="p-0">

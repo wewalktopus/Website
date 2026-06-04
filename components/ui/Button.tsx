@@ -13,7 +13,7 @@ interface ButtonProps {
 }
 
 const base =
-  'inline-flex items-center justify-center px-8 py-4 text-sm font-semibold uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-accent)]';
+  'inline-flex items-center justify-center min-h-[44px] px-8 py-4 text-sm font-semibold uppercase tracking-[0.08em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--color-accent)]';
 
 const variants: Record<Variant, string> = {
   primary: 'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]',

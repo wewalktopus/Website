@@ -41,13 +41,13 @@ export function Footer() {
               Instagram
             </Link>
           </p>
-          <p className="flex items-center gap-2 text-sm text-(--color-bg-secondary)">
+          <p className="mt-2 flex items-center gap-2 text-sm text-(--color-bg-secondary)">
             <Youtube className="h-4 w-4 text-(--color-accent)" />
             <Link href={BRAND.social.youtube} target="_blank" rel="noreferrer" className="hover:text-(--color-accent)">
               YouTube
             </Link>
           </p>
-          <p className="flex items-center gap-2 text-sm text-(--color-bg-secondary)">
+          <p className="mt-2 flex items-center gap-2 text-sm text-(--color-bg-secondary)">
             <MapPin className="h-4 w-4 text-(--color-accent)" />
             <span>{BRAND.location}</span>
           </p>
