@@ -1,17 +1,19 @@
 export const dynamic = 'force-static';
 
 import type { Metadata } from 'next';
+import dynamicImport from 'next/dynamic';
 
 import { HeroSection } from '@/components/home/HeroSection';
 import { TrustBanner } from '@/components/home/TrustBanner';
 import { ServicesSnapshot } from '@/components/home/ServicesSnapshot';
-import { SocialProof } from '@/components/home/SocialProof';
-import { CaseStudiesTeaser } from '@/components/home/CaseStudiesTeaser';
-import { CapabilityMatrix } from '@/components/home/CapabilityMatrix';
-import { ScrollytellingPlaybook } from '@/components/home/ScrollytellingPlaybook';
-import { IndustryOutcomes } from '@/components/home/IndustryOutcomes';
-import { FinalCta } from '@/components/home/FinalCta';
 import { pageMetadata } from '@/lib/seo';
+
+const SocialProof = dynamicImport(() => import('@/components/home/SocialProof').then((mod) => mod.SocialProof));
+const CapabilityMatrix = dynamicImport(() => import('@/components/home/CapabilityMatrix').then((mod) => mod.CapabilityMatrix));
+const ScrollytellingPlaybook = dynamicImport(() => import('@/components/home/ScrollytellingPlaybook').then((mod) => mod.ScrollytellingPlaybook));
+const CaseStudiesTeaser = dynamicImport(() => import('@/components/home/CaseStudiesTeaser').then((mod) => mod.CaseStudiesTeaser));
+const IndustryOutcomes = dynamicImport(() => import('@/components/home/IndustryOutcomes').then((mod) => mod.IndustryOutcomes));
+const FinalCta = dynamicImport(() => import('@/components/home/FinalCta').then((mod) => mod.FinalCta));
 
 export const metadata: Metadata = pageMetadata({
   title: 'Digital Marketing Agency in Kolkata',

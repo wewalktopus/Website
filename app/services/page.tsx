@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
-import { ServicesExperience } from '@/components/services/ServicesExperience';
+import dynamicImport from 'next/dynamic';
 import { servicesFaqItems } from '@/components/services/servicesFaqItems';
 import { getPricingForRequest } from '@/lib/public-pricing';
 import { pageMetadata, breadcrumbSchema, absoluteUrl } from '@/lib/seo';
 import type { PricingAudience, PricingAudienceContent } from '@/types';
+
+const ServicesExperience = dynamicImport(() => import('@/components/services/ServicesExperience').then((mod) => mod.ServicesExperience));
 
 export const dynamic = 'force-dynamic';
 

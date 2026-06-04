@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SolutionsExperience } from '@/components/solutions/SolutionsExperience';
+import dynamicImport from 'next/dynamic';
 import {
   processSteps,
   solutionFaqItems,
@@ -8,6 +8,8 @@ import {
 import { getPricingForRequest } from '@/lib/public-pricing';
 import { absoluteUrl, breadcrumbSchema, pageMetadata } from '@/lib/seo';
 import type { PricingAudience, PricingAudienceContent } from '@/types';
+
+const SolutionsExperience = dynamicImport(() => import('@/components/solutions/SolutionsExperience').then((mod) => mod.SolutionsExperience));
 
 const DATE_MODIFIED = '2026-06-04';
 

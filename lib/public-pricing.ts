@@ -13,17 +13,22 @@ export async function getPricingForRequest(): Promise<{
   const country = (headerStore.get('x-vercel-ip-country') ?? headerStore.get('cf-ipcountry') ?? '').toUpperCase();
   const audience = resolveAudienceFromCountry(country);
 
+  const fallback = {
+    audience,
+    countryCode: country,
+    content: DEFAULT_PRICING_CONFIG[audience],
+  };
+
   if (!host) {
     return {
-      audience,
-      countryCode: country,
-      content: DEFAULT_PRICING_CONFIG[audience],
+      ...fallback,
     };
   }
 
   try {
     const response = await fetch(`${protocol}://${host}/api/pricing?country=${country}`, {
-      cache: 'no-store',
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(1200),
     });
 
     if (!response.ok) {
@@ -45,9 +50,7 @@ export async function getPricingForRequest(): Promise<{
     console.error('[public-pricing] pricing fetch failed:', error);
 
     return {
-      audience,
-      countryCode: country,
-      content: DEFAULT_PRICING_CONFIG[audience],
+      ...fallback,
     };
   }
 }

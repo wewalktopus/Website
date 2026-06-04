@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Anton, Space_Mono } from 'next/font/google';
-import Script from 'next/script';
 import './globals.css';
+import { DeferredGtm } from '@/components/analytics/DeferredGtm';
 import { LayoutWrapper } from '@/components/layout/LayoutWrapper';
 import { BRAND } from '@/lib/constants';
 import { organizationSchema, extendedOrganizationSchema, localBusinessSchema, pageMetadata, siteUrl } from '@/lib/seo';
@@ -76,15 +76,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <html lang="en">
-      {shouldLoadAnalytics ? (
-        <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="lazyOnload" />
-          <Script id="google-analytics" strategy="lazyOnload">
-            {`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${gaMeasurementId}');`}
-          </Script>
-        </>
-      ) : null}
       <body className={`${display.variable} ${heading.variable} ${mono.variable} ${anton.variable}`}>
+        {shouldLoadAnalytics ? <DeferredGtm measurementId={gaMeasurementId as string} /> : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(extendedOrganizationSchema) }}
