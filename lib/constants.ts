@@ -46,11 +46,11 @@ export const TEAM = [
 
 export const NAV_LINKS = [
   { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
   { label: 'Services', href: '/services' },
   { label: 'Solutions', href: '/solutions' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Blogs', href: '/blogs' },
-  { label: 'About', href: '/about' },
 ] as const;
 
 export const SERVICES = [

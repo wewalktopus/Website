@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "hotfix-solutions-build-error",
+			"type": "shell",
+			"command": "git add app/solutions/page.tsx; git commit -m \"fix(solutions): resolve duplicate symbols blocking vercel build\"; git push TirthaVS main",
+			"isBackground": false
+		}
+	]
+}
