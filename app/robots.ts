@@ -3,7 +3,8 @@
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://walktopus.in';
   const host = new URL(baseUrl).host;
-  const restrictedPaths = ['/api/', '/superadmin/', '/admin/', '/_vercel/', '/_next/'];
+  // Keep admin and API endpoints private, but allow framework assets for rendering/indexing.
+  const restrictedPaths = ['/api/', '/superadmin/', '/admin/', '/_vercel/'];
 
   return {
     rules: [

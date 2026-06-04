@@ -19,7 +19,7 @@ const sukomalSchema = personSchema(
   'Sukomal Debnath',
   'Co-founder and Director, Dgen Technologies Private Limited',
   'Sukomal Debnath co-founded Walktopus in Kolkata and leads the strategy and infrastructure behind Dgen Technologies Private Limited.',
-  absoluteUrl(sukomal?.imagePath ?? '/images/team/sukomal-debnath-portrait.jpg'),
+  absoluteUrl(sukomal?.imagePath ?? '/images/team/sukomal-debnath.jpeg'),
   absoluteUrl('/about/sukomal'),
   {
     worksFor: 'Dgen Technologies Private Limited',
@@ -49,7 +49,7 @@ export default function SukomalPage() {
       <section className="grid gap-16 md:grid-cols-2">
         <div className="relative h-96">
           <Image
-            src={sukomal?.imagePath ?? '/images/team/sukomal-debnath-portrait.jpg'}
+            src={sukomal?.imagePath ?? '/images/team/sukomal-debnath.jpeg'}
             alt="Sukomal Debnath, Co-founder and Director at Walktopus"
             fill
             className="object-cover object-top"

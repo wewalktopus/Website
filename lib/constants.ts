@@ -33,7 +33,7 @@ export const TEAM = [
     title: 'Co-founder and Director, Dgen Technologies',
     bio: 'The mind behind Walktopus. Started with one travel account, built a company.',
     placeholderSeed: 'walktopus-sukomal',
-    imagePath: '/images/team/sukomal-debnath-portrait.jpg',
+    imagePath: '/images/team/sukomal-debnath.jpeg',
   },
   {
     name: 'Sagnik Mandal',
