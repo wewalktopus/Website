@@ -25,7 +25,7 @@ export function pageMetadata({
   description,
   pathname,
   keywords = [],
-  dateModified = '2026-06-03',
+  dateModified = '2026-06-04',
 }: {
   title: string;
   description: string;

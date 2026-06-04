@@ -3,63 +3,80 @@
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://walktopus.in';
   const host = new URL(baseUrl).host;
+  const restrictedPaths = ['/api/', '/superadmin/', '/admin/', '/_vercel/', '/_next/'];
 
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/', '/_vercel/'],
+        disallow: restrictedPaths,
+        crawlDelay: 1,
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/', '/_vercel/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'Bingbot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'DuckDuckBot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'CCBot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'PerplexityBot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'GPTBot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
+      },
+      {
+        userAgent: 'OAI-SearchBot',
+        allow: '/',
+        disallow: restrictedPaths,
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        allow: '/',
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'ClaudeBot',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
+      },
+      {
+        userAgent: 'Claude-Web',
+        allow: '/',
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'Google-Extended',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'anthropic-ai',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'Applebot-Extended',
         allow: '/',
-        disallow: ['/api/', '/superadmin/', '/admin/'],
+        disallow: restrictedPaths,
       },
       {
         userAgent: 'facebookexternalhit',
@@ -75,6 +92,10 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'SemrushBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'Bytespider',
         disallow: '/',
       },
     ],
