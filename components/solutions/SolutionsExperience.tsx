@@ -115,7 +115,7 @@ export function SolutionsExperience({ content }: SolutionsExperienceProps) {
       />
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-20 px-6 py-20 lg:gap-24 lg:py-28">
-        <section className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]">
+        <section className="grid min-h-[calc(100vh-6rem)] items-center gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]">
           <div>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
