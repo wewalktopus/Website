@@ -70,7 +70,7 @@ export function ServicesExperience({ content, audience }: ServicesExperienceProp
 
       <div className="mx-auto w-full max-w-7xl space-y-20 px-6 py-20 lg:space-y-24 lg:py-28">
         <ScrollReveal>
-          <section className="relative overflow-hidden rounded-3xl border border-[var(--color-bg-secondary)] bg-white/80 p-8 shadow-sm backdrop-blur-sm md:p-12 lg:p-14">
+          <section className="relative flex min-h-[100svh] items-center overflow-hidden rounded-3xl border border-[var(--color-bg-secondary)] bg-white/80 p-8 shadow-sm backdrop-blur-sm md:p-12 lg:p-14">
             <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[var(--color-accent)]/10 blur-3xl" />
             <div className="absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-[var(--color-text)]/10 blur-3xl" />
 
