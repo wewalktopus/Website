@@ -3,33 +3,34 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CompanyLogo } from '@/types';
 
-const FALLBACK_TEXT = 'Walktopus · A Proud Initiative by Dgen Technologies Private Limited · Walktopus · ';
-
 export function TrustBanner() {
   const [logos, setLogos] = useState<CompanyLogo[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
 
     const load = async () => {
       try {
-        const res = await fetch('/api/logos', { cache: 'no-store' });
+        const res = await fetch('/api/logos', { cache: 'no-store', signal: controller.signal });
         const data = await res.json();
 
-        if (!active) return;
-
-        setLogos(Array.isArray(data.logos) ? data.logos : []);
-      } catch {
-        if (active) {
+        if (res.ok) {
+          setLogos(Array.isArray(data.logos) ? data.logos : []);
+        } else {
           setLogos([]);
         }
+      } catch {
+        setLogos([]);
+      } finally {
+        setIsLoaded(true);
       }
     };
 
     load();
 
     return () => {
-      active = false;
+      controller.abort();
     };
   }, []);
 
@@ -38,29 +39,35 @@ export function TrustBanner() {
       return [];
     }
 
-    return [...logos, ...logos, ...logos];
+    if (logos.length === 1) {
+      return Array.from({ length: 4 }, () => logos[0]);
+    }
+
+    return logos;
   }, [logos]);
+
+  if (!isLoaded || marqueeLogos.length === 0) {
+    return null;
+  }
 
   return (
     <section className="overflow-hidden bg-(--color-text) py-3 text-(--color-bg)">
-      {marqueeLogos.length === 0 ? (
-        <div className="marquee-track font-mono text-[13px] uppercase tracking-[0.12em]">
-          <span>{FALLBACK_TEXT}</span>
-          <span>{FALLBACK_TEXT}</span>
-          <span>{FALLBACK_TEXT}</span>
-          <span>{FALLBACK_TEXT}</span>
-        </div>
-      ) : (
-        <div className="marquee-track items-center gap-8 py-1">
-          {marqueeLogos.map((logo, index) => {
+      <div className="logo-marquee py-1" aria-label="Client logos">
+        <div className="logo-marquee-track">
+          {[...marqueeLogos, ...marqueeLogos].map((logo, index) => {
             const image = (
               <img
                 src={logo.src}
                 alt={logo.alt}
                 loading="lazy"
-                className="h-10 w-auto max-w-42.5 object-contain opacity-95"
+                className="h-12 w-auto max-w-none object-contain opacity-95 md:h-12.5"
               />
             );
+
+            const containerClass =
+              marqueeLogos.length === 1
+                ? 'logo-marquee-item logo-marquee-item-single'
+                : 'logo-marquee-item';
 
             return logo.href ? (
               <a
@@ -68,18 +75,18 @@ export function TrustBanner() {
                 href={logo.href}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex shrink-0 items-center"
+                className={containerClass}
               >
                 {image}
               </a>
             ) : (
-              <span key={`${logo.id}-${index}`} className="inline-flex shrink-0 items-center">
+              <span key={`${logo.id}-${index}`} className={containerClass}>
                 {image}
               </span>
             );
           })}
         </div>
-      )}
+      </div>
     </section>
   );
 }

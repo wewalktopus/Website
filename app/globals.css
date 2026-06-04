@@ -54,17 +54,43 @@ a {
   text-decoration: none;
 }
 
-.marquee-track {
-  display: inline-flex;
-  min-width: 200%;
-  animation: marquee 25s linear infinite;
+.logo-marquee {
+  display: flex;
+  overflow: hidden;
 }
 
-@keyframes marquee {
+.logo-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+  animation: logo-marquee 26s linear infinite;
+}
+
+.logo-marquee-item {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 2.25rem;
+}
+
+.logo-marquee-item-single {
+  min-width: clamp(220px, 72vw, 620px);
+}
+
+@keyframes logo-marquee {
   0% {
-    transform: translateX(0%);
+    transform: translateX(50%);
   }
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee-track {
+    animation: none;
+    transform: none;
   }
 }
