@@ -5,77 +5,60 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      // General crawlers - allow everything except api routes
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/_next/', '/_vercel/', '/static/'],
+        disallow: ['/api/', '/superadmin/', '/admin/', '/_vercel/'],
       },
-      // Google Search
       {
         userAgent: 'Googlebot',
         allow: '/',
-        disallow: ['/api/', '/_next/', '/_vercel/', '/static/'],
+        disallow: ['/api/', '/superadmin/', '/admin/', '/_vercel/'],
       },
-      // Google Images
       {
-        userAgent: 'Googlebot-Image',
-        allow: ['/opengraph-image', '/logo.png', '/logo-transparent.png', '/apple-icon', '/icon'],
-      },
-      // AI & Generative Engine Crawlers - Explicitly allow for better AI indexing
-      {
-        userAgent: 'CCBot', // Common Crawl
+        userAgent: 'Bingbot',
         allow: '/',
       },
       {
-        userAgent: 'PerplexityBot', // Perplexity AI
+        userAgent: 'DuckDuckBot',
         allow: '/',
       },
       {
-        userAgent: 'GPTBot', // OpenAI GPT
+        userAgent: 'CCBot',
         allow: '/',
       },
       {
-        userAgent: 'ClaudeBot', // Anthropic Claude
+        userAgent: 'PerplexityBot',
         allow: '/',
       },
       {
-        userAgent: 'Google-Extended', // Google AI crawlers
+        userAgent: 'GPTBot',
         allow: '/',
       },
       {
-        userAgent: 'Applebot-Extended', // Apple AI crawlers
+        userAgent: 'ClaudeBot',
         allow: '/',
       },
       {
-        userAgent: 'anthropic-ai', // Anthropic crawlers
+        userAgent: 'Google-Extended',
         allow: '/',
       },
       {
-        userAgent: 'bingbot', // Microsoft Bing
+        userAgent: 'anthropic-ai',
         allow: '/',
       },
       {
-        userAgent: 'Slurp', // Yahoo
+        userAgent: 'Applebot-Extended',
         allow: '/',
       },
       {
-        userAgent: 'DuckDuckBot', // DuckDuckGo
+        userAgent: 'facebookexternalhit',
         allow: '/',
       },
       {
-        userAgent: 'Teoma', // Ask.com
+        userAgent: 'MetaInspector',
         allow: '/',
       },
-      {
-        userAgent: 'facebookexternalhit', // Facebook
-        allow: '/',
-      },
-      {
-        userAgent: 'MetaInspector', // Meta tools
-        allow: '/',
-      },
-      // Block bad actors
       {
         userAgent: 'AhrefsBot',
         disallow: '/',
