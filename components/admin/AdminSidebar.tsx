@@ -18,6 +18,7 @@ import {
   Shield,
   TrendingUp,
   BadgeDollarSign,
+  Images,
   Menu,
   X,
 } from 'lucide-react';
@@ -37,6 +38,7 @@ const NAV: NavItem[] = [
   { label: 'Leads', href: '/superadmin/leads', icon: Users },
   { label: 'Subscribers', href: '/superadmin/subscribers', icon: Bell },
   { label: 'Pricing & Services', href: '/superadmin/pricing', icon: BadgeDollarSign },
+  { label: 'Client Logos', href: '/superadmin/logos', icon: Images },
   {
     label: 'Email',
     href: '/superadmin/emails',

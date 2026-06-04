@@ -87,6 +87,16 @@ export interface AdminSession {
   role: AdminRole;
 }
 
+export interface CompanyLogo {
+  id: string;
+  src: string;
+  alt: string;
+  href: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type PricingAudience = 'india' | 'international';
 
 export interface PricingMonthlyPlan {

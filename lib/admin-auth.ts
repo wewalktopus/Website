@@ -12,8 +12,8 @@ export const SESSION_DURATION_MS = 5 * 24 * 60 * 60 * 1000; // 5 days
 /** Permissions matrix */
 const PERMISSIONS: Record<AdminRole, string[]> = {
   superadmin: ['*'],
-  moderator: ['leads:read', 'leads:write', 'subscribers:read', 'email:send', 'blogs:read', 'blogs:write', 'templates:read', 'templates:write'],
-  viewer: ['leads:read', 'subscribers:read', 'blogs:read', 'templates:read'],
+  moderator: ['leads:read', 'leads:write', 'subscribers:read', 'email:send', 'blogs:read', 'blogs:write', 'templates:read', 'templates:write', 'logos:read', 'logos:write'],
+  viewer: ['leads:read', 'subscribers:read', 'blogs:read', 'templates:read', 'logos:read'],
 };
 
 export function hasPermission(role: AdminRole, permission: string): boolean {
