@@ -1,7 +1,6 @@
 'use client';
 
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { ArrowDown, ArrowUp, ImagePlus, RefreshCw, Save, Trash2 } from 'lucide-react';
 import type { CompanyLogo } from '@/types';
 
@@ -248,7 +247,7 @@ export default function AdminLogosPage() {
       <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-5">
         <h2 className="text-white text-sm font-semibold">Company Logo Marquee</h2>
         <p className="text-xs text-gray-500 mt-1">
-          Upload logos shown on the homepage trust strip. Files are stored in public/company-logos.
+          Upload logos shown on the homepage trust strip. Images are stored on ImgBB and metadata is stored in Firestore.
         </p>
 
         <form onSubmit={onUpload} className="mt-4 grid gap-3 md:grid-cols-4">
@@ -325,13 +324,11 @@ export default function AdminLogosPage() {
                 <div key={logo.id} className="border border-white/10 rounded-xl bg-[#111111] p-4">
                   <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
                     <div className="rounded-lg bg-[#0d0d0d] border border-white/10 p-3 flex items-center justify-center min-h-30">
-                      <Image
+                      <img
                         src={logo.src}
                         alt={logo.alt}
-                        width={180}
-                        height={90}
-                        className="max-h-20 w-auto object-contain"
-                        unoptimized
+                        className="max-h-20 w-auto max-w-44 object-contain"
+                        loading="lazy"
                       />
                     </div>
 

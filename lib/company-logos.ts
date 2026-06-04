@@ -1,21 +1,23 @@
 import 'server-only';
 
 import { randomUUID } from 'crypto';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { getFirebaseAdminDb } from '@/lib/firebase-admin';
 import type { CompanyLogo } from '@/types';
 
-const LOGO_DIRECTORY = path.join(process.cwd(), 'public', 'company-logos');
-const MANIFEST_FILE = path.join(LOGO_DIRECTORY, 'logos.json');
+const LOGOS_COLLECTION = 'company_logos';
+const MAX_FILE_SIZE_BYTES = 32 * 1024 * 1024;
+const IMGBB_UPLOAD_URL = 'https://api.imgbb.com/1/upload';
 
-const MIME_EXTENSION_MAP: Record<string, string> = {
-	'image/png': 'png',
-	'image/jpeg': 'jpg',
-	'image/webp': 'webp',
-	'image/svg+xml': 'svg',
-};
-
-const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024;
+interface CompanyLogoDoc {
+	src: string;
+	alt: string;
+	href: string | null;
+	order: number;
+	deleteUrl?: string | null;
+	createdAt?: Timestamp | string | Date | null;
+	updatedAt?: Timestamp | string | Date | null;
+}
 
 function normalizeHref(input: string | null | undefined): string | null {
 	const value = input?.trim();
@@ -44,105 +46,105 @@ function normalizeAlt(input: string | null | undefined): string {
 	return value.slice(0, 100);
 }
 
-function sortByOrder(logos: CompanyLogo[]): CompanyLogo[] {
-	return [...logos].sort((a, b) => a.order - b.order);
-}
-
-async function ensureStorage(): Promise<void> {
-	await fs.mkdir(LOGO_DIRECTORY, { recursive: true });
-
-	try {
-		await fs.access(MANIFEST_FILE);
-	} catch {
-		await fs.writeFile(MANIFEST_FILE, '[]\n', 'utf8');
-	}
-}
-
-async function readManifest(): Promise<CompanyLogo[]> {
-	await ensureStorage();
-
-	const raw = await fs.readFile(MANIFEST_FILE, 'utf8');
-	try {
-		const parsed = JSON.parse(raw);
-		if (!Array.isArray(parsed)) {
-			return [];
-		}
-
-		return sortByOrder(
-			parsed
-				.filter((item) => item && typeof item === 'object')
-				.map((item) => ({
-					id: String(item.id ?? ''),
-					src: String(item.src ?? ''),
-					alt: normalizeAlt(typeof item.alt === 'string' ? item.alt : undefined),
-					href: normalizeHref(typeof item.href === 'string' ? item.href : undefined),
-					order: Number.isFinite(item.order) ? Number(item.order) : 0,
-					createdAt: String(item.createdAt ?? new Date().toISOString()),
-					updatedAt: String(item.updatedAt ?? new Date().toISOString()),
-				}))
-				.filter((item) => item.id && item.src),
-		);
-	} catch {
-		return [];
-	}
-}
-
-async function writeManifest(logos: CompanyLogo[]): Promise<CompanyLogo[]> {
-	const normalized = sortByOrder(logos).map((logo, index) => ({
-		...logo,
-		order: index,
-	}));
-
-	await fs.writeFile(MANIFEST_FILE, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
-	return normalized;
-}
-
-function getFileExtension(file: File): string {
-	const byMime = MIME_EXTENSION_MAP[file.type];
-	if (byMime) {
-		return byMime;
+function toIsoString(value: Timestamp | string | Date | null | undefined): string {
+	if (value instanceof Timestamp) {
+		return value.toDate().toISOString();
 	}
 
-	const ext = path.extname(file.name || '').replace('.', '').toLowerCase();
-	if (['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(ext)) {
-		return ext === 'jpeg' ? 'jpg' : ext;
+	if (value instanceof Date) {
+		return value.toISOString();
 	}
 
-	throw new Error('Unsupported logo format. Use PNG, JPG, WEBP, or SVG.');
+	if (typeof value === 'string' && value.trim()) {
+		return value;
+	}
+
+	return new Date().toISOString();
 }
 
-async function writeLogoFile(file: File, baseName: string): Promise<string> {
+function mapDocToLogo(id: string, raw: CompanyLogoDoc): CompanyLogo {
+	return {
+		id,
+		src: String(raw.src ?? ''),
+		alt: normalizeAlt(raw.alt),
+		href: normalizeHref(raw.href),
+		order: Number.isFinite(raw.order) ? Number(raw.order) : 0,
+		createdAt: toIsoString(raw.createdAt),
+		updatedAt: toIsoString(raw.updatedAt),
+	};
+}
+
+async function uploadToImgBB(file: File, imageName: string): Promise<{ src: string; deleteUrl: string | null }> {
+	const apiKey = process.env.IMGBB_API_KEY?.trim();
+	if (!apiKey) {
+		throw new Error('IMGBB_API_KEY is missing on the server.');
+	}
+
 	if (file.size > MAX_FILE_SIZE_BYTES) {
-		throw new Error('Logo is too large. Max size is 3MB.');
+		throw new Error('Logo is too large. Max size is 32MB.');
 	}
 
-	const extension = getFileExtension(file);
-	const fileName = `${baseName}.${extension}`;
-	const targetPath = path.join(LOGO_DIRECTORY, fileName);
+	if (file.type && !file.type.startsWith('image/')) {
+		throw new Error('Unsupported logo format. Use an image file.');
+	}
 
-	const buffer = Buffer.from(await file.arrayBuffer());
-	await fs.writeFile(targetPath, buffer);
+	const imageBase64 = Buffer.from(await file.arrayBuffer()).toString('base64');
+	const body = new URLSearchParams();
+	body.set('key', apiKey);
+	body.set('image', imageBase64);
+	body.set('name', imageName);
 
-	return `/company-logos/${fileName}`;
+	const response = await fetch(IMGBB_UPLOAD_URL, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body: body.toString(),
+	});
+
+	let payload: unknown = null;
+	try {
+		payload = await response.json();
+	} catch {
+		throw new Error('ImgBB returned an invalid response.');
+	}
+
+	const data = payload && typeof payload === 'object' && 'data' in payload ? (payload as { data?: unknown }).data : null;
+	const src = data && typeof data === 'object' && 'url' in data ? (data as { url?: unknown }).url : null;
+	const deleteUrl =
+		data && typeof data === 'object' && 'delete_url' in data
+			? (data as { delete_url?: unknown }).delete_url
+			: null;
+
+	if (!response.ok || typeof src !== 'string' || !src.trim()) {
+		throw new Error('Failed to upload logo to ImgBB.');
+	}
+
+	return {
+		src,
+		deleteUrl: typeof deleteUrl === 'string' && deleteUrl.trim() ? deleteUrl : null,
+	};
 }
 
-async function deleteLogoFile(src: string): Promise<void> {
-	if (!src.startsWith('/company-logos/')) {
+async function deleteFromImgBB(deleteUrl: string | null | undefined): Promise<void> {
+	if (!deleteUrl) {
 		return;
 	}
 
-	const relative = src.replace('/company-logos/', '');
-	const target = path.join(LOGO_DIRECTORY, relative);
-
 	try {
-		await fs.unlink(target);
+		await fetch(deleteUrl, { method: 'GET' });
 	} catch {
-		// No-op: deleting metadata should not fail if file is already missing.
+		// No-op: metadata delete should still succeed even if ImgBB cleanup fails.
 	}
 }
 
 export async function listCompanyLogos(): Promise<CompanyLogo[]> {
-	return readManifest();
+	const db = getFirebaseAdminDb();
+	const snapshot = await db.collection(LOGOS_COLLECTION).orderBy('order', 'asc').get();
+
+	return snapshot.docs
+		.map((doc) => mapDocToLogo(doc.id, doc.data() as CompanyLogoDoc))
+		.filter((logo) => logo.src);
 }
 
 export async function createCompanyLogo(params: {
@@ -150,23 +152,22 @@ export async function createCompanyLogo(params: {
 	alt?: string | null;
 	href?: string | null;
 }): Promise<CompanyLogo[]> {
-	const logos = await readManifest();
+	const db = getFirebaseAdminDb();
+	const existingCount = (await db.collection(LOGOS_COLLECTION).count().get()).data().count;
 	const id = randomUUID().replace(/-/g, '').slice(0, 16);
-	const now = new Date().toISOString();
+	const upload = await uploadToImgBB(params.file, id);
 
-	const src = await writeLogoFile(params.file, id);
-
-	logos.push({
-		id,
-		src,
+	await db.collection(LOGOS_COLLECTION).doc(id).set({
+		src: upload.src,
+		deleteUrl: upload.deleteUrl,
 		alt: normalizeAlt(params.alt),
 		href: normalizeHref(params.href),
-		order: logos.length,
-		createdAt: now,
-		updatedAt: now,
+		order: existingCount,
+		createdAt: FieldValue.serverTimestamp(),
+		updatedAt: FieldValue.serverTimestamp(),
 	});
 
-	return writeManifest(logos);
+	return listCompanyLogos();
 }
 
 export async function updateCompanyLogo(
@@ -177,68 +178,90 @@ export async function updateCompanyLogo(
 		file?: File | null;
 	},
 ): Promise<CompanyLogo[]> {
-	const logos = await readManifest();
-	const index = logos.findIndex((logo) => logo.id === id);
-
-	if (index === -1) {
+	const db = getFirebaseAdminDb();
+	const docRef = db.collection(LOGOS_COLLECTION).doc(id);
+	const snapshot = await docRef.get();
+	if (!snapshot.exists) {
 		throw new Error('Logo not found.');
 	}
 
-	const current = logos[index];
-	let src = current.src;
+	const current = snapshot.data() as CompanyLogoDoc;
+	let nextSrc = current.src;
+	let nextDeleteUrl = current.deleteUrl ?? null;
 
 	if (params.file) {
-		src = await writeLogoFile(params.file, id);
-		if (current.src !== src) {
-			await deleteLogoFile(current.src);
-		}
+		const uploaded = await uploadToImgBB(params.file, id);
+		nextSrc = uploaded.src;
+		nextDeleteUrl = uploaded.deleteUrl;
 	}
 
-	logos[index] = {
-		...current,
-		src,
-		alt: params.alt === undefined ? current.alt : normalizeAlt(params.alt),
-		href: params.href === undefined ? current.href : normalizeHref(params.href),
-		updatedAt: new Date().toISOString(),
-	};
+	await docRef.set(
+		{
+			src: nextSrc,
+			deleteUrl: nextDeleteUrl,
+			alt: params.alt === undefined ? normalizeAlt(current.alt) : normalizeAlt(params.alt),
+			href: params.href === undefined ? normalizeHref(current.href) : normalizeHref(params.href),
+			updatedAt: FieldValue.serverTimestamp(),
+		},
+		{ merge: true },
+	);
 
-	return writeManifest(logos);
+	if (params.file && current.deleteUrl && current.deleteUrl !== nextDeleteUrl) {
+		await deleteFromImgBB(current.deleteUrl);
+	}
+
+	return listCompanyLogos();
 }
 
 export async function deleteCompanyLogo(id: string): Promise<CompanyLogo[]> {
-	const logos = await readManifest();
-	const item = logos.find((logo) => logo.id === id);
-
-	if (!item) {
+	const db = getFirebaseAdminDb();
+	const docRef = db.collection(LOGOS_COLLECTION).doc(id);
+	const snapshot = await docRef.get();
+	if (!snapshot.exists) {
 		throw new Error('Logo not found.');
 	}
 
-	await deleteLogoFile(item.src);
-	const next = logos.filter((logo) => logo.id !== id);
-	return writeManifest(next);
+	const item = snapshot.data() as CompanyLogoDoc;
+	await docRef.delete();
+	await deleteFromImgBB(item.deleteUrl ?? null);
+
+	const remaining = await db.collection(LOGOS_COLLECTION).orderBy('order', 'asc').get();
+	const batch = db.batch();
+	remaining.docs.forEach((doc, index) => {
+		batch.update(doc.ref, {
+			order: index,
+			updatedAt: FieldValue.serverTimestamp(),
+		});
+	});
+	await batch.commit();
+
+	return listCompanyLogos();
 }
 
 export async function reorderCompanyLogos(orderedIds: string[]): Promise<CompanyLogo[]> {
-	const logos = await readManifest();
+	const db = getFirebaseAdminDb();
+	const logos = await listCompanyLogos();
 
 	if (orderedIds.length !== logos.length) {
 		throw new Error('Logo order payload is invalid.');
 	}
 
-	const map = new Map(logos.map((logo) => [logo.id, logo]));
-	const reordered: CompanyLogo[] = [];
-
+	const idSet = new Set(logos.map((logo) => logo.id));
 	for (const id of orderedIds) {
-		const logo = map.get(id);
-		if (!logo) {
+		if (!idSet.has(id)) {
 			throw new Error('Logo order payload references unknown logo.');
 		}
-
-		reordered.push({
-			...logo,
-			updatedAt: new Date().toISOString(),
-		});
 	}
 
-	return writeManifest(reordered);
+	const batch = db.batch();
+	orderedIds.forEach((logoId, index) => {
+		const ref = db.collection(LOGOS_COLLECTION).doc(logoId);
+		batch.update(ref, {
+			order: index,
+			updatedAt: FieldValue.serverTimestamp(),
+		});
+});
+	await batch.commit();
+
+	return listCompanyLogos();
 }
