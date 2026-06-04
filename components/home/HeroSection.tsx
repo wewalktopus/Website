@@ -9,23 +9,6 @@ export function HeroSection() {
       {/* Radial accent glows */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(239,77,48,0.08),transparent_45%),radial-gradient(circle_at_85%_75%,rgba(58,55,55,0.1),transparent_42%)]" />
 
-      {/* Grid pattern — top-left quadrant, fades out toward bottom-right */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(58,55,55,0.065) 1px, transparent 1px), linear-gradient(90deg, rgba(58,55,55,0.065) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
-          maskImage:
-            'radial-gradient(ellipse 65% 75% at 18% 18%, black 20%, transparent 78%)',
-          WebkitMaskImage:
-            'radial-gradient(ellipse 65% 75% at 18% 18%, black 20%, transparent 78%)',
-        }}
-      />
-
-      {/* Subtle top border line accent */}
-      <div className="pointer-events-none absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-(--color-accent)/30 to-transparent" />
-
       <div className="mx-auto w-full max-w-7xl px-6">
         <div className="max-w-4xl">
           {/* W badge — sits on top of the grid */}
@@ -88,8 +71,8 @@ export function HeroSection() {
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Decorative corner square */}
-      <div className="pointer-events-none absolute -left-10 top-16 h-48 w-48 border border-(--color-bg-secondary)/60" />
+      {/* Decorative corner square — behind the content */}
+      <div className="pointer-events-none absolute left-4 top-12 h-52 w-52 border border-(--color-bg-secondary)/60" />
     </section>
   );
 }
