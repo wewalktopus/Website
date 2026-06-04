@@ -1,47 +1,13 @@
+'use client';
+
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Rocket, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, Rocket, ShieldCheck, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import type { PricingAudience, PricingAudienceContent, PricingServiceCategory } from '@/types';
-
-export type ServicesFaqItem = {
-  question: string;
-  answer: string;
-};
-
-export const servicesFaqItems: ServicesFaqItem[] = [
-  {
-    question: 'What is included in Walktopus BOOST plan for social media management?',
-    answer:
-      'The BOOST plan includes an expanded managed content and optimization scope designed for businesses that need higher consistency and measurable momentum compared with entry plans. Deliverables typically include multi-platform content operations, structured posting rhythm, creative refinement cycles, and weekly performance review checkpoints tied to reach quality and lead intent. The plan focuses on outcome movement before volume expansion, which is why reporting clarity is built into delivery. Walktopus applies the same accountability structure that supports published growth outcomes such as 5x profile reach in authority programs and stronger inquiry quality when content and funnel systems are aligned over month-level cycles.',
-  },
-  {
-    question: 'Can I upgrade my Walktopus plan mid-month without losing current deliverables?',
-    answer:
-      'Walktopus supports plan upgrades without deleting or invalidating already delivered work, so continuity is preserved when growth requirements change. Mid-cycle upgrades are structured to add capability layers rather than replace completed outputs, which protects execution momentum and reporting consistency. The transition includes revised scope mapping, KPI alignment, and next-cycle prioritization so new deliverables begin with operational clarity. Businesses typically use this option when campaign traction improves faster than expected or when expansion requires additional channels. This no-reset upgrade logic aligns with the Walktopus service model where clients can scale execution intensity while keeping historical performance context and accountability intact.',
-  },
-  {
-    question: 'Does Walktopus charge separately for ad spend on Meta and Google campaigns?',
-    answer:
-      'Walktopus management fees and platform media spend are handled separately so ad budget ownership remains transparent for the client at all times. Businesses pay media spend directly to platforms such as Meta and Google from client-controlled ad accounts, while Walktopus manages strategy, optimization, and reporting. This structure prevents budget opacity and makes ROI assessment easier because platform invoices and management outputs are independently visible. Operationally, campaign performance is reviewed weekly against agreed KPIs, then adjusted based on audience response and conversion data. In integrated programs, this model has supported improved lead quality and sustained funnel efficiency when paired with disciplined creative testing and conversion optimization workflows.',
-  },
-  {
-    question: 'How does Walktopus handle content revisions?',
-    answer:
-      'Walktopus includes revision cycles in service delivery so content quality improves through structured iteration instead of ad hoc feedback loops. Revision handling starts with approved strategic direction, then moves through draft review, change requests, and final publishing readiness checks. This sequence is designed to reduce production waste while preserving brand consistency and speed. Weekly or bi-weekly reporting windows keep revision performance measurable and prevent bottlenecks from spreading across campaigns. Businesses receive practical governance over edits without losing deployment rhythm. Revision systems are especially important in multi-channel execution because consistent quality control supports stronger audience trust, repeat engagement behavior, and long-term conversion outcomes.',
-  },
-  {
-    question: 'What is the minimum contract length for a monthly growth partnership?',
-    answer:
-      'Monthly growth partnerships are structured to produce measurable momentum over operational cycles rather than one-off activity bursts, so the recommended commitment usually covers at least one full quarterly optimization period. A quarter allows enough time for baseline measurement, channel calibration, conversion refinement, and reporting-based iteration. Shorter windows can launch execution but often underrepresent actual performance potential because algorithm and audience response effects accumulate over time. Walktopus therefore positions monthly plans as ongoing systems with clear checkpoints instead of isolated monthly tasks. This approach aligns with published outcome patterns such as 68% lead lift and 5x reach growth that emerge when execution consistency is maintained.',
-  },
-  {
-    question: 'Does Walktopus work with businesses outside Kolkata?',
-    answer:
-      'Walktopus serves businesses across India and not only Kolkata, while maintaining strong strategic depth in regional West Bengal market behavior and local intent patterns. National engagements are supported through remote-first workflows, fixed reporting cadence, and unified KPI governance that keeps decision-makers aligned across locations. Geography-specific messaging, keyword targeting, and channel priority are adapted to each market rather than copied from one region to another. This allows the same delivery framework to support both city-level discovery goals and broader multi-state growth objectives. Outcome benchmarks used across engagements include 4.2x local footfall growth and 68% qualified lead lift when execution remains coordinated and accountable.',
-  },
-];
+import { servicesFaqItems } from '@/components/services/servicesFaqItems';
 
 const engagementStandards = [
   'Dedicated account manager',
@@ -54,12 +20,11 @@ const engagementStandards = [
 interface ServicesExperienceProps {
   content: PricingAudienceContent;
   audience: PricingAudience;
-  countryCode?: string;
 }
 
-function renderCategory(category: PricingServiceCategory, index: number) {
+function renderCategory(category: PricingServiceCategory) {
   return (
-    <ScrollReveal key={category.id} delay={0.08 * index}>
+    <ScrollReveal key={category.id}>
       <article className="overflow-hidden rounded-2xl border border-[var(--color-bg-secondary)] bg-white/90 shadow-sm backdrop-blur-sm">
         <div className="border-b border-[var(--color-bg-secondary)] bg-[linear-gradient(135deg,var(--color-bg-light),#fff)] px-6 py-6 md:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--color-accent)]">Service Category</p>
@@ -91,8 +56,13 @@ function renderCategory(category: PricingServiceCategory, index: number) {
   );
 }
 
-export function ServicesExperience({ content, audience, countryCode }: ServicesExperienceProps) {
-  const currency = audience === 'india' ? 'INR' : 'USD';
+export function ServicesExperience({ content, audience }: ServicesExperienceProps) {
+  const [activeCategoryId, setActiveCategoryId] = useState(content.serviceCategories[0]?.id ?? '');
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const activeCategory = useMemo(
+    () => content.serviceCategories.find((category) => category.id === activeCategoryId) ?? content.serviceCategories[0],
+    [activeCategoryId, content.serviceCategories],
+  );
 
   return (
     <div className="relative isolate overflow-hidden">
@@ -115,22 +85,9 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                 Walktopus combines strategy, content, campaigns, and conversion systems into service frameworks that are easy to choose, easy to execute, and easy to track.
               </p>
 
-              <div className="mt-8 grid gap-4 rounded-2xl border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)]/80 p-4 md:grid-cols-3">
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--color-soft-gray)]">Pricing audience</p>
-                  <p className="mt-1 text-sm font-semibold text-[var(--color-text-dark)]">
-                    {audience === 'india' ? 'India' : 'International'} ({currency})
-                  </p>
-                </div>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--color-soft-gray)]">Country signal</p>
-                  <p className="mt-1 text-sm font-semibold text-[var(--color-text-dark)]">{countryCode || 'Not available'}</p>
-                </div>
-                <div>
-                  <p className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--color-soft-gray)]">Pricing source</p>
-                  <p className="mt-1 text-sm font-semibold text-[var(--color-text-dark)]">Live pricing configuration service</p>
-                </div>
-              </div>
+              <p className="mt-4 inline-flex rounded-full border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-dark)]">
+                {audience === 'india' ? 'India Pricing (INR)' : 'International Pricing (USD)'}
+              </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <Button href="/contact">Book a Free Strategy Call</Button>
@@ -185,7 +142,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                 <Card
                   id={plan.id}
                   className={[
-                    'relative overflow-hidden rounded-2xl border p-6',
+                    'relative flex h-full flex-col overflow-hidden rounded-2xl border p-6',
                     plan.mostPopular ? 'border-[var(--color-accent)] shadow-[0_12px_28px_rgba(239,77,48,0.14)]' : '',
                     plan.id === 'premium' ? 'border-[var(--color-text-dark)] bg-[var(--color-text-dark)] text-[var(--color-bg)]' : 'bg-white/90',
                   ].join(' ')}
@@ -209,7 +166,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-6 border-t border-[var(--color-bg-secondary)] pt-4">
+                  <div className="mt-auto border-t border-[var(--color-bg-secondary)] pt-4">
                     <Button href={`/contact?plan=${plan.id}#quote-form`} className="w-full justify-center">
                       Choose {plan.name}
                     </Button>
@@ -241,10 +198,31 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
               One-time services and project execution
             </h2>
             <p className="mt-4 max-w-4xl text-[var(--color-text)]">
-              Service cards below are generated from your pricing configuration categories and can be engaged independently or combined with monthly retainers.
+              Pick a service category tab to explore only the options relevant to that focus area.
             </p>
           </ScrollReveal>
-          <div className="mt-10 grid gap-6">{content.serviceCategories.map((category, index) => renderCategory(category, index))}</div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            {content.serviceCategories.map((category) => {
+              const isActive = category.id === activeCategoryId;
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setActiveCategoryId(category.id)}
+                  className={[
+                    'rounded-full border px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.08em] transition-all duration-300',
+                    isActive
+                      ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-white shadow-[0_8px_22px_rgba(239,77,48,0.25)]'
+                      : 'border-[var(--color-bg-secondary)] bg-white text-[var(--color-text-dark)] hover:border-[var(--color-accent)]',
+                  ].join(' ')}
+                >
+                  {category.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-8">{activeCategory ? renderCategory(activeCategory) : null}</div>
         </section>
 
         <section>
@@ -259,10 +237,33 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
           <div className="mt-8 grid gap-4">
             {servicesFaqItems.map((item, index) => (
               <ScrollReveal key={item.question} delay={0.04 * (index % 4)}>
-                <article className="rounded-2xl border border-[var(--color-bg-secondary)] bg-white/80 p-6 shadow-sm md:p-8">
-                  <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">Question {index + 1}</p>
-                  <h3 className="mt-2 text-2xl font-bold text-[var(--color-text-dark)]">{item.question}</h3>
-                  <p className="mt-4 text-[var(--color-text)]">{item.answer}</p>
+                <article className="overflow-hidden rounded-2xl border border-[var(--color-bg-secondary)] bg-white/80 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex((current) => (current === index ? null : index))}
+                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left md:px-8"
+                  >
+                    <div>
+                      <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">Question {index + 1}</p>
+                      <h3 className="mt-2 text-xl font-bold text-[var(--color-text-dark)] md:text-2xl">{item.question}</h3>
+                    </div>
+                    <ChevronDown
+                      className={[
+                        'h-5 w-5 shrink-0 text-[var(--color-accent)] transition-transform duration-300',
+                        openFaqIndex === index ? 'rotate-180' : '',
+                      ].join(' ')}
+                    />
+                  </button>
+                  <div
+                    className={[
+                      'grid transition-all duration-300 ease-out',
+                      openFaqIndex === index ? 'grid-rows-[1fr] border-t border-[var(--color-bg-secondary)]' : 'grid-rows-[0fr]',
+                    ].join(' ')}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="px-6 py-5 text-[var(--color-text)] md:px-8 md:py-6">{item.answer}</p>
+                    </div>
+                  </div>
                 </article>
               </ScrollReveal>
             ))}

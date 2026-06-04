@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { ServicesExperience, servicesFaqItems } from '@/components/services/ServicesExperience';
+import { ServicesExperience } from '@/components/services/ServicesExperience';
+import { servicesFaqItems } from '@/components/services/servicesFaqItems';
 import { getPricingForRequest } from '@/lib/public-pricing';
 import { pageMetadata, breadcrumbSchema, absoluteUrl } from '@/lib/seo';
 import type { PricingAudience, PricingAudienceContent } from '@/types';
@@ -157,7 +158,6 @@ export default async function ServicesPage() {
       <ServicesExperience
         content={pricing.content}
         audience={pricing.audience}
-        countryCode={pricing.countryCode}
       />
     </>
   );
