@@ -85,8 +85,6 @@ export function HeroSection() {
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Decorative corner square — behind the content */}
-      <div className="pointer-events-none absolute left-4 top-12 h-52 w-52 border border-(--color-bg-secondary)/60" />
     </section>
   );
 }
