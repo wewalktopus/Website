@@ -11,6 +11,8 @@ interface PlaceholderImageProps {
   imageClassName?: string;
   overlay?: boolean;
   sizes?: string;
+  priority?: boolean;
+  quality?: number;
 }
 
 export function PlaceholderImage({
@@ -23,6 +25,8 @@ export function PlaceholderImage({
   imageClassName,
   overlay = true,
   sizes = '100vw',
+  priority = false,
+  quality = 72,
 }: PlaceholderImageProps) {
   const resolvedSrc = src ?? `https://picsum.photos/seed/${seed}/${width}/${height}`;
 
@@ -33,24 +37,16 @@ export function PlaceholderImage({
           PLACEHOLDER
         </span>
       ) : null}
-      {src ? (
-        <img
-          src={resolvedSrc}
-          alt={alt}
-          width={width}
-          height={height}
-          className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
-        />
-      ) : (
-        <Image
-          src={resolvedSrc}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes={sizes}
-          className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
-        />
-      )}
+      <Image
+        src={resolvedSrc}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={sizes}
+        priority={priority}
+        quality={quality}
+        className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
+      />
       {overlay ? <div className="absolute inset-0 bg-(--color-bg)/20 mix-blend-multiply" /> : null}
     </div>
   );

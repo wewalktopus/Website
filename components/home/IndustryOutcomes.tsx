@@ -13,7 +13,7 @@ const outcomes = [
 
 export function IndustryOutcomes() {
   return (
-    <section className="mx-auto flex w-full max-w-7xl items-center px-6 py-24 lg:min-h-screen lg:py-28">
+    <section className="mx-auto flex w-full max-w-7xl flex-col px-6 py-24 lg:min-h-screen lg:py-28">
       <ScrollReveal>
         <SectionHeader
           eyebrow="Industry Results"
@@ -32,6 +32,8 @@ export function IndustryOutcomes() {
             alt="Walktopus campaign outcomes dashboard"
             className="h-full min-h-[360px]"
             imageClassName="object-center"
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            quality={72}
           />
         </ScrollReveal>
 

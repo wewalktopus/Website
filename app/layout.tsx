@@ -72,13 +72,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const gaMeasurementId = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
+  const shouldLoadAnalytics = process.env.NODE_ENV === 'production' && Boolean(gaMeasurementId);
 
   return (
     <html lang="en">
-      {gaMeasurementId ? (
+      {shouldLoadAnalytics ? (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="afterInteractive" />
-          <Script id="google-analytics" strategy="afterInteractive">
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="lazyOnload" />
+          <Script id="google-analytics" strategy="lazyOnload">
             {`window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '${gaMeasurementId}');`}
           </Script>
         </>

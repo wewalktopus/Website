@@ -46,6 +46,8 @@ export function CaseStudiesTeaser() {
                 alt={study.title}
                 className="h-52"
                 imageClassName={study.imageClassName}
+                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 48vw, 100vw"
+                quality={70}
               />
               <div className="p-6">
                 <h3 className="text-xl font-bold">{study.title}</h3>
