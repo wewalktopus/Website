@@ -67,21 +67,28 @@ a {
   animation: logo-marquee 26s linear infinite;
 }
 
+.logo-marquee-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.logo-marquee-group-single {
+  min-width: 100vw;
+  justify-content: center;
+}
+
 .logo-marquee-item {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  padding-inline: 2.25rem;
-}
-
-.logo-marquee-item-single {
-  min-width: clamp(220px, 72vw, 620px);
+  padding-inline: clamp(1.25rem, 2.6vw, 2.5rem);
 }
 
 @keyframes logo-marquee {
   0% {
-    transform: translateX(50%);
+    transform: translateX(0);
   }
   100% {
     transform: translateX(-50%);

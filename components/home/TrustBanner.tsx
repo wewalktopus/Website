@@ -34,17 +34,7 @@ export function TrustBanner() {
     };
   }, []);
 
-  const marqueeLogos = useMemo(() => {
-    if (logos.length === 0) {
-      return [];
-    }
-
-    if (logos.length === 1) {
-      return Array.from({ length: 4 }, () => logos[0]);
-    }
-
-    return logos;
-  }, [logos]);
+  const marqueeLogos = useMemo(() => logos, [logos]);
 
   if (!isLoaded || marqueeLogos.length === 0) {
     return null;
@@ -54,37 +44,40 @@ export function TrustBanner() {
     <section className="overflow-hidden bg-(--color-text) py-3 text-(--color-bg)">
       <div className="logo-marquee py-1" aria-label="Client logos">
         <div className="logo-marquee-track">
-          {[...marqueeLogos, ...marqueeLogos].map((logo, index) => {
-            const image = (
-              <img
-                src={logo.src}
-                alt={logo.alt}
-                loading="lazy"
-                className="h-12 w-auto max-w-none object-contain opacity-95 md:h-12.5"
-              />
-            );
+          {[0, 1].map((groupIndex) => (
+            <div
+              key={`logo-group-${groupIndex}`}
+              className={`logo-marquee-group ${marqueeLogos.length === 1 ? 'logo-marquee-group-single' : ''}`}
+              aria-hidden={groupIndex === 1}
+            >
+              {marqueeLogos.map((logo) => {
+                const image = (
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    loading="lazy"
+                    className="h-14 w-auto max-w-none object-contain opacity-95 md:h-15"
+                  />
+                );
 
-            const containerClass =
-              marqueeLogos.length === 1
-                ? 'logo-marquee-item logo-marquee-item-single'
-                : 'logo-marquee-item';
-
-            return logo.href ? (
-              <a
-                key={`${logo.id}-${index}`}
-                href={logo.href}
-                target="_blank"
-                rel="noreferrer"
-                className={containerClass}
-              >
-                {image}
-              </a>
-            ) : (
-              <span key={`${logo.id}-${index}`} className={containerClass}>
-                {image}
-              </span>
-            );
-          })}
+                return logo.href ? (
+                  <a
+                    key={`${logo.id}-${groupIndex}`}
+                    href={logo.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="logo-marquee-item"
+                  >
+                    {image}
+                  </a>
+                ) : (
+                  <span key={`${logo.id}-${groupIndex}`} className="logo-marquee-item">
+                    {image}
+                  </span>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
     </section>
