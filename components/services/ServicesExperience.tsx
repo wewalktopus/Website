@@ -68,7 +68,7 @@ export function ServicesExperience({ content, audience }: ServicesExperienceProp
     <div className="relative isolate overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,rgba(239,77,48,0.12),transparent_35%),radial-gradient(circle_at_20%_30%,rgba(58,55,55,0.08),transparent_35%),linear-gradient(180deg,#faf8f2_0%,#f5f3ec_35%,#f8f7f4_100%)]" />
 
-      <div className="mx-auto w-full max-w-7xl space-y-20 px-6 py-20 lg:space-y-24 lg:py-28">
+      <div className="mx-auto w-full max-w-7xl space-y-20 px-6 pb-20 pt-0 lg:space-y-24 lg:pb-28 lg:pt-0">
         <ScrollReveal>
           <section className="relative flex min-h-[100svh] items-center overflow-hidden rounded-3xl border border-[var(--color-bg-secondary)] bg-white/80 p-8 shadow-sm backdrop-blur-sm md:p-12 lg:p-14">
             <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[var(--color-accent)]/10 blur-3xl" />
