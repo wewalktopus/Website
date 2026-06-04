@@ -164,7 +164,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
           </section>
         </ScrollReveal>
 
-        <section>
+        <section id="monthly-plans">
           <ScrollReveal>
             <div className="flex items-end justify-between gap-6">
               <div className="max-w-4xl">
@@ -183,6 +183,7 @@ export function ServicesExperience({ content, audience, countryCode }: ServicesE
             {content.monthlyPlans.map((plan, index) => (
               <ScrollReveal key={plan.id} delay={0.07 * index}>
                 <Card
+                  id={plan.id}
                   className={[
                     'relative overflow-hidden rounded-2xl border p-6',
                     plan.mostPopular ? 'border-[var(--color-accent)] shadow-[0_12px_28px_rgba(239,77,48,0.14)]' : '',
