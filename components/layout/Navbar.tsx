@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { Button } from '@/components/ui/Button';
 
@@ -28,6 +27,7 @@ export function Navbar() {
             height={48}
             className="h-12 w-auto object-contain"
             priority
+            fetchPriority="high"
           />
         </Link>
         <nav className="hidden gap-6 text-sm font-semibold uppercase tracking-[0.08em] md:flex">
@@ -50,34 +50,26 @@ export function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="absolute left-0 top-full w-full border-b border-[var(--color-bg-secondary)] bg-[var(--color-bg)]/95 backdrop-blur md:hidden"
-          >
-            <nav className="mx-auto flex max-w-7xl flex-col px-6 pb-4">
-              {NAV_LINKS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex min-h-[44px] items-center border-b border-[var(--color-bg-secondary)] text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--color-accent)]"
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="pt-4">
-                <Button href="/contact" className="w-full justify-center">
-                  Get a Quote
-                </Button>
-              </div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open ? (
+        <div className="absolute left-0 top-full w-full border-b border-[var(--color-bg-secondary)] bg-[var(--color-bg)]/95 backdrop-blur md:hidden">
+          <nav className="mx-auto flex max-w-7xl flex-col px-6 pb-4">
+            {NAV_LINKS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex min-h-[44px] items-center border-b border-[var(--color-bg-secondary)] text-sm font-semibold uppercase tracking-[0.08em] transition-colors hover:text-[var(--color-accent)]"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="pt-4">
+              <Button href="/contact" className="w-full justify-center">
+                Get a Quote
+              </Button>
+            </div>
+          </nav>
+        </div>
+      ) : null}
     </header>
   );
 }

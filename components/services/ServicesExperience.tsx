@@ -74,7 +74,7 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
             <div className="absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-[var(--color-text)]/10 blur-3xl" />
 
             <div className="relative">
-              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-3 py-1 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-accent)]">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-3 py-1 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-text-dark)]">
                 <Sparkles className="h-3.5 w-3.5" /> Services Hub
               </p>
               <h1 className="mt-5 max-w-5xl text-4xl font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)] md:text-6xl">
@@ -207,7 +207,7 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
                   className={[
                     'rounded-full border px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.08em] transition-all duration-300',
                     isActive
-                      ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-white shadow-[0_8px_22px_rgba(239,77,48,0.25)]'
+                      ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-black shadow-[0_8px_22px_rgba(239,77,48,0.25)]'
                       : 'border-[var(--color-bg-secondary)] bg-white text-[var(--color-text-dark)] hover:border-[var(--color-accent)]',
                   ].join(' ')}
                 >

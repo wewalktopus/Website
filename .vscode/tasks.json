@@ -6,6 +6,26 @@
 			"type": "shell",
 			"command": "git add app/solutions/page.tsx; git commit -m \"fix(solutions): resolve duplicate symbols blocking vercel build\"; git push TirthaVS main",
 			"isBackground": false
+		},
+		{
+			"label": "commit-loader-favicon-endpoint",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add components/ui/CreativeRouteLoader.tsx app/api/loader/route.ts && git commit -m \"feat(loader): switch to favicon loader and add api preview endpoint\" && git push TirthaVS main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit-loader-favicon-endpoint-safe",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add components/ui/CreativeRouteLoader.tsx app/api/loader/route.ts && git commit -m feat(loader):switch-to-favicon-loader-and-add-api-preview-endpoint && git push TirthaVS main"
+			],
+			"isBackground": false
 		}
 	]
 }

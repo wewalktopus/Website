@@ -90,8 +90,16 @@ function createServicesPageSchema(content: PricingAudienceContent, audience: Pri
           '@type': 'OfferCatalog',
           name: 'One-Time and Project Services',
           itemListElement: content.serviceCategories
-            .flatMap((category) => category.services)
-            .slice(0, 8)
+            .reduce<Array<{ title: string; price: string }>>((acc, category) => {
+              if (acc.length >= 8) return acc;
+
+              for (const service of category.services) {
+                if (acc.length >= 8) break;
+                acc.push({ title: service.title, price: service.price });
+              }
+
+              return acc;
+            }, [])
             .map((service) => {
               const range = extractPriceRange(service.price);
               return {
