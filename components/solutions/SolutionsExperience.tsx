@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircle2, ChevronDown, Sparkles } from 'lucide-react';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
 import {
   integrationItems,
@@ -28,7 +29,81 @@ function findPlan(planId: string, plans: PricingMonthlyPlan[]) {
   return plans.find((plan) => plan.id === planId);
 }
 
-export function SolutionsExperience({ audience, countryCode, content }: SolutionsExperienceProps) {
+function parseMetricValue(value: string): { target: number; decimals: number; suffix: string } {
+  const numericPart = value.replace(/[^0-9.]/g, '');
+  const decimals = numericPart.includes('.') ? numericPart.split('.')[1].length : 0;
+  const target = Number.parseFloat(numericPart);
+  const suffix = value.replace(numericPart, '');
+
+  return {
+    target: Number.isFinite(target) ? target : 0,
+    decimals,
+    suffix,
+  };
+}
+
+function MetricCounter({ value }: { value: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [display, setDisplay] = useState('0');
+  const parsed = useMemo(() => parseMetricValue(value), [value]);
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const node = ref.current;
+    let frameId = 0;
+    let started = false;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (!entry?.isIntersecting || started) {
+          return;
+        }
+
+        started = true;
+        const duration = 1200;
+        const start = performance.now();
+
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = parsed.target * eased;
+          setDisplay(current.toFixed(parsed.decimals));
+
+          if (progress < 1) {
+            frameId = requestAnimationFrame(tick);
+          }
+        };
+
+        frameId = requestAnimationFrame(tick);
+      },
+      { threshold: 0.45 },
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      if (frameId) {
+        cancelAnimationFrame(frameId);
+      }
+    };
+  }, [parsed.decimals, parsed.target]);
+
+  return (
+    <p ref={ref} className="text-4xl font-extrabold text-[var(--color-text-dark)]">
+      {display}
+      {parsed.suffix}
+    </p>
+  );
+}
+
+export function SolutionsExperience({ content }: SolutionsExperienceProps) {
+  const [openFaq, setOpenFaq] = useState<number>(0);
+
   return (
     <div className="relative overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[38rem] bg-[radial-gradient(circle_at_top_left,rgba(239,77,48,0.16),transparent_38%),radial-gradient(circle_at_80%_20%,rgba(58,55,55,0.14),transparent_30%),linear-gradient(180deg,rgba(238,234,217,0.72),rgba(238,234,217,0))]" />
@@ -78,16 +153,14 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
                 Compare Live Plans
               </Button>
             </motion.div>
-            <motion.div
+            <motion.p
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...sectionTransition, delay: 0.32 }}
-              className="mt-8 flex flex-wrap gap-3 text-sm text-[var(--color-soft-gray)]"
+              className="mt-8 text-sm text-[var(--color-soft-gray)]"
             >
-              <span className="border border-[var(--color-bg-secondary)] bg-white/70 px-4 py-2">Audience: {audience === 'india' ? 'India' : 'International'}</span>
-              <span className="border border-[var(--color-bg-secondary)] bg-white/70 px-4 py-2">Currency: {audience === 'india' ? 'INR' : 'USD'}</span>
-              {countryCode ? <span className="border border-[var(--color-bg-secondary)] bg-white/70 px-4 py-2">Visitor region: {countryCode}</span> : null}
-            </motion.div>
+              Trusted by businesses across India and beyond with region-aware growth planning.
+            </motion.p>
           </div>
 
           <motion.aside
@@ -102,7 +175,7 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
               {[
                 'One strategy across content, SEO, paid media, and conversion pages',
                 'Weekly visibility into what is working, what is leaking, and what changes next',
-                'Plan recommendations synced with the current pricing configuration',
+                'Plan recommendations tailored to your growth stage and market goals',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent)]" />
@@ -120,7 +193,7 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
           {solutionMetrics.map((metric, index) => (
             <ScrollReveal key={metric.label} delay={index * 0.06}>
               <Card className="h-full border-white/50 bg-white/70 backdrop-blur">
-                <p className="text-4xl font-extrabold text-[var(--color-text-dark)]">{metric.value}</p>
+                <MetricCounter value={metric.value} />
                 <p className="mt-3 text-lg font-semibold text-[var(--color-text-dark)]">{metric.label}</p>
                 <p className="mt-3 text-sm leading-7 text-[var(--color-soft-gray)]">{metric.detail}</p>
               </Card>
@@ -195,12 +268,19 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
                         </div>
                       </div>
 
-                      <div className="mt-6 flex flex-wrap gap-3">
-                        <Button href={`/contact?plan=${linkedPlans[0]?.id ?? 'boost'}#quote-form`} className="flex-1 justify-center">
+                      <div className="mt-6 grid grid-cols-2 gap-3">
+                        <Button
+                          href={`/contact?plan=${linkedPlans[0]?.id ?? 'boost'}#quote-form`}
+                          className="w-full justify-center px-4 py-3 text-xs tracking-[0.06em]"
+                        >
                           Build This System
                         </Button>
-                        <Button href="/services#monthly-plans" variant="ghost" className="gap-2 px-0 py-0 text-xs uppercase tracking-[0.12em]">
-                          Compare plans <ArrowRight className="h-4 w-4" />
+                        <Button
+                          href="/services#monthly-plans"
+                          variant="secondary"
+                          className="w-full justify-center px-4 py-3 text-xs tracking-[0.06em]"
+                        >
+                          Compare Plans
                         </Button>
                       </div>
                     </div>
@@ -214,9 +294,9 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.85fr)]">
           <ScrollReveal className="border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8 md:p-10">
             <p className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--color-accent)]">Plan bridge</p>
-            <h2 className="mt-4 text-3xl font-extrabold text-[var(--color-text-dark)] md:text-4xl">Current monthly partnerships, synced from the live pricing configuration.</h2>
+            <h2 className="mt-4 text-3xl font-extrabold text-[var(--color-text-dark)] md:text-4xl">Choose the partnership tier that matches your current growth intensity.</h2>
             <p className="mt-4 max-w-3xl text-[var(--color-soft-gray)]">
-              The names, prices, and highlights below come from the same pricing payload that powers the public services page. When the pricing document is updated, these cards update with it.
+              Compare the most selected monthly partnerships first, then go deeper on the full services page before booking your strategy call.
             </p>
 
             <div className="mt-8 grid gap-4 xl:grid-cols-2">
@@ -260,12 +340,12 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
           </ScrollReveal>
 
           <ScrollReveal className="border border-[var(--color-bg-secondary)] bg-[var(--color-text-dark)] p-8 text-[var(--color-bg)] md:p-10" delay={0.08}>
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--color-accent)]">How this stays current</p>
-            <h2 className="mt-4 text-3xl font-extrabold">One pricing source. Two buyer journeys.</h2>
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--color-accent)]">Decision clarity</p>
+            <h2 className="mt-4 text-3xl font-extrabold">Pick your system first. Scale with confidence next.</h2>
             <div className="mt-6 space-y-4 text-sm leading-7 text-white/78">
-              <p>The solutions page helps buyers understand which operating model fits their stage.</p>
-              <p>The services page remains the canonical pricing destination, fed by the current pricing configuration document.</p>
-              <p>This keeps solution storytelling polished while preventing stale plan or price duplication.</p>
+              <p>Use this page to identify the right operating model for your stage.</p>
+              <p>Then compare execution depth across plans and lock the fastest path to results.</p>
+              <p>Every recommendation is aligned to measurable demand, conversion, and growth momentum.</p>
             </div>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button href="/services#monthly-plans" className="justify-center">See Full Pricing</Button>
@@ -316,10 +396,35 @@ export function SolutionsExperience({ audience, countryCode, content }: Solution
             <p className="font-mono text-xs uppercase tracking-[0.14em] text-[var(--color-accent)]">Executive FAQ</p>
             <h2 className="mt-4 text-3xl font-extrabold text-[var(--color-text-dark)]">The short answers buyers need before they move.</h2>
             <div className="mt-8 space-y-4">
-              {solutionFaqItems.map((item) => (
-                <article key={item.question} className="border border-[var(--color-bg-secondary)] bg-white/70 p-5">
-                  <h3 className="text-lg font-bold text-[var(--color-text-dark)]">{item.question}</h3>
-                  <p className="mt-3 text-sm leading-7 text-[var(--color-soft-gray)]">{item.answer}</p>
+              {solutionFaqItems.map((item, index) => (
+                <article key={item.question} className="overflow-hidden border border-[var(--color-bg-secondary)] bg-white/85">
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq((prev) => (prev === index ? -1 : index))}
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    aria-expanded={openFaq === index}
+                  >
+                    <h3 className="text-lg font-bold text-[var(--color-text-dark)]">{item.question}</h3>
+                    <ChevronDown
+                      className={cn(
+                        'h-5 w-5 shrink-0 text-[var(--color-accent)] transition-transform duration-300',
+                        openFaq === index ? 'rotate-180' : '',
+                      )}
+                    />
+                  </button>
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: openFaq === index ? 'auto' : 0,
+                      opacity: openFaq === index ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    className="overflow-hidden"
+                  >
+                    <div className="border-t border-[var(--color-bg-secondary)]/70 px-5 py-4">
+                      <p className="text-sm leading-7 text-[var(--color-soft-gray)]">{item.answer}</p>
+                    </div>
+                  </motion.div>
                 </article>
               ))}
             </div>
