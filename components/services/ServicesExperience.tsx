@@ -6,7 +6,7 @@ import { ArrowRight, CheckCircle2, ChevronDown, Rocket, ShieldCheck, Sparkles } 
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
-import type { PricingAudience, PricingAudienceContent, PricingServiceCategory } from '@/types';
+import type { PricingAudienceContent, PricingServiceCategory } from '@/types';
 import { servicesFaqItems } from '@/components/services/servicesFaqItems';
 
 const engagementStandards = [
@@ -19,7 +19,6 @@ const engagementStandards = [
 
 interface ServicesExperienceProps {
   content: PricingAudienceContent;
-  audience: PricingAudience;
 }
 
 function renderCategory(category: PricingServiceCategory) {
@@ -56,7 +55,7 @@ function renderCategory(category: PricingServiceCategory) {
   );
 }
 
-export function ServicesExperience({ content, audience }: ServicesExperienceProps) {
+export function ServicesExperience({ content }: ServicesExperienceProps) {
   const [activeCategoryId, setActiveCategoryId] = useState(content.serviceCategories[0]?.id ?? '');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const activeCategory = useMemo(
@@ -83,10 +82,6 @@ export function ServicesExperience({ content, audience }: ServicesExperienceProp
               </h1>
               <p className="mt-6 max-w-4xl text-lg leading-8 text-[var(--color-text)]">
                 Walktopus combines strategy, content, campaigns, and conversion systems into service frameworks that are easy to choose, easy to execute, and easy to track.
-              </p>
-
-              <p className="mt-4 inline-flex rounded-full border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-text-dark)]">
-                {audience === 'india' ? 'India Pricing (INR)' : 'International Pricing (USD)'}
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">

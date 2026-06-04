@@ -157,7 +157,6 @@ export default async function ServicesPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs) }} />
       <ServicesExperience
         content={pricing.content}
-        audience={pricing.audience}
       />
     </>
   );
