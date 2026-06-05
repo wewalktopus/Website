@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Instagram, Mail, MapPin, Youtube } from 'lucide-react';
+import { Instagram, Mail, MapPin, Phone, Youtube } from 'lucide-react';
 import { BRAND, NAV_LINKS, SITE_BRANDING } from '@/lib/constants';
 import { NewsletterSignup } from './NewsletterSignup';
 
@@ -42,6 +42,10 @@ export function Footer() {
           <p className="mt-4 flex items-center gap-2 text-sm text-(--color-bg-secondary)">
             <Mail className="h-4 w-4 text-(--color-accent)" />
             <span>{BRAND.email}</span>
+          </p>
+          <p className="mt-2 flex items-center gap-2 text-sm text-(--color-bg-secondary)">
+            <Phone className="h-4 w-4 text-(--color-accent)" />
+            <span>{BRAND.phone}</span>
           </p>
           <p className="mt-2 flex items-center gap-2 text-sm text-(--color-bg-secondary)">
             <Instagram className="h-4 w-4 text-(--color-accent)" />

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { absoluteUrl, breadcrumbSchema, pageMetadata, personSchema } from '@/lib/seo';
 
 const sneha = TEAM.find((member) => member.name === 'Sneha Dey');
+const snehaProfile = sneha?.profile;
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sneha Dey - Operations Lead, Walktopus',
@@ -62,62 +63,52 @@ export default function SnehaPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Leadership</p>
             <h1 className="mt-2 text-5xl font-extrabold leading-tight">Sneha Dey</h1>
-            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Operations Lead at Walktopus, Kolkata, India</p>
+            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">{snehaProfile?.headingTitle ?? 'Operations Lead at Walktopus, Kolkata, India'}</p>
           </div>
 
           <div className="space-y-4 text-[var(--color-text)]">
-            <p>
-              Sneha Dey is the operational backbone of Walktopus, driving campaigns and client relationships with precision, 
-              strategic thinking, and a passion for delivering measurable results from Kolkata, India.
-            </p>
-            <p>
-              With a focus on execution excellence and team leadership, Sneha ensures that every client receives the highest 
-              level of attention and strategy. She bridges the gap between vision and reality, turning growth ambitions into 
-              tangible outcomes for businesses across India.
-            </p>
+            {(snehaProfile?.introParagraphs ?? []).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
 
           <div className="space-y-3 border-l-4 border-[var(--color-accent)] pl-6 py-4">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Key Responsibilities</h3>
+            <h3 className="font-bold text-[var(--color-text-dark)]">{snehaProfile?.keySectionTitle ?? 'Key Responsibilities'}</h3>
             <ul className="space-y-2 text-sm text-[var(--color-soft-gray)]">
-              <li>• Managing day-to-day campaigns and client relationships</li>
-              <li>• Ensuring quality execution across all service pillars</li>
-              <li>• Leading team coordination and project delivery</li>
-              <li>• Driving operational efficiency and scalability</li>
+              {(snehaProfile?.keyPoints ?? []).map((item) => (
+                <li key={item}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>
       </section>
 
-      <section className="space-y-6 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
-        <h2 className="text-2xl font-bold">Philosophy & Approach</h2>
-        <p className="text-[var(--color-text)]">
-          Sneha believes that the best marketing comes from understanding your clients deeply—their goals, their challenges, 
-          and their market realities in Kolkata, West Bengal, and beyond. She approaches every campaign with a data-driven mindset while maintaining the creativity 
-          and adaptability that modern marketing demands.
-        </p>
-        <p className="text-[var(--color-text)]">
-          Her leadership style emphasizes transparency, continuous improvement, and celebrating wins—big and small.
-        </p>
-      </section>
+      {(snehaProfile?.storySections ?? []).map((section) => (
+        <section key={section.title} className="space-y-6 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
+          <h2 className="text-2xl font-bold">{section.title}</h2>
+          {section.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="text-[var(--color-text)]">
+              {paragraph}
+            </p>
+          ))}
+        </section>
+      ))}
 
       <section className="space-y-8">
-        <h2 className="text-3xl font-bold">Beyond Walktopus</h2>
+        <h2 className="text-3xl font-bold">{snehaProfile?.beyondTitle ?? 'Beyond Walktopus'}</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-2">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Interests</h3>
-            <p className="text-sm text-[var(--color-soft-gray)]">Digital strategy, team leadership, creative problem-solving</p>
-          </div>
-          <div className="space-y-2">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Passion</h3>
-            <p className="text-sm text-[var(--color-soft-gray)]">Empowering small businesses and helping them achieve their growth potential</p>
-          </div>
+          {(snehaProfile?.beyondItems ?? []).map((item) => (
+            <div key={item.title} className="space-y-2">
+              <h3 className="font-bold text-[var(--color-text-dark)]">{item.title}</h3>
+              <p className="text-sm text-[var(--color-soft-gray)]">{item.description}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="flex flex-col items-center gap-4 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] py-12 px-6">
-        <h3 className="text-center text-xl font-bold">Ready to work with Walktopus?</h3>
-        <p className="text-center text-[var(--color-soft-gray)]">Let's discuss your growth goals with Sneha and the team</p>
+        <h3 className="text-center text-xl font-bold">{snehaProfile?.ctaTitle ?? 'Ready to work with Walktopus?'}</h3>
+        <p className="text-center text-[var(--color-soft-gray)]">{snehaProfile?.ctaText ?? "Let's discuss your growth goals with Sneha and the team"}</p>
         <Link href="/contact">
           <Button variant="primary">Book a Consultation</Button>
         </Link>

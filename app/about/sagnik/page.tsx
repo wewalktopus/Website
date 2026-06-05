@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { absoluteUrl, breadcrumbSchema, pageMetadata, personSchema } from '@/lib/seo';
 
 const sagnik = TEAM.find((member) => member.name === 'Sagnik Mandal');
+const sagnikProfile = sagnik?.profile;
 
 export const metadata: Metadata = pageMetadata({
   title: 'Sagnik Mandal - Co-founder, Walktopus',
@@ -62,78 +63,52 @@ export default function SagnikPage() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Leadership</p>
             <h1 className="mt-2 text-5xl font-extrabold leading-tight">Sagnik Mandal</h1>
-            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">Co-founder at Walktopus, Kolkata, India</p>
+            <p className="mt-2 text-xl font-semibold text-[var(--color-soft-gray)]">{sagnikProfile?.headingTitle ?? 'Co-founder at Walktopus, Kolkata, India'}</p>
           </div>
 
           <div className="space-y-4 text-[var(--color-text)]">
-            <p>
-              Sagnik Mandal is the co-architect of Walktopus's vision and growth strategy. Working alongside Sukomal Debnath, 
-              Sagnik brings a strategic mindset and operational expertise that has been instrumental in transforming the 
-              company's initial idea into a scalable, results-driven growth agency based in Kolkata.
-            </p>
-            <p>
-              With a deep focus on strategy, market positioning, and sustainable growth, Sagnik ensures that every decision 
-              Walktopus makes is backed by data, insight, and a clear understanding of market opportunities.
-            </p>
+            {(sagnikProfile?.introParagraphs ?? []).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
 
           <div className="space-y-3 border-l-4 border-[var(--color-accent)] pl-6 py-4">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Key Focus Areas</h3>
+            <h3 className="font-bold text-[var(--color-text-dark)]">{sagnikProfile?.keySectionTitle ?? 'Key Focus Areas'}</h3>
             <ul className="space-y-2 text-sm text-[var(--color-soft-gray)]">
-              <li>• Strategic planning and market positioning</li>
-              <li>• Growth strategy and scaling frameworks</li>
-              <li>• Client success and partnership development</li>
-              <li>• Innovation and service expansion</li>
+              {(sagnikProfile?.keyPoints ?? []).map((item) => (
+                <li key={item}>• {item}</li>
+              ))}
             </ul>
           </div>
         </div>
       </section>
 
-      <section className="space-y-6 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
-        <h2 className="text-2xl font-bold">Strategic Vision</h2>
-        <div className="space-y-4 text-[var(--color-text)]">
-          <p>
-            Sagnik's approach to growth is methodical and data-centric. He believes that the best marketing outcomes come from 
-            a combination of clear strategic thinking, flawless execution, and continuous optimization based on real performance data.
-          </p>
-          <p>
-            As co-founder, Sagnik has been pivotal in defining Walktopus's service pillars—Social Media Mastery, Web Identity & 
-            Domain Solutions, and Growth & Promotion Campaigns. Each pillar reflects a deep understanding of what small businesses 
-            and creators actually need to grow online.
-          </p>
-        </div>
-      </section>
-
-      <section className="space-y-6 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
-        <h2 className="text-2xl font-bold">Philosophy & Approach</h2>
-        <p className="text-[var(--color-text)]">
-          Sagnik is a strong believer in the power of <span className="font-semibold">intentional strategy over tactical chaos.</span> 
-          In a world of constant platform changes and algorithm updates, he emphasizes building enduring systems that adapt smartly 
-          without losing focus on core business objectives.
-        </p>
-        <p className="text-[var(--color-text)]">
-          His leadership style is collaborative, transparent, and growth-oriented—bringing out the best in teams while maintaining 
-          a relentless focus on delivering measurable results for every client.
-        </p>
-      </section>
+      {(sagnikProfile?.storySections ?? []).map((section) => (
+        <section key={section.title} className="space-y-6 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] p-8">
+          <h2 className="text-2xl font-bold">{section.title}</h2>
+          {section.paragraphs.map((paragraph) => (
+            <p key={paragraph} className="text-[var(--color-text)]">
+              {paragraph}
+            </p>
+          ))}
+        </section>
+      ))}
 
       <section className="space-y-8">
-        <h2 className="text-3xl font-bold">Beyond Walktopus</h2>
+        <h2 className="text-3xl font-bold">{sagnikProfile?.beyondTitle ?? 'Beyond Walktopus'}</h2>
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="space-y-2">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Interests</h3>
-            <p className="text-sm text-[var(--color-soft-gray)]">Digital strategy, market trends, growth systems, data analytics, entrepreneurship</p>
-          </div>
-          <div className="space-y-2">
-            <h3 className="font-bold text-[var(--color-text-dark)]">Belief</h3>
-            <p className="text-sm text-[var(--color-soft-gray)]">Great strategy + flawless execution = unstoppable growth</p>
-          </div>
+          {(sagnikProfile?.beyondItems ?? []).map((item) => (
+            <div key={item.title} className="space-y-2">
+              <h3 className="font-bold text-[var(--color-text-dark)]">{item.title}</h3>
+              <p className="text-sm text-[var(--color-soft-gray)]">{item.description}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="flex flex-col items-center gap-4 rounded-lg border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] py-12 px-6">
-        <h3 className="text-center text-xl font-bold">Let's build your growth strategy</h3>
-        <p className="text-center text-[var(--color-soft-gray)]">Connect with Sagnik and the team to discuss your growth roadmap</p>
+        <h3 className="text-center text-xl font-bold">{sagnikProfile?.ctaTitle ?? "Let's build your growth strategy"}</h3>
+        <p className="text-center text-[var(--color-soft-gray)]">{sagnikProfile?.ctaText ?? 'Connect with Sagnik and the team to discuss your growth roadmap'}</p>
         <Link href="/contact">
           <Button variant="primary">Book a Consultation</Button>
         </Link>
