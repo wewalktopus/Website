@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import {
-  Search, Filter, Trash2, Mail, RefreshCw, ChevronDown, X, Eye
+  Search, Trash2, Mail, RefreshCw, X, Eye, ChevronsUpDown
 } from 'lucide-react';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import type { Lead, LeadStatus } from '@/types';
@@ -19,6 +19,7 @@ export default function LeadsPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [detailLead, setDetailLead] = useState<Lead | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [openStatusFor, setOpenStatusFor] = useState<string | null>(null);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -71,6 +72,7 @@ export default function LeadsPage() {
 
   const updateStatus = async (id: string, status: LeadStatus) => {
     setUpdatingId(id);
+    setOpenStatusFor(null);
     await fetch(`/api/admin/leads/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -181,12 +183,17 @@ export default function LeadsPage() {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {filtered.map(lead => (
-                  <tr key={lead.id} className="hover:bg-white/2 transition-colors">
+                  <tr
+                    key={lead.id}
+                    className="hover:bg-linear-to-r hover:from-white/5 hover:to-transparent transition-colors cursor-pointer"
+                    onClick={() => setDetailLead(lead)}
+                  >
                     <td className="px-4 py-3">
                       <input
                         type="checkbox"
                         checked={selected.has(lead.id)}
                         onChange={() => toggleSelect(lead.id)}
+                        onClick={(e) => e.stopPropagation()}
                         className="rounded border-gray-600 bg-transparent accent-orange-500"
                       />
                     </td>
@@ -211,16 +218,33 @@ export default function LeadsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="relative group">
-                        <select
-                          value={lead.status}
-                          disabled={updatingId === lead.id}
-                          onChange={e => updateStatus(lead.id, e.target.value as LeadStatus)}
-                          className="appearance-none bg-transparent border-0 cursor-pointer focus:outline-none"
+                      <div className="relative" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => setOpenStatusFor((current) => (current === lead.id ? null : lead.id))}
+                          className="inline-flex items-center gap-2 rounded-lg px-2 py-1 bg-white/5 border border-white/10 hover:border-orange-500/40 hover:bg-white/10 transition-colors"
                         >
-                          {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                        <StatusBadge status={lead.status} />
+                          <StatusBadge status={lead.status} />
+                          <ChevronsUpDown size={13} className="text-gray-500" />
+                        </button>
+
+                        {openStatusFor === lead.id ? (
+                          <div className="absolute z-20 mt-2 min-w-40 rounded-xl border border-white/10 bg-[#0e0e0e] shadow-2xl overflow-hidden">
+                            {STATUSES.map((status) => (
+                              <button
+                                key={status}
+                                onClick={() => updateStatus(lead.id, status)}
+                                disabled={updatingId === lead.id}
+                                className={`w-full px-3 py-2.5 text-left text-sm transition-colors ${
+                                  status === lead.status
+                                    ? 'bg-orange-500/15 text-orange-300'
+                                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                                }`}
+                              >
+                                {status.charAt(0).toUpperCase() + status.slice(1)}
+                              </button>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-500">
@@ -237,6 +261,7 @@ export default function LeadsPage() {
                         </button>
                         <a
                           href={`mailto:${lead.email}`}
+                          onClick={(e) => e.stopPropagation()}
                           className="p-1.5 text-gray-500 hover:text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors"
                           title="Send email"
                         >
@@ -244,6 +269,7 @@ export default function LeadsPage() {
                         </a>
                         <button
                           onClick={() => deleteLead(lead.id)}
+                          onMouseDown={(e) => e.stopPropagation()}
                           className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Delete lead"
                         >

@@ -246,6 +246,25 @@ export async function POST(req: NextRequest) {
     const sent = results.filter(r => r.status === 'sent').length;
     const failed = results.filter(r => r.status === 'failed').length;
 
+    await db.collection('email_messages').add({
+      folder: 'sent',
+      subject: payload.subject,
+      body: payload.body,
+      toCount: recipients.length,
+      sent,
+      failed,
+      skippedUnsubscribed: unsubscribed.size,
+      senderProfile: payload.senderProfile,
+      senderLocalPart,
+      from,
+      attachmentsCount: attachments.length,
+      sampleRecipients: recipients.slice(0, 25),
+      createdBy: session.uid,
+      createdByEmail: session.email,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+
     console.log(`[admin/email/send] Sent: ${sent}, Failed: ${failed} | By: ${session.email} | From: ${from}`);
 
     return NextResponse.json({ success: true, sent, failed, skippedUnsubscribed: unsubscribed.size, results });

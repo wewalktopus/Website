@@ -38,10 +38,7 @@ function renderBlogEmailHtml(input: BlogNewsletterInput): string {
 
 export async function sendNewBlogEmailToSubscribers(input: BlogNewsletterInput): Promise<{ sent: number; failed: number }> {
   const db = getFirebaseAdminDb();
-  const subscribersSnapshot = await db
-    .collection('newsletter_subscribers')
-    .where('active', '==', true)
-    .get();
+  const subscribersSnapshot = await db.collection('newsletter_subscribers').get();
 
   const recipients = subscribersSnapshot.docs
     .map((doc) => {

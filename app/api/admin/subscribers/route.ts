@@ -15,13 +15,9 @@ export async function GET(req: NextRequest) {
     const preference = url.searchParams.get('preference');
     const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '100'), 500);
 
-    let query = db.collection('newsletter_subscribers').orderBy('subscribedAt', 'desc') as FirebaseFirestore.Query;
-    if (active !== null) query = query.where('active', '==', active === 'true');
-    if (preference === 'newsletter') query = query.where('emailPreferences.newsletter', '==', true);
-    if (preference === 'campaigns') query = query.where('emailPreferences.campaigns', '==', true);
-
-    const snapshot = await query.limit(limit).get();
-    const subscribers = snapshot.docs.map(doc => ({
+    const snapshot = await db.collection('newsletter_subscribers').orderBy('subscribedAt', 'desc').limit(limit * 3).get();
+    const subscribers = snapshot.docs
+      .map(doc => ({
       id: doc.id,
       ...doc.data(),
       active:
@@ -39,7 +35,20 @@ export async function GET(req: NextRequest) {
             : Boolean(doc.data().active ?? true),
       },
       subscribedAt: doc.data().subscribedAt?.toDate?.()?.toISOString() ?? null,
-    }));
+      }))
+      .filter((subscriber) => {
+        if (active !== null && subscriber.active !== (active === 'true')) {
+          return false;
+        }
+        if (preference === 'newsletter' && subscriber.emailPreferences.newsletter !== true) {
+          return false;
+        }
+        if (preference === 'campaigns' && subscriber.emailPreferences.campaigns !== true) {
+          return false;
+        }
+        return true;
+      })
+      .slice(0, limit);
 
     const totalSnap = await db.collection('newsletter_subscribers').count().get();
     const total = totalSnap.data().count;
