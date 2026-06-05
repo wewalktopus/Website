@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Instagram, Mail, MapPin, Youtube } from 'lucide-react';
-import { BRAND, NAV_LINKS } from '@/lib/constants';
+import { BRAND, NAV_LINKS, SITE_BRANDING } from '@/lib/constants';
 import { NewsletterSignup } from './NewsletterSignup';
 
 export function Footer() {
@@ -8,10 +9,17 @@ export function Footer() {
     <footer className="border-t border-(--color-bg-secondary) bg-(--color-text-dark) text-(--color-bg)">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
         <div>
-          <p className="font-display text-3xl uppercase">Walktopus</p>
+          <Image
+            src={SITE_BRANDING.assets.logoTransparent}
+            alt={`${BRAND.name} logo`}
+            width={220}
+            height={58}
+            className="h-auto w-44 sm:w-52"
+            priority
+          />
           <p className="mt-4 text-sm text-(--color-bg-secondary)">{BRAND.tagline}</p>
           <p className="mt-4 text-xs uppercase tracking-[0.08em] text-(--color-bg-secondary)">
-            Walktopus - A proud Initiative By Dgen Technologies Private Limited
+            {BRAND.name} - A proud Initiative By {BRAND.parent}
           </p>
         </div>
 
