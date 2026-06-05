@@ -35,7 +35,7 @@ export default function ContactPage() {
         </p>
         <p className="mt-2 flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
           <Phone className="h-4 w-4 text-[var(--color-accent)]" />
-          <span>+91 90646 06348</span>
+          <span>{BRAND.phone}</span>
         </p>
         <p className="mt-2 flex items-center gap-3 text-sm text-[var(--color-soft-gray)]">
           <Globe2 className="h-4 w-4 text-[var(--color-accent)]" />
