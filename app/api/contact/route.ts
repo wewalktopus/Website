@@ -4,6 +4,7 @@ import { ContactSchema } from '@/lib/validations';
 import { contactRateLimit } from '@/lib/upstash';
 import { getResend } from '@/lib/resend';
 import { getFirebaseAdminDb } from '@/lib/firebase-admin';
+import { buildUnsubscribeUrl } from '@/lib/email-unsubscribe';
 import { ContactConfirmation } from '@/emails/ContactConfirmation';
 import { ContactNotification } from '@/emails/ContactNotification';
 
@@ -109,7 +110,11 @@ export async function POST(req: NextRequest) {
           from: process.env.RESEND_FROM_EMAIL,
           to: lead.email,
           subject: 'Welcome to Walktopus - We received your quote request',
-          react: ContactConfirmation({ name: lead.name, type: lead.type }),
+          react: ContactConfirmation({
+            name: lead.name,
+            type: lead.type,
+            unsubscribeUrl: buildUnsubscribeUrl(lead.email),
+          }),
         })
       : Promise.resolve({ data: null, error: null });
 

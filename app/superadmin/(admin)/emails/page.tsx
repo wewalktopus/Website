@@ -1,21 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Send, Users, Bell, FileText, CheckCircle, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { Send, Users, Bell, FileText, CheckCircle, XCircle, RefreshCw, Paperclip } from 'lucide-react';
 import type { Lead, NewsletterSubscriber, EmailTemplate } from '@/types';
 
 type RecipientMode = 'custom' | 'leads' | 'subscribers' | 'converted';
+type SenderProfile = 'professional' | 'premium' | 'feedback' | 'contact' | 'custom';
 
 export default function EmailsPage() {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [recipientMode, setRecipientMode] = useState<RecipientMode>('custom');
+  const [senderProfile, setSenderProfile] = useState<SenderProfile>('professional');
+  const [senderLocalPart, setSenderLocalPart] = useState('hello');
   const [customEmails, setCustomEmails] = useState('');
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ sent: number; failed: number } | null>(null);
+  const [result, setResult] = useState<{ sent: number; failed: number; skippedUnsubscribed?: number } | null>(null);
   const [error, setError] = useState('');
   const [loadingData, setLoadingData] = useState(true);
   const [preview, setPreview] = useState(false);
@@ -70,14 +74,23 @@ export default function EmailsPage() {
     setResult(null);
 
     try {
+      const formData = new FormData();
+      formData.set('to', JSON.stringify(recipients));
+      formData.set('subject', subject);
+      formData.set('body', body);
+      formData.set('senderProfile', senderProfile);
+      formData.set('senderLocalPart', senderLocalPart.trim().toLowerCase());
+      for (const file of attachments) {
+        formData.append('attachments', file);
+      }
+
       const res = await fetch('/api/admin/email/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: recipients, subject, body }),
+        body: formData,
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Send failed');
-      setResult({ sent: data.sent, failed: data.failed });
+      setResult({ sent: data.sent, failed: data.failed, skippedUnsubscribed: data.skippedUnsubscribed });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to send');
     } finally {
@@ -157,6 +170,35 @@ export default function EmailsPage() {
           <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-5 space-y-4">
             <p className="text-sm font-semibold text-white">Compose Email</p>
 
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Sender Profile</label>
+                <select
+                  value={senderProfile}
+                  onChange={(e) => setSenderProfile(e.target.value as SenderProfile)}
+                  className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-orange-500/50"
+                >
+                  <option value="professional">Professional</option>
+                  <option value="premium">Premium</option>
+                  <option value="feedback">Feedback</option>
+                  <option value="contact">Contact</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">From Local-Part</label>
+                <div className="flex rounded-lg overflow-hidden border border-white/10 focus-within:border-orange-500/50 transition-colors">
+                  <input
+                    value={senderLocalPart}
+                    onChange={(e) => setSenderLocalPart(e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ''))}
+                    placeholder="hello"
+                    className="flex-1 px-3 py-2.5 bg-[#111111] text-sm text-white placeholder-gray-600 focus:outline-none"
+                  />
+                  <span className="px-3 py-2.5 bg-[#161616] text-xs text-gray-400 border-l border-white/10">@walktopus.in</span>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">Subject</label>
               <input
@@ -193,6 +235,27 @@ export default function EmailsPage() {
               )}
             </div>
 
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5">Attachments (images, PDF, docs)</label>
+              <label className="flex items-center gap-2 px-3 py-2.5 bg-[#111111] border border-dashed border-white/20 rounded-lg text-xs text-gray-400 hover:border-orange-500/40 hover:text-gray-300 cursor-pointer transition-colors">
+                <Paperclip size={14} />
+                <span>Attach files (max 5 files, 10MB each)</span>
+                <input
+                  type="file"
+                  multiple
+                  onChange={(e) => setAttachments(Array.from(e.target.files ?? []).slice(0, 5))}
+                  className="hidden"
+                />
+              </label>
+              {attachments.length > 0 ? (
+                <p className="mt-2 text-xs text-gray-500">
+                  {attachments.length} file(s): {attachments.map((file) => file.name).join(', ')}
+                </p>
+              ) : null}
+            </div>
+
+            <p className="text-xs text-gray-500">All outgoing promotional emails include an unsubscribe link automatically. Daily sending cap: 100 recipients.</p>
+
             {/* Feedback */}
             {error && (
               <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
@@ -204,6 +267,9 @@ export default function EmailsPage() {
                 <CheckCircle size={15} />
                 Sent to <strong>{result.sent}</strong> recipients
                 {result.failed > 0 && <span className="text-red-400 ml-1">({result.failed} failed)</span>}
+                {(result.skippedUnsubscribed ?? 0) > 0 && (
+                  <span className="text-yellow-400 ml-1">({result.skippedUnsubscribed} unsubscribed skipped)</span>
+                )}
               </div>
             )}
 

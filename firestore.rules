@@ -25,6 +25,10 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    match /email_daily_limits/{docId} {
+      allow read, write: if false;
+    }
+
     // site_settings: used for pricing config — Admin SDK only, no browser access
     match /site_settings/{docId} {
       allow read, write: if false;

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FieldValue } from 'firebase-admin/firestore';
 import { verifyAdminRequest } from '@/lib/admin-auth';
+import { sendNewBlogEmailToSubscribers } from '@/lib/blog-newsletter';
 import { getFirebaseAdminDb } from '@/lib/firebase-admin';
 
 export const runtime = 'nodejs';
@@ -59,9 +60,35 @@ export async function POST(req: NextRequest) {
     status: postStatus === 'published' ? 'published' : 'draft',
     author: session.uid,
     authorName: session.name,
+    newsletterSentAt: null,
+    newsletterSentCount: 0,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
   });
+
+  if (postStatus === 'published') {
+    try {
+      const { sent, failed } = await sendNewBlogEmailToSubscribers({
+        title,
+        slug,
+        excerpt: excerpt ?? '',
+        imageUrl: imageUrl ?? null,
+      });
+
+      await ref.update({
+        newsletterSentAt: FieldValue.serverTimestamp(),
+        newsletterSentCount: sent,
+        newsletterFailedCount: failed,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error('[admin/blogs POST] Failed to send blog newsletter emails', error);
+      await ref.update({
+        newsletterFailedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+  }
 
   return NextResponse.json({ success: true, id: ref.id, slug });
 }

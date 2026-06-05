@@ -35,6 +35,16 @@ export async function POST(req: NextRequest) {
         source: 'newsletter-form',
         subscribedAt: FieldValue.serverTimestamp(),
       });
+    } else {
+      await docRef.set(
+        {
+          email: result.data.email,
+          active: true,
+          source: 'newsletter-form',
+          resubscribedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
     }
 
     return NextResponse.json({ success: true, message: 'Subscribed successfully.' });

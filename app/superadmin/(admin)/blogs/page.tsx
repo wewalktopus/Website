@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff, Globe, FileText } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff, Globe, FileText, ImagePlus } from 'lucide-react';
 import type { BlogPost } from '@/types';
 
 export default function BlogsPage() {
@@ -9,6 +9,7 @@ export default function BlogsPage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<BlogPost> | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [preview, setPreview] = useState(false);
   const [filter, setFilter] = useState('');
 
@@ -77,6 +78,26 @@ export default function BlogsPage() {
     setEditing(data.blog);
   };
 
+  const uploadImage = async (file: File) => {
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.set('file', file);
+
+    try {
+      const res = await fetch('/api/admin/blogs/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Upload failed');
+      setEditing((prev) => ({ ...prev, imageUrl: data.imageUrl }));
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const publishedCount = blogs.filter(b => b.status === 'published').length;
   const draftCount = blogs.filter(b => b.status === 'draft').length;
 
@@ -112,7 +133,7 @@ export default function BlogsPage() {
           </select>
           <div className="flex-1" />
           <button
-            onClick={() => setEditing({ title: '', excerpt: '', content: '', status: 'draft' })}
+            onClick={() => setEditing({ title: '', excerpt: '', content: '', status: 'draft', imageUrl: '' })}
             className="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-400 text-white text-sm font-semibold rounded-xl transition-colors"
           >
             <Plus size={15} /> New Post
@@ -164,12 +185,34 @@ export default function BlogsPage() {
 
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">Image Link (optional)</label>
-              <input
-                value={editing.imageUrl ?? ''}
-                onChange={e => setEditing(p => ({ ...p, imageUrl: e.target.value }))}
-                placeholder="https://..."
-                className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 transition-colors"
-              />
+              <div className="grid sm:grid-cols-[1fr_auto] gap-2">
+                <input
+                  value={editing.imageUrl ?? ''}
+                  onChange={e => setEditing(p => ({ ...p, imageUrl: e.target.value }))}
+                  placeholder="https://..."
+                  className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 transition-colors"
+                />
+                <label className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-gray-300 cursor-pointer transition-colors">
+                  <ImagePlus size={13} />
+                  {uploadingImage ? 'Uploading...' : 'Upload'}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        void uploadImage(file);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              {editing.imageUrl ? (
+                <img src={editing.imageUrl} alt="Blog" className="mt-2 h-28 w-auto rounded-lg border border-white/10 object-cover" />
+              ) : null}
+              <p className="mt-1 text-[11px] text-gray-600">Upload uses the same ImgBB API integration as logos.</p>
             </div>
 
             <div>

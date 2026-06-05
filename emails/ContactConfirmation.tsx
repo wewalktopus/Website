@@ -3,9 +3,10 @@ import { Body, Container, Head, Html, Link, Preview, Section, Text } from '@reac
 interface ContactConfirmationProps {
   name: string;
   type: 'business' | 'individual';
+  unsubscribeUrl?: string;
 }
 
-export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
+export function ContactConfirmation({ name, type, unsubscribeUrl }: ContactConfirmationProps) {
   const inquiryLabel = type === 'business' ? 'business' : 'individual';
 
   return (
@@ -154,6 +155,14 @@ export function ContactConfirmation({ name, type }: ContactConfirmationProps) {
                   LinkedIn
                 </Link>
               </Text>
+              {unsubscribeUrl ? (
+                <Text style={{ margin: '10px 0 0', fontSize: '11px', color: '#A0A0A0', lineHeight: '1.5' }}>
+                  Prefer not to receive future updates?{' '}
+                  <Link href={unsubscribeUrl} style={{ color: '#F05A3E', textDecoration: 'underline' }}>
+                    Unsubscribe
+                  </Link>
+                </Text>
+              ) : null}
             </Section>
           </Section>
         </Container>
