@@ -2,7 +2,19 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ChevronDown, Rocket, ShieldCheck, Sparkles } from 'lucide-react';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  CheckCircle2,
+  ChevronDown,
+  Gem,
+  Globe,
+  Megaphone,
+  Rocket,
+  ShieldCheck,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScrollReveal } from '@/components/common/ScrollReveal';
@@ -19,6 +31,15 @@ const engagementStandards = [
 
 interface ServicesExperienceProps {
   content: PricingAudienceContent;
+}
+
+function getCategoryIcon(label: string): LucideIcon {
+  const key = label.toLowerCase();
+  if (key.includes('branding')) return Gem;
+  if (key.includes('websites') || key.includes('digital assets')) return Globe;
+  if (key.includes('content') || key.includes('social')) return Megaphone;
+  if (key.includes('campaigns') || key.includes('creatives')) return BriefcaseBusiness;
+  return Sparkles;
 }
 
 function renderCategory(category: PricingServiceCategory) {
@@ -56,11 +77,18 @@ function renderCategory(category: PricingServiceCategory) {
 }
 
 function renderCompactCategory(category: PricingServiceCategory) {
+  const CategoryIcon = getCategoryIcon(category.label);
+
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-bg-secondary)] bg-white/90 shadow-sm">
       <div className="border-b border-[var(--color-bg-secondary)] bg-[linear-gradient(135deg,var(--color-bg-light),#fff)] px-3 py-3 md:px-6 md:py-4">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-accent)]">Service Category</p>
-        <h3 className="mt-1.5 text-lg font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)] md:mt-2 md:text-2xl">{category.label}</h3>
+        <p className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-accent)]">
+          <Sparkles className="h-3.5 w-3.5" /> Service Category
+        </p>
+        <h3 className="mt-1.5 inline-flex items-center gap-2 text-lg font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)] md:mt-2 md:text-2xl">
+          <CategoryIcon className="h-5 w-5 text-[var(--color-accent)]" />
+          <span>{category.label}</span>
+        </h3>
         <p className="mt-1.5 text-xs leading-relaxed text-[var(--color-text)] md:mt-2 md:text-sm">{category.subtitle}</p>
       </div>
 
@@ -233,6 +261,7 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
                 <div className="grid gap-1.5 md:gap-2">
                   {content.serviceCategories.map((category) => {
                     const isActive = category.id === activeCategoryId;
+                    const CategoryIcon = getCategoryIcon(category.label);
                     return (
                       <button
                         key={category.id}
@@ -245,7 +274,10 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
                             : 'border-[var(--color-bg-secondary)] bg-white text-[var(--color-text-dark)] hover:border-[var(--color-accent)]',
                         ].join(' ')}
                       >
-                        {category.label}
+                        <span className="inline-flex items-center gap-1.5 md:gap-2">
+                          <CategoryIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
+                          <span>{category.label}</span>
+                        </span>
                       </button>
                     );
                   })}
