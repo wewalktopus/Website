@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   Bell,
   CheckCircle,
-  ChevronDown,
   FileText,
   Forward,
   Inbox,
@@ -466,7 +465,7 @@ export default function EmailsPage() {
                     <button
                       key={msg.id}
                       onClick={() => openMail(msg.id)}
-                      className="w-full text-left px-5 py-4 hover:bg-white/[0.04] transition-colors group"
+                      className="w-full text-left px-5 py-4 hover:bg-white/4 transition-colors group"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0 flex-1">
@@ -541,7 +540,7 @@ export default function EmailsPage() {
                     <h2 className="text-xl font-bold text-white leading-snug">{openedDetail.subject || '(No subject)'}</h2>
 
                     {/* Metadata */}
-                    <div className="flex items-start gap-4 rounded-xl border border-white/8 bg-white/[0.02] px-5 py-4">
+                    <div className="flex items-start gap-4 rounded-xl border border-white/8 bg-white/2 px-5 py-4">
                       {/* Avatar */}
                       <div className="w-10 h-10 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-sm font-bold flex items-center justify-center shrink-0 uppercase">
                         {(openedDetail.from ?? '?').charAt(0)}
@@ -602,7 +601,7 @@ export default function EmailsPage() {
                         <div className="px-5 py-5 space-y-3">
                           {/* Sender badge */}
                           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/8 text-xs text-gray-400">
-                            <Image src="/logo.png" alt="" width={18} height={18} className="h-[18px] w-[18px] rounded-full object-contain bg-white p-0.5" />
+                            <Image src="/logo.png" alt="" width={18} height={18} className="h-4.5 w-4.5 rounded-full object-contain bg-white p-0.5" />
                             <span>From: <span className="text-white">{openedDetail.replyFrom ?? 'hello@walktopus.in'}</span></span>
                           </div>
 
@@ -678,7 +677,7 @@ export default function EmailsPage() {
           ) : (
             <div className="divide-y divide-white/5">
               {sentMessages.map((msg) => (
-                <div key={msg.id} className="px-5 py-4 hover:bg-white/[0.03] transition-colors">
+                <div key={msg.id} className="px-5 py-4 hover:bg-white/3 transition-colors">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-white truncate">{msg.subject || '(No subject)'}</p>
@@ -712,7 +711,7 @@ export default function EmailsPage() {
           ) : (
             <div className="divide-y divide-white/5">
               {draftMessages.map((msg) => (
-                <div key={msg.id} className="px-5 py-4 hover:bg-white/[0.03] transition-colors">
+                <div key={msg.id} className="px-5 py-4 hover:bg-white/3 transition-colors">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-white truncate">{msg.subject || '(No subject)'}</p>
