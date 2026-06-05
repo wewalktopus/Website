@@ -246,16 +246,81 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
           </div>
         </section>
 
-        <section className="h-[100dvh] max-h-[100dvh] overflow-hidden rounded-3xl border border-[var(--color-bg-secondary)] bg-white/70 p-2.5 shadow-sm backdrop-blur-sm sm:p-3 md:p-6">
-          <div className="grid h-full min-h-0 grid-cols-[124px_minmax(0,1fr)] gap-2.5 sm:grid-cols-[136px_minmax(0,1fr)] sm:gap-3 md:gap-4 lg:grid-cols-[260px_minmax(0,1fr)]">
-            <aside className="flex min-h-0 flex-col rounded-2xl border border-[var(--color-bg-secondary)] bg-white/80 p-2.5 sm:p-3 md:p-4">
-              <h2 className="text-lg font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)] md:text-2xl">One-time services and project execution</h2>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-[var(--color-text)] md:mt-2 md:text-sm">
-                Pick a category to view compact options in the right panel.
-              </p>
+        <section className="rounded-3xl border border-[var(--color-bg-secondary)] bg-white/70 p-3 shadow-sm backdrop-blur-sm md:p-6 lg:h-[100dvh] lg:max-h-[100dvh] lg:overflow-hidden">
+          <div className="lg:hidden">
+            <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)]">
+              One-time services and project execution
+            </h2>
+            <p className="mt-2 text-sm text-[var(--color-text)]">
+              Expand any category to view service options.
+            </p>
 
-              <div className="mt-2 min-h-0 flex-1 overflow-y-auto pr-1 md:mt-4">
-                <div className="grid gap-1.5 md:gap-2">
+            <div className="mt-4 grid gap-2.5">
+              {content.serviceCategories.map((category) => {
+                const isActive = category.id === activeCategoryId;
+                const CategoryIcon = getCategoryIcon(category.label);
+                return (
+                  <article key={category.id} className="overflow-hidden rounded-2xl border border-[var(--color-bg-secondary)] bg-white/85">
+                    <button
+                      type="button"
+                      onClick={() => setActiveCategoryId((current) => (current === category.id ? '' : category.id))}
+                      className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left"
+                    >
+                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-dark)]">
+                        <CategoryIcon className="h-4 w-4 shrink-0 text-[var(--color-accent)]" />
+                        <span>{category.label}</span>
+                      </span>
+                      <ChevronDown
+                        className={[
+                          'h-4 w-4 shrink-0 text-[var(--color-accent)] transition-transform duration-300',
+                          isActive ? 'rotate-180' : '',
+                        ].join(' ')}
+                      />
+                    </button>
+
+                    <div
+                      className={[
+                        'grid transition-all duration-300 ease-out',
+                        isActive ? 'grid-rows-[1fr] border-t border-[var(--color-bg-secondary)]' : 'grid-rows-[0fr]',
+                      ].join(' ')}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="space-y-2 p-3">
+                          {category.services.map((service) => (
+                            <div
+                              key={service.id}
+                              className="rounded-xl border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)]/70 p-3"
+                            >
+                              <h4 className="text-sm font-bold leading-tight text-[var(--color-text-dark)]">{service.title}</h4>
+                              <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-accent)]">
+                                {service.price}
+                              </p>
+                              <ul className="mt-2.5 space-y-1.5 text-xs text-[var(--color-text)]">
+                                {service.deliverables.map((deliverable) => (
+                                  <li key={deliverable} className="flex items-start gap-2">
+                                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--color-accent)]" />
+                                    <span>{deliverable}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="hidden h-full min-h-0 lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-4">
+            <aside className="flex min-h-0 flex-col rounded-2xl border border-[var(--color-bg-secondary)] bg-white/80 p-4">
+              <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)]">One-time services and project execution</h2>
+              <p className="mt-2 text-sm text-[var(--color-text)]">Pick a category to view compact options in the right panel.</p>
+
+              <div className="mt-4 min-h-0 flex-1 overflow-y-auto pr-1">
+                <div className="grid gap-2">
                   {content.serviceCategories.map((category) => {
                     const isActive = category.id === activeCategoryId;
                     const CategoryIcon = getCategoryIcon(category.label);
@@ -265,14 +330,14 @@ export function ServicesExperience({ content }: ServicesExperienceProps) {
                         type="button"
                         onClick={() => setActiveCategoryId(category.id)}
                         className={[
-                          'rounded-lg border px-2 py-2 text-left text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] transition-all duration-300 sm:text-[11px] md:rounded-xl md:px-3 md:py-3 md:text-sm',
+                          'rounded-xl border px-3 py-3 text-left text-sm font-semibold uppercase leading-tight tracking-[0.08em] transition-all duration-300',
                           isActive
                             ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-black shadow-[0_8px_22px_rgba(239,77,48,0.25)]'
                             : 'border-[var(--color-bg-secondary)] bg-white text-[var(--color-text-dark)] hover:border-[var(--color-accent)]',
                         ].join(' ')}
                       >
-                        <span className="inline-flex items-center gap-1.5 md:gap-2">
-                          <CategoryIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
+                        <span className="inline-flex items-center gap-2">
+                          <CategoryIcon className="h-4 w-4 shrink-0" />
                           <span>{category.label}</span>
                         </span>
                       </button>
