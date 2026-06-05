@@ -12,6 +12,20 @@ function apiKey(): string {
   return k;
 }
 
+function normalizeEmailList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((entry): entry is string => typeof entry === "string").map((entry) => entry.trim()).filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value.split(",").map((entry) => entry.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function pickReplyMailbox(receivedTo: string[]): string {
+  return receivedTo.find((email) => email.includes("@")) ?? (process.env.RESEND_FROM_EMAIL ?? "hello@walktopus.in");
+}
+
 async function fetchReceiving(path: string): Promise<{ ok: boolean; body: Record<string, unknown> }> {
   const resp = await fetch(`https://api.resend.com/emails/receiving/${path}`, {
     headers: { Authorization: `Bearer ${apiKey()}` },
@@ -39,14 +53,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const attachItems = attachRes.status === "fulfilled" && attachRes.value.ok
       ? ((attachRes.value.body.data as unknown[] | undefined) ?? [])
       : [];
-    const toArr = Array.isArray(emailData.to)
-      ? (emailData.to as unknown[]).filter((v): v is string => typeof v === "string")
-      : typeof emailData.to === "string"
-        ? (emailData.to as string).split(",").map((v) => v.trim()).filter(Boolean)
-        : [];
-    const ccArr = Array.isArray(emailData.cc)
-      ? (emailData.cc as unknown[]).filter((v): v is string => typeof v === "string")
-      : [];
+    const toArr = normalizeEmailList(emailData.to);
+    const ccArr = normalizeEmailList(emailData.cc);
     return NextResponse.json({
       message: {
         id,
@@ -54,6 +62,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         from: typeof emailData.from === "string" ? emailData.from : null,
         to: toArr,
         cc: ccArr,
+        messageId: typeof emailData.message_id === "string" ? emailData.message_id : null,
+        replyFrom: pickReplyMailbox(toArr),
         createdAt: typeof emailData.created_at === "string" ? emailData.created_at : null,
         text: typeof emailData.text === "string" ? emailData.text : "",
         html: typeof emailData.html === "string" ? emailData.html : "",
@@ -80,7 +90,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!ok) return NextResponse.json({ error: "Could not load original email" }, { status: 502 });
     const originalSubject = typeof emailData.subject === "string" ? emailData.subject : "No subject";
     const fromAddr = typeof emailData.from === "string" ? emailData.from : null;
-    const walktopusFrom = `Walktopus <${process.env.RESEND_FROM_EMAIL ?? "hello@walktopus.in"}>`;
+    const originalMessageId = typeof emailData.message_id === "string" ? emailData.message_id : null;
+    const replyMailbox = pickReplyMailbox(normalizeEmailList(emailData.to));
+    const walktopusFrom = `Walktopus <${replyMailbox}>`;
     let toAddr: string;
     let finalSubject: string;
     if (action === "forward") {
@@ -95,7 +107,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
     const htmlBody = `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;">${messageBody.replace(/\n/g, "<br/>")}</div>`;
     const resend = getResend();
-    await resend.emails.send({ from: walktopusFrom, to: toAddr, subject: finalSubject, html: htmlBody, text: messageBody });
+    await resend.emails.send({
+      from: walktopusFrom,
+      to: toAddr,
+      subject: finalSubject,
+      html: htmlBody,
+      text: messageBody,
+      headers: action === "reply" && originalMessageId
+        ? {
+            "In-Reply-To": originalMessageId,
+            References: originalMessageId,
+          }
+        : undefined,
+    });
     const db = getFirebaseAdminDb();
     await db.collection("email_messages").add({
       folder: "sent", subject: finalSubject, body: messageBody, from: walktopusFrom,
