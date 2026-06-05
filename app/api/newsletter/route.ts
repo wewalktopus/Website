@@ -32,6 +32,10 @@ export async function POST(req: NextRequest) {
       await docRef.set({
         email: result.data.email,
         active: true,
+        emailPreferences: {
+          newsletter: true,
+          campaigns: true,
+        },
         source: 'newsletter-form',
         subscribedAt: FieldValue.serverTimestamp(),
       });
@@ -40,6 +44,10 @@ export async function POST(req: NextRequest) {
         {
           email: result.data.email,
           active: true,
+          emailPreferences: {
+            newsletter: true,
+            campaigns: true,
+          },
           source: 'newsletter-form',
           resubscribedAt: FieldValue.serverTimestamp(),
         },

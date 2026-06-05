@@ -152,7 +152,11 @@ export async function POST(req: NextRequest) {
       if (!snap.exists) continue;
       const data = snap.data();
       const email = typeof data?.email === 'string' ? data.email.toLowerCase() : null;
-      if (email && data?.active === false) {
+      const campaignsPref =
+        typeof data?.emailPreferences?.campaigns === 'boolean'
+          ? data.emailPreferences.campaigns
+          : Boolean(data?.active ?? true);
+      if (email && campaignsPref === false) {
         unsubscribed.add(email);
       }
     }

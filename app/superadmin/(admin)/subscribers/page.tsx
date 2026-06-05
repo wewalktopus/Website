@@ -28,13 +28,41 @@ export default function SubscribersPage() {
     !search || s.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const toggleActive = async (id: string, current: boolean) => {
+  const togglePreference = async (
+    id: string,
+    preferences: NewsletterSubscriber['emailPreferences'] | undefined,
+    key: 'newsletter' | 'campaigns',
+  ) => {
+    const currentNewsletter = preferences?.newsletter ?? true;
+    const currentCampaigns = preferences?.campaigns ?? true;
+    const nextNewsletter = key === 'newsletter' ? !currentNewsletter : currentNewsletter;
+    const nextCampaigns = key === 'campaigns' ? !currentCampaigns : currentCampaigns;
+
     await fetch(`/api/admin/subscribers/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ active: !current }),
+      body: JSON.stringify({
+        emailPreferences: {
+          newsletter: nextNewsletter,
+          campaigns: nextCampaigns,
+        },
+      }),
     });
-    setSubscribers(prev => prev.map(s => s.id === id ? { ...s, active: !current } : s));
+
+    setSubscribers(prev =>
+      prev.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              active: nextNewsletter || nextCampaigns,
+              emailPreferences: {
+                newsletter: nextNewsletter,
+                campaigns: nextCampaigns,
+              },
+            }
+          : s,
+      ),
+    );
   };
 
   const deleteSubscriber = async (id: string) => {
@@ -44,8 +72,8 @@ export default function SubscribersPage() {
   };
 
   const exportCSV = () => {
-    const csv = ['Email,Active,Source,Subscribed At', ...filtered.map(s =>
-      `${s.email},${s.active},${s.source},${s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString('en-IN') : ''}`
+    const csv = ['Email,Newsletter,Campaigns,Source,Subscribed At', ...filtered.map(s =>
+      `${s.email},${s.emailPreferences?.newsletter ?? s.active},${s.emailPreferences?.campaigns ?? s.active},${s.source},${s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString('en-IN') : ''}`
     )].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -56,17 +84,19 @@ export default function SubscribersPage() {
     URL.revokeObjectURL(url);
   };
 
-  const activeCount = subscribers.filter(s => s.active).length;
-  const inactiveCount = subscribers.filter(s => !s.active).length;
+  const inactiveCount = subscribers.filter((s) => !s.active).length;
+  const newsletterEnabled = subscribers.filter((s) => (s.emailPreferences?.newsletter ?? s.active)).length;
+  const campaignsEnabled = subscribers.filter((s) => (s.emailPreferences?.campaigns ?? s.active)).length;
 
   return (
     <div className="space-y-5">
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {[
           { label: 'Total', value: total, color: 'text-white' },
-          { label: 'Active', value: activeCount, color: 'text-green-400' },
-          { label: 'Inactive', value: inactiveCount, color: 'text-gray-400' },
+          { label: 'Newsletter ON', value: newsletterEnabled, color: 'text-green-400' },
+          { label: 'Campaigns ON', value: campaignsEnabled, color: 'text-blue-400' },
+          { label: 'Fully Unsubscribed', value: inactiveCount, color: 'text-gray-400' },
         ].map(stat => (
           <div key={stat.label} className="bg-[#1a1a1a] border border-white/10 rounded-xl p-4 text-center">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
@@ -124,7 +154,8 @@ export default function SubscribersPage() {
               <thead className="border-b border-white/10">
                 <tr>
                   <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Newsletter</th>
+                  <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaigns</th>
                   <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
                   <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscribed</th>
                   <th className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -135,13 +166,26 @@ export default function SubscribersPage() {
                   <tr key={sub.id} className="hover:bg-white/2 transition-colors">
                     <td className="px-5 py-3.5 font-medium text-white">{sub.email}</td>
                     <td className="px-5 py-3.5">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${
-                        sub.active
-                          ? 'bg-green-500/10 text-green-400 border-green-500/30'
-                          : 'bg-gray-500/10 text-gray-500 border-gray-500/30'
-                      }`}>
-                        {sub.active ? 'Active' : 'Inactive'}
-                      </span>
+                      <button
+                        onClick={() => togglePreference(sub.id, sub.emailPreferences, 'newsletter')}
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-1 rounded-full border transition-colors ${(sub.emailPreferences?.newsletter ?? sub.active)
+                          ? 'bg-green-500/10 text-green-400 border-green-500/30 hover:bg-green-500/20'
+                          : 'bg-gray-500/10 text-gray-500 border-gray-500/30 hover:bg-white/10'}`}
+                      >
+                        {(sub.emailPreferences?.newsletter ?? sub.active) ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                        {(sub.emailPreferences?.newsletter ?? sub.active) ? 'On' : 'Off'}
+                      </button>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <button
+                        onClick={() => togglePreference(sub.id, sub.emailPreferences, 'campaigns')}
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-1 rounded-full border transition-colors ${(sub.emailPreferences?.campaigns ?? sub.active)
+                          ? 'bg-blue-500/10 text-blue-400 border-blue-500/30 hover:bg-blue-500/20'
+                          : 'bg-gray-500/10 text-gray-500 border-gray-500/30 hover:bg-white/10'}`}
+                      >
+                        {(sub.emailPreferences?.campaigns ?? sub.active) ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                        {(sub.emailPreferences?.campaigns ?? sub.active) ? 'On' : 'Off'}
+                      </button>
                     </td>
                     <td className="px-5 py-3.5 text-gray-500 text-xs">{sub.source}</td>
                     <td className="px-5 py-3.5 text-gray-500 text-xs">
@@ -149,13 +193,6 @@ export default function SubscribersPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => toggleActive(sub.id, sub.active)}
-                          className={`p-1.5 rounded-lg transition-colors ${sub.active ? 'text-green-400 hover:bg-green-500/10' : 'text-gray-500 hover:bg-white/5'}`}
-                          title={sub.active ? 'Deactivate' : 'Activate'}
-                        >
-                          {sub.active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
-                        </button>
                         <button
                           onClick={() => deleteSubscriber(sub.id)}
                           className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"

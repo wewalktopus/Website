@@ -39,6 +39,10 @@ export interface NewsletterSubscriber {
   id: string;
   email: string;
   active: boolean;
+  emailPreferences?: {
+    newsletter: boolean;
+    campaigns: boolean;
+  };
   source: string;
   subscribedAt: string;
 }

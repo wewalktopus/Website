@@ -20,6 +20,12 @@ export async function GET(req: NextRequest) {
       db.collection('leads').where('status', '==', 'converted').count().get(),
     ]);
 
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const [dailyEmailUsageSnap] = await Promise.all([
+      db.collection('email_daily_limits').doc(todayKey).get(),
+    ]);
+    const emailsSentToday = Number(dailyEmailUsageSnap.data()?.used ?? 0);
+
     // Recent leads (last 10)
     const recentLeadsSnap = await db.collection('leads')
       .orderBy('createdAt', 'desc')
@@ -56,6 +62,8 @@ export async function GET(req: NextRequest) {
         closedLeads: closedSnap.data().count,
         activeSubscribers: subscribersSnap.data().count,
         publishedBlogs: blogsSnap.data().count,
+        emailsSentToday,
+        emailDailyLimit: 100,
         leadsByType: {
           business: bizLeadsSnap.data().count,
           individual: indLeadsSnap.data().count,

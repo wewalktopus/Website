@@ -16,6 +16,8 @@ interface Analytics {
     closedLeads: number;
     activeSubscribers: number;
     publishedBlogs: number;
+    emailsSentToday: number;
+    emailDailyLimit: number;
     leadsByType: { business: number; individual: number };
   };
   recentLeads: {
@@ -61,15 +63,17 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard
+          title="Emails Sent Today"
+          value={`${s?.emailsSentToday ?? 0} / ${s?.emailDailyLimit ?? 100}`}
+          icon={Send}
+          color="orange"
+          subtitle="Daily campaign cap"
+        />
         <StatsCard title="Contacted" value={s?.contactedLeads ?? 0} icon={Send} color="blue" />
         <StatsCard title="Closed" value={s?.closedLeads ?? 0} icon={UserX} color="red" />
         <StatsCard title="Published Blogs" value={s?.publishedBlogs ?? 0} icon={PenLine} color="purple" />
-        <StatsCard
-          title="B2B / Individual"
-          value={`${s?.leadsByType.business ?? 0} / ${s?.leadsByType.individual ?? 0}`}
-          icon={FileText}
-          color="orange"
-        />
+        <StatsCard title="B2B / Individual" value={`${s?.leadsByType.business ?? 0} / ${s?.leadsByType.individual ?? 0}`} icon={FileText} color="orange" />
       </div>
 
       {/* Recent Leads */}

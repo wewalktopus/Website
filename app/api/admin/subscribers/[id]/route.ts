@@ -22,9 +22,30 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (session.role === 'viewer') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { id } = await params;
-  const { active } = await req.json();
+  const body = (await req.json()) as {
+    active?: boolean;
+    emailPreferences?: {
+      newsletter?: boolean;
+      campaigns?: boolean;
+    };
+  };
+
+  const hasPrefs = typeof body.emailPreferences === 'object' && body.emailPreferences !== null;
+  const newsletter = hasPrefs
+    ? Boolean(body.emailPreferences?.newsletter)
+    : Boolean(body.active);
+  const campaigns = hasPrefs
+    ? Boolean(body.emailPreferences?.campaigns)
+    : Boolean(body.active);
+
   const db = getFirebaseAdminDb();
-  await db.collection('newsletter_subscribers').doc(id).update({ active: Boolean(active) });
+  await db.collection('newsletter_subscribers').doc(id).update({
+    active: newsletter || campaigns,
+    emailPreferences: {
+      newsletter,
+      campaigns,
+    },
+  });
 
   return NextResponse.json({ success: true });
 }

@@ -44,8 +44,21 @@ export async function sendNewBlogEmailToSubscribers(input: BlogNewsletterInput):
     .get();
 
   const recipients = subscribersSnapshot.docs
-    .map((doc) => doc.data()?.email)
-    .filter((email): email is string => typeof email === 'string' && email.includes('@'));
+    .map((doc) => {
+      const data = doc.data();
+      const email = typeof data?.email === 'string' ? data.email : null;
+      const newsletterPref =
+        typeof data?.emailPreferences?.newsletter === 'boolean'
+          ? data.emailPreferences.newsletter
+          : Boolean(data?.active ?? true);
+
+      if (!email || !email.includes('@') || !newsletterPref) {
+        return null;
+      }
+
+      return email;
+    })
+    .filter((email): email is string => Boolean(email));
 
   if (!recipients.length) {
     return { sent: 0, failed: 0 };
