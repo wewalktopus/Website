@@ -23,6 +23,7 @@ function makeReadTime(content: string): string {
 
 function mapBlog(doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>): BlogPost {
   const data = doc.data() as FirestoreBlog;
+  const normalizedImageUrl = typeof data.imageUrl === 'string' && data.imageUrl.trim() ? data.imageUrl.trim() : null;
   return {
     id: doc.id,
     title: data.title,
@@ -35,7 +36,7 @@ function mapBlog(doc: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.
     authorName: data.authorName,
     category: data.category ?? 'Blog',
     readTime: data.readTime ?? makeReadTime(data.content ?? ''),
-    imageUrl: data.imageUrl ?? null,
+    imageUrl: normalizedImageUrl,
     createdAt: toIso(data.createdAt),
     updatedAt: toIso(data.updatedAt),
   };

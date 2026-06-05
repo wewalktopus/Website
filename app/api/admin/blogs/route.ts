@@ -15,6 +15,12 @@ function slugify(text: string): string {
     .trim();
 }
 
+function normalizeImageUrl(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : null;
+}
+
 export async function GET(req: NextRequest) {
   const session = await verifyAdminRequest(req);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -43,6 +49,7 @@ export async function POST(req: NextRequest) {
   if (session.role === 'viewer') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   const { title, excerpt, content, imageUrl, status: postStatus } = await req.json();
+  const normalizedImageUrl = normalizeImageUrl(imageUrl);
 
   if (!title || !content) {
     return NextResponse.json({ error: 'Title and content are required' }, { status: 400 });
@@ -56,7 +63,7 @@ export async function POST(req: NextRequest) {
     slug,
     excerpt: excerpt ?? '',
     content,
-    imageUrl: imageUrl ?? null,
+    imageUrl: normalizedImageUrl,
     status: postStatus === 'published' ? 'published' : 'draft',
     author: session.uid,
     authorName: session.name,
@@ -72,7 +79,7 @@ export async function POST(req: NextRequest) {
         title,
         slug,
         excerpt: excerpt ?? '',
-        imageUrl: imageUrl ?? null,
+        imageUrl: normalizedImageUrl,
       });
 
       await ref.update({

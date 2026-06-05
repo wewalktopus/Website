@@ -1,11 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { Bell, CheckCircle, FileText, Inbox, Mail, Paperclip, RefreshCw, Save, Send, Users, XCircle } from 'lucide-react';
 import type { EmailTemplate, Lead, NewsletterSubscriber } from '@/types';
 
 type RecipientMode = 'custom' | 'leads' | 'subscribers' | 'converted';
-type SenderProfile = 'professional' | 'premium' | 'feedback' | 'contact' | 'custom';
 type MailboxFolder = 'compose' | 'inbox' | 'sent' | 'draft';
 
 interface MailboxMessage {
@@ -15,13 +15,22 @@ interface MailboxMessage {
   body?: string;
   preview?: string;
   from?: string;
+  to?: string[];
+  toLine?: string;
   toCount?: number;
   sent?: number;
   failed?: number;
   createdAt?: string | null;
-  senderProfile?: SenderProfile;
-  senderLocalPart?: string;
-  to?: string[];
+}
+
+interface InboxDetail {
+  id: string;
+  subject: string;
+  from: string | null;
+  to: string[];
+  createdAt: string | null;
+  text: string;
+  html: string;
 }
 
 export default function EmailsPage() {
@@ -30,8 +39,6 @@ export default function EmailsPage() {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [recipientMode, setRecipientMode] = useState<RecipientMode>('custom');
-  const [senderProfile, setSenderProfile] = useState<SenderProfile>('professional');
-  const [senderLocalPart, setSenderLocalPart] = useState('hello');
   const [customEmails, setCustomEmails] = useState('');
   const [attachments, setAttachments] = useState<File[]>([]);
   const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
@@ -42,6 +49,11 @@ export default function EmailsPage() {
   const [inboxMessages, setInboxMessages] = useState<MailboxMessage[]>([]);
   const [sentMessages, setSentMessages] = useState<MailboxMessage[]>([]);
   const [draftMessages, setDraftMessages] = useState<MailboxMessage[]>([]);
+
+  const [selectedInboxMessage, setSelectedInboxMessage] = useState<MailboxMessage | null>(null);
+  const [selectedInboxDetail, setSelectedInboxDetail] = useState<InboxDetail | null>(null);
+  const [replyBody, setReplyBody] = useState('');
+  const [replySending, setReplySending] = useState(false);
 
   const [sending, setSending] = useState(false);
   const [savingDraft, setSavingDraft] = useState(false);
@@ -76,7 +88,8 @@ export default function EmailsPage() {
   const recipients = getRecipients();
 
   const fetchMailbox = async (folder: 'inbox' | 'sent' | 'draft') => {
-    const response = await fetch(`/api/admin/email/mailboxes?folder=${folder}&limit=100`);
+    const endpoint = folder === 'inbox' ? '/api/admin/email/inbox?limit=100' : `/api/admin/email/mailboxes?folder=${folder}&limit=100`;
+    const response = await fetch(endpoint);
     const data = await response.json();
     const messages = (data.messages ?? []) as MailboxMessage[];
 
@@ -114,6 +127,49 @@ export default function EmailsPage() {
     void refreshAll();
   }, []);
 
+  const openInboxDetail = async (message: MailboxMessage) => {
+    setSelectedInboxMessage(message);
+    setSelectedInboxDetail(null);
+    setReplyBody('');
+
+    const response = await fetch(`/api/admin/email/inbox/${message.id}`);
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error ?? 'Failed to load email details');
+      return;
+    }
+
+    setSelectedInboxDetail(data.message as InboxDetail);
+  };
+
+  const sendReply = async () => {
+    if (!selectedInboxMessage || !replyBody.trim()) {
+      setError('Reply message is required');
+      return;
+    }
+
+    setReplySending(true);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/admin/email/inbox/${selectedInboxMessage.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: replyBody }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? 'Failed to send reply');
+
+      setReplyBody('');
+      await fetchMailbox('sent');
+      alert('Reply sent successfully.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send reply');
+    } finally {
+      setReplySending(false);
+    }
+  };
+
   const applyTemplate = (template: EmailTemplate) => {
     setSubject(template.subject);
     setBody(template.body);
@@ -123,8 +179,6 @@ export default function EmailsPage() {
   const loadDraftIntoCompose = (draft: MailboxMessage) => {
     setSubject(draft.subject ?? '');
     setBody(draft.body ?? '');
-    setSenderProfile((draft.senderProfile ?? 'professional') as SenderProfile);
-    setSenderLocalPart(draft.senderLocalPart ?? 'hello');
     setCustomEmails(Array.isArray(draft.to) ? draft.to.join(', ') : '');
     setRecipientMode('custom');
     setEditingDraftId(draft.id);
@@ -145,8 +199,6 @@ export default function EmailsPage() {
           subject,
           body,
           to,
-          senderProfile,
-          senderLocalPart,
         }),
       });
       const data = await response.json();
@@ -189,8 +241,6 @@ export default function EmailsPage() {
       formData.set('to', JSON.stringify(recipients));
       formData.set('subject', subject);
       formData.set('body', body);
-      formData.set('senderProfile', senderProfile);
-      formData.set('senderLocalPart', senderLocalPart.trim().toLowerCase());
       for (const file of attachments) {
         formData.append('attachments', file);
       }
@@ -232,12 +282,18 @@ export default function EmailsPage() {
           {messages.map((message) => (
             <div
               key={message.id}
-              className="rounded-xl border border-white/10 bg-[#111111] p-4 hover:border-orange-500/30 transition-colors"
+              onClick={() => (folder === 'inbox' ? openInboxDetail(message) : undefined)}
+              className={`rounded-xl border bg-[#111111] p-4 transition-colors ${
+                selectedInboxMessage?.id === message.id
+                  ? 'border-orange-500/40'
+                  : 'border-white/10 hover:border-orange-500/30'
+              } ${folder === 'inbox' ? 'cursor-pointer' : ''}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">{message.subject || 'No Subject'}</p>
                   {message.from ? <p className="text-xs text-gray-500 mt-0.5">From: {message.from}</p> : null}
+                  {message.toLine ? <p className="text-xs text-gray-500 mt-0.5">To: {message.toLine}</p> : null}
                   {message.preview ? <p className="text-xs text-gray-400 mt-1 line-clamp-2">{message.preview}</p> : null}
                   {typeof message.toCount === 'number' ? (
                     <p className="text-xs text-gray-500 mt-1">Recipients: {message.toCount}</p>
@@ -306,7 +362,7 @@ export default function EmailsPage() {
 
       {activeView === 'compose' ? (
         <>
-          {templates.length > 0 && (
+          {templates.length > 0 ? (
             <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-5">
               <p className="text-sm font-medium text-gray-300 mb-3">Apply Template</p>
               <div className="flex flex-wrap gap-2">
@@ -321,7 +377,7 @@ export default function EmailsPage() {
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
@@ -384,34 +440,11 @@ export default function EmailsPage() {
                   {editingDraftId ? <p className="text-xs text-orange-300">Editing draft</p> : null}
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-3">
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#111111] px-3 py-2.5">
+                  <Image src="/logo.png" alt="Walktopus" width={28} height={28} className="h-7 w-7 rounded-full object-contain bg-white p-0.5" />
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Sender Profile</label>
-                    <select
-                      value={senderProfile}
-                      onChange={(event) => setSenderProfile(event.target.value as SenderProfile)}
-                      className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-orange-500/50"
-                    >
-                      <option value="professional">Professional</option>
-                      <option value="premium">Premium</option>
-                      <option value="feedback">Feedback</option>
-                      <option value="contact">Contact</option>
-                      <option value="custom">Custom</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">From Local-Part</label>
-                    <div className="flex rounded-lg overflow-hidden border border-white/10 focus-within:border-orange-500/50 transition-colors">
-                      <input
-                        value={senderLocalPart}
-                        onChange={(event) =>
-                          setSenderLocalPart(event.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, ''))
-                        }
-                        placeholder="hello"
-                        className="flex-1 px-3 py-2.5 bg-[#111111] text-sm text-white placeholder-gray-600 focus:outline-none"
-                      />
-                      <span className="px-3 py-2.5 bg-[#161616] text-xs text-gray-400 border-l border-white/10">@walktopus.in</span>
-                    </div>
+                    <p className="text-xs text-gray-400">From</p>
+                    <p className="text-sm font-semibold text-white">Walktopus</p>
                   </div>
                 </div>
 
@@ -471,10 +504,6 @@ export default function EmailsPage() {
                   ) : null}
                 </div>
 
-                <p className="text-xs text-gray-500">
-                  Campaign subscribers count now follows preference-based opt-in. Unsubscribe links are included automatically.
-                </p>
-
                 {error ? (
                   <div className="flex items-center gap-2 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
                     <XCircle size={15} /> {error}
@@ -524,6 +553,67 @@ export default function EmailsPage() {
       ) : null}
 
       {activeView === 'inbox' ? renderMailboxList('Inbox', inboxMessages, 'inbox') : null}
+
+      {activeView === 'inbox' && selectedInboxMessage ? (
+        <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-white">Email Detail</p>
+            <button
+              onClick={() => {
+                setSelectedInboxMessage(null);
+                setSelectedInboxDetail(null);
+              }}
+              className="text-xs px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white"
+            >
+              Close
+            </button>
+          </div>
+
+          {selectedInboxDetail ? (
+            <>
+              <div className="rounded-xl border border-white/10 bg-[#111111] p-4 space-y-2">
+                <p className="text-base font-semibold text-white">{selectedInboxDetail.subject}</p>
+                <p className="text-xs text-gray-400">From: {selectedInboxDetail.from ?? 'Unknown'}</p>
+                <p className="text-xs text-gray-400">To: {selectedInboxDetail.to.join(', ') || '—'}</p>
+                <p className="text-xs text-gray-500">
+                  {selectedInboxDetail.createdAt ? new Date(selectedInboxDetail.createdAt).toLocaleString('en-IN') : ''}
+                </p>
+                <div className="mt-3 rounded-lg border border-white/10 bg-black/20 p-3 max-h-72 overflow-y-auto">
+                  {selectedInboxDetail.html ? (
+                    <div className="text-sm text-gray-200" dangerouslySetInnerHTML={{ __html: selectedInboxDetail.html }} />
+                  ) : (
+                    <pre className="text-sm text-gray-300 whitespace-pre-wrap">{selectedInboxDetail.text || 'No content'}</pre>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Reply</label>
+                <textarea
+                  value={replyBody}
+                  onChange={(event) => setReplyBody(event.target.value)}
+                  rows={6}
+                  placeholder="Type your reply..."
+                  className="w-full px-3 py-2.5 bg-[#111111] border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 resize-y"
+                />
+                <div className="mt-3 flex justify-end">
+                  <button
+                    onClick={sendReply}
+                    disabled={replySending || !replyBody.trim()}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-400 disabled:bg-orange-500/40 text-white rounded-xl text-sm font-semibold"
+                  >
+                    {replySending ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
+                    Reply
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-gray-500">Loading message details...</p>
+          )}
+        </div>
+      ) : null}
+
       {activeView === 'sent' ? renderMailboxList('Sentbox', sentMessages, 'sent') : null}
       {activeView === 'draft' ? renderMailboxList('Drafts', draftMessages, 'draft') : null}
     </div>

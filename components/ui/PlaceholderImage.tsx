@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -28,7 +31,9 @@ export function PlaceholderImage({
   priority = false,
   quality = 72,
 }: PlaceholderImageProps) {
-  const resolvedSrc = src ?? `https://picsum.photos/seed/${seed}/${width}/${height}`;
+  const fallbackSrc = useMemo(() => `https://picsum.photos/seed/${seed}/${width}/${height}`, [seed, width, height]);
+  const preferredSrc = typeof src === 'string' && src.trim() ? src.trim() : fallbackSrc;
+  const [currentSrc, setCurrentSrc] = useState(preferredSrc);
 
   return (
     <div className={cn('relative overflow-hidden', className)}>
@@ -38,13 +43,18 @@ export function PlaceholderImage({
         </span>
       ) : null}
       <Image
-        src={resolvedSrc}
+        src={currentSrc}
         alt={alt}
         width={width}
         height={height}
         sizes={sizes}
         priority={priority}
         quality={quality}
+        onError={() => {
+          if (currentSrc !== fallbackSrc) {
+            setCurrentSrc(fallbackSrc);
+          }
+        }}
         className={cn('h-full w-full object-cover grayscale-30', imageClassName)}
       />
       {overlay ? <div className="absolute inset-0 bg-(--color-bg)/20 mix-blend-multiply" /> : null}

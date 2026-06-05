@@ -12,8 +12,6 @@ const BATCH_SIZE = 25;
 const MAX_ATTACHMENTS = 5;
 const MAX_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024;
 
-type SenderProfile = 'professional' | 'premium' | 'feedback' | 'contact' | 'custom';
-
 function sanitizeEmails(input: unknown): string[] {
   if (!Array.isArray(input)) return [];
 
@@ -31,28 +29,10 @@ function sanitizeEmails(input: unknown): string[] {
   return results;
 }
 
-function isValidLocalPart(localPart: string): boolean {
-  return /^[a-z0-9._-]{1,64}$/i.test(localPart);
-}
-
-function getSenderName(profile: SenderProfile): string {
-  const map: Record<SenderProfile, string> = {
-    professional: 'Walktopus Professional',
-    premium: 'Walktopus Premium',
-    feedback: 'Walktopus Feedback',
-    contact: 'Walktopus Contact',
-    custom: 'Walktopus Outreach',
-  };
-
-  return map[profile];
-}
-
 async function parsePayload(req: NextRequest): Promise<{
   recipients: string[];
   subject: string;
   body: string;
-  senderProfile: SenderProfile;
-  senderLocalPart: string;
   attachments: File[];
 }> {
   const contentType = req.headers.get('content-type') ?? '';
@@ -69,21 +49,10 @@ async function parsePayload(req: NextRequest): Promise<{
       }
     }
 
-    const senderProfileValue = String(formData.get('senderProfile') ?? 'professional').trim().toLowerCase();
-    const senderProfile: SenderProfile =
-      senderProfileValue === 'premium' ||
-      senderProfileValue === 'feedback' ||
-      senderProfileValue === 'contact' ||
-      senderProfileValue === 'custom'
-        ? senderProfileValue
-        : 'professional';
-
     return {
       recipients: sanitizeEmails(parsedRecipients),
       subject: String(formData.get('subject') ?? '').trim(),
       body: String(formData.get('body') ?? '').trim(),
-      senderProfile,
-      senderLocalPart: String(formData.get('senderLocalPart') ?? '').trim().toLowerCase(),
       attachments: formData.getAll('attachments').filter((file): file is File => file instanceof File),
     };
   }
@@ -92,25 +61,12 @@ async function parsePayload(req: NextRequest): Promise<{
     to?: unknown;
     subject?: string;
     body?: string;
-    senderProfile?: string;
-    senderLocalPart?: string;
   };
-
-  const senderProfileValue = (body.senderProfile ?? 'professional').trim().toLowerCase();
-  const senderProfile: SenderProfile =
-    senderProfileValue === 'premium' ||
-    senderProfileValue === 'feedback' ||
-    senderProfileValue === 'contact' ||
-    senderProfileValue === 'custom'
-      ? senderProfileValue
-      : 'professional';
 
   return {
     recipients: sanitizeEmails(body.to),
     subject: (body.subject ?? '').trim(),
     body: (body.body ?? '').trim(),
-    senderProfile,
-    senderLocalPart: (body.senderLocalPart ?? '').trim().toLowerCase(),
     attachments: [],
   };
 }
@@ -201,16 +157,9 @@ export async function POST(req: NextRequest) {
       throw error;
     }
 
-    const defaultSender = process.env.RESEND_FROM_EMAIL ?? 'hello@walktopus.in';
-    const fallbackLocalPart = defaultSender.includes('@') ? defaultSender.split('@')[0] : 'hello';
-    const senderLocalPart = payload.senderLocalPart || fallbackLocalPart;
-
-    if (!isValidLocalPart(senderLocalPart)) {
-      return NextResponse.json({ error: 'Invalid sender local-part' }, { status: 400 });
-    }
-
     const resend = getResend();
-    const from = `${getSenderName(payload.senderProfile)} <${senderLocalPart}@walktopus.in>`;
+    const defaultSender = process.env.RESEND_FROM_EMAIL ?? 'hello@walktopus.in';
+    const from = `Walktopus <${defaultSender}>`;
 
     const attachments = await Promise.all(
       payload.attachments.map(async (file) => ({
@@ -254,8 +203,6 @@ export async function POST(req: NextRequest) {
       sent,
       failed,
       skippedUnsubscribed: unsubscribed.size,
-      senderProfile: payload.senderProfile,
-      senderLocalPart,
       from,
       attachmentsCount: attachments.length,
       sampleRecipients: recipients.slice(0, 25),

@@ -24,19 +24,7 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '50', 10), 200);
 
     if (folder === 'inbox') {
-      const snapshot = await db.collection('leads').orderBy('createdAt', 'desc').limit(limit).get();
-      const messages = snapshot.docs.map((doc) => ({
-        id: `lead-${doc.id}`,
-        folder: 'inbox',
-        from: doc.data().email ?? 'unknown@lead',
-        toCount: 1,
-        subject: `Lead Inquiry: ${doc.data().name ?? 'Unknown'}`,
-        preview: (doc.data().message ?? '').slice(0, 220),
-        createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? null,
-        status: doc.data().status ?? 'new',
-      }));
-
-      return NextResponse.json({ messages, folder });
+      return NextResponse.json({ messages: [], folder, source: 'resend' });
     }
 
     const snapshot = await db.collection('email_messages').orderBy('createdAt', 'desc').limit(limit * 4).get();

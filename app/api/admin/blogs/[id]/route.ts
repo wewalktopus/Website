@@ -6,6 +6,12 @@ import { getFirebaseAdminDb } from '@/lib/firebase-admin';
 
 export const runtime = 'nodejs';
 
+function normalizeImageUrl(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : null;
+}
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await verifyAdminRequest(req);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -45,7 +51,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const updates: Record<string, unknown> = { updatedAt: FieldValue.serverTimestamp() };
 
   for (const key of ['title', 'excerpt', 'content', 'status', 'imageUrl']) {
-    if (key in body) updates[key] = body[key];
+    if (key in body) {
+      updates[key] = key === 'imageUrl' ? normalizeImageUrl(body[key]) : body[key];
+    }
   }
 
   await docRef.update(updates);
@@ -59,9 +67,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const nextExcerpt = typeof body.excerpt === 'string'
       ? body.excerpt
       : (typeof prevData.excerpt === 'string' ? prevData.excerpt : '');
-    const nextImageUrl = typeof body.imageUrl === 'string'
-      ? body.imageUrl
-      : (typeof prevData.imageUrl === 'string' ? prevData.imageUrl : null);
+    const nextImageUrl = normalizeImageUrl(body.imageUrl)
+      ?? (typeof prevData.imageUrl === 'string' ? normalizeImageUrl(prevData.imageUrl) : null);
 
     if (nextSlug) {
       try {
