@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FieldValue } from 'firebase-admin/firestore';
+import { revalidateTag } from 'next/cache';
 import { verifyAdminRequest } from '@/lib/admin-auth';
 import { getFirebaseAdminDb } from '@/lib/firebase-admin';
 import { DEFAULT_PRICING_CONFIG, normalizePricingConfig } from '@/lib/pricing-config';
@@ -69,6 +70,9 @@ export async function PUT(req: NextRequest) {
     const doc = await ref.get();
     const data = doc.data() ?? {};
     const saved = normalizePricingConfig((data as { config?: unknown }).config ?? data);
+
+    // Bust the Next.js data cache so services/solutions pages show updated pricing immediately
+    revalidateTag('pricing');
 
     return NextResponse.json({ success: true, config: withMetadata(saved, data) });
   } catch (error) {

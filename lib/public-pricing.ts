@@ -27,7 +27,7 @@ export async function getPricingForRequest(): Promise<{
 
   try {
     const response = await fetch(`${protocol}://${host}/api/pricing?country=${country}`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 300, tags: ['pricing'] },
       signal: AbortSignal.timeout(1200),
     });
 
