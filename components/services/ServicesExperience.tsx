@@ -82,9 +82,6 @@ function renderCompactCategory(category: PricingServiceCategory) {
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-bg-secondary)] bg-white/90 shadow-sm">
       <div className="border-b border-[var(--color-bg-secondary)] bg-[linear-gradient(135deg,var(--color-bg-light),#fff)] px-3 py-3 md:px-6 md:py-4">
-        <p className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-accent)]">
-          <Sparkles className="h-3.5 w-3.5" /> Service Category
-        </p>
         <h3 className="mt-1.5 inline-flex items-center gap-2 text-lg font-extrabold leading-tight tracking-tight text-[var(--color-text-dark)] md:mt-2 md:text-2xl">
           <CategoryIcon className="h-5 w-5 text-[var(--color-accent)]" />
           <span>{category.label}</span>

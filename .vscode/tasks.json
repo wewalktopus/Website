@@ -26,6 +26,438 @@
 				"git add components/ui/CreativeRouteLoader.tsx app/api/loader/route.ts && git commit -m feat(loader):switch-to-favicon-loader-and-add-api-preview-endpoint && git push TirthaVS main"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "check-status-after-admin-updates",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git status --short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-build-after-admin-mail-blog-updates",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"npm run build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "kill-stuck-next-build-processes",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"taskkill /F /IM node.exe"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-build-after-killing-stuck-processes",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"npm run build"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-lint-after-admin-updates",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"npm run lint"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-lint-direct-command",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"lint"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-typecheck-after-admin-updates",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check-status-before-commit-admin-update",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "stage-admin-blog-email-newsletter-updates",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"add",
+				"app/api/admin/blogs/[id]/route.ts",
+				"app/api/admin/blogs/route.ts",
+				"app/api/admin/blogs/upload/route.ts",
+				"app/api/admin/email/send/route.ts",
+				"app/api/contact/route.ts",
+				"app/api/newsletter/route.ts",
+				"app/api/newsletter/unsubscribe/route.ts",
+				"app/superadmin/(admin)/blogs/page.tsx",
+				"app/superadmin/(admin)/emails/page.tsx",
+				"emails/ContactConfirmation.tsx",
+				"firestore.rules",
+				"lib/blog-newsletter.ts",
+				"lib/email-unsubscribe.ts",
+				"lib/imgbb.ts"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "stage-feature-files-cmd-quoted",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add \"app/api/admin/blogs/[id]/route.ts\" \"app/api/admin/blogs/route.ts\" \"app/api/admin/blogs/upload/route.ts\" \"app/api/admin/email/send/route.ts\" \"app/api/contact/route.ts\" \"app/api/newsletter/route.ts\" \"app/api/newsletter/unsubscribe/route.ts\" \"app/superadmin/(admin)/blogs/page.tsx\" \"app/superadmin/(admin)/emails/page.tsx\" \"emails/ContactConfirmation.tsx\" \"firestore.rules\" \"lib/blog-newsletter.ts\" \"lib/email-unsubscribe.ts\" \"lib/imgbb.ts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-staged-files-only",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit-admin-blog-email-upgrades",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"feat(admin): add blog image uploads and advanced email campaigns with unsubscribe automation"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push-admin-blog-email-upgrades",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"origin",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "check-git-remotes",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"remote",
+				"-v"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push-to-tirthavs-main",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"TirthaVS",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "final-status-check",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-after-dashboard-unsub-prefs",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "status-before-second-commit",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "stage-second-feature-update",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add \"app/api/admin/analytics/route.ts\" \"app/api/admin/email/send/route.ts\" \"app/api/admin/subscribers/[id]/route.ts\" \"app/api/admin/subscribers/route.ts\" \"app/api/newsletter/route.ts\" \"app/api/newsletter/unsubscribe/route.ts\" \"app/superadmin/(admin)/dashboard/page.tsx\" \"app/superadmin/(admin)/subscribers/page.tsx\" \"lib/blog-newsletter.ts\" \"lib/email-unsubscribe.ts\" \"types/index.ts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-staged-second-update",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit-second-feature-update",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"feat(admin): add email daily usage widget and scoped unsubscribe preferences"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push-second-feature-update",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"TirthaVS",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "final-status-after-second-update",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-after-mailbox-leads-scrollbar-update",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "retypecheck-after-fixes-mailbox-leads",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "status-before-final-commit-mailbox-modernization",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "stage-final-feature-batch",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add \"app/api/admin/email/send/route.ts\" \"app/api/admin/subscribers/route.ts\" \"app/globals.css\" \"app/superadmin/(admin)/emails/page.tsx\" \"app/superadmin/(admin)/leads/page.tsx\" \"firestore.rules\" \"lib/blog-newsletter.ts\" \"app/api/admin/email/mailboxes/route.ts\" \"app/api/admin/email/mailboxes/[id]/route.ts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "verify-stage-before-final-commit",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit-final-feature-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"feat(admin): fix subscriber campaign sync and add mailboxes with modern leads-ui polish"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push-final-feature-batch",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"TirthaVS",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "final-status-after-all-updates",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-after-resend-inbox-blog-image-fixes",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-after-rewrite-emails-page",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "status-before-commit-resend-inbox-blogfix",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "stage-resend-inbox-blogfix",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"git add \"app/api/admin/blogs/[id]/route.ts\" \"app/api/admin/blogs/route.ts\" \"app/api/admin/email/mailboxes/route.ts\" \"app/api/admin/email/send/route.ts\" \"app/api/admin/email/inbox/route.ts\" \"app/api/admin/email/inbox/[id]/route.ts\" \"app/superadmin/(admin)/emails/page.tsx\" \"components/ui/PlaceholderImage.tsx\" \"lib/public-blogs.ts\" \"next.config.ts\""
+			],
+			"isBackground": false
+		},
+		{
+			"label": "commit-resend-inbox-blogfix",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"commit",
+				"-m",
+				"feat(email): integrate resend inbox detail/reply and fix blog image rendering"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "push-resend-inbox-blogfix",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"TirthaVS",
+				"main"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "status-after-push",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--short"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-inbox-fix",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-inbox-fix2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "typecheck-inbox-fix3",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
 		}
 	]
 }
