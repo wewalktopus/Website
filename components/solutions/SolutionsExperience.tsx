@@ -240,7 +240,7 @@ export function SolutionsExperience({ content }: SolutionsExperienceProps) {
                         </div>
                       </div>
 
-                      <div className="mt-6">
+                      <div className="mt-6 flex-1">
                         <p className="font-semibold uppercase tracking-[0.08em] text-[var(--color-text-dark)]">Included engines</p>
                         <ul className="mt-3 space-y-2 text-sm text-[var(--color-soft-gray)]">
                           {solution.bundledServices.map((item) => (
@@ -254,15 +254,15 @@ export function SolutionsExperience({ content }: SolutionsExperienceProps) {
 
                       <div className="mt-6 rounded-sm border border-[var(--color-bg-secondary)] bg-white/70 p-4">
                         <p className="font-semibold text-[var(--color-text-dark)]">Plans commonly used to power this system</p>
-                        <div className="mt-3 flex flex-wrap gap-3">
+                        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                           {linkedPlans.map((plan) => (
                             <Link
                               key={plan.id}
                               href={`/services#${plan.id}`}
-                              className="inline-flex items-center gap-2 border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-3 py-2 text-sm text-[var(--color-text-dark)] transition-colors hover:border-[var(--color-accent)]"
+                              className="inline-flex min-w-0 items-center justify-between gap-2 border border-[var(--color-bg-secondary)] bg-[var(--color-bg-light)] px-3 py-2 text-xs text-[var(--color-text-dark)] transition-colors hover:border-[var(--color-accent)] sm:text-sm"
                             >
-                              <span className="font-semibold">{plan.name}</span>
-                              <span className="text-[var(--color-soft-gray)]">{plan.price}</span>
+                              <span className="font-semibold whitespace-nowrap">{plan.name}</span>
+                              <span className="truncate text-[var(--color-soft-gray)]">{plan.price}</span>
                             </Link>
                           ))}
                         </div>
@@ -278,7 +278,7 @@ export function SolutionsExperience({ content }: SolutionsExperienceProps) {
                         <Button
                           href="/services#monthly-plans"
                           variant="secondary"
-                          className="w-full justify-center px-4 py-3 text-xs tracking-[0.06em]"
+                          className="w-full justify-center px-4 py-3 text-xs tracking-[0.06em] hover:!text-white active:!text-white focus:!text-white"
                         >
                           Compare Plans
                         </Button>
