@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       to?: string[];
       senderProfile?: string;
       senderLocalPart?: string;
+      templateId?: string | null;
     };
 
     const db = getFirebaseAdminDb();
@@ -80,6 +81,7 @@ export async function POST(req: NextRequest) {
       toCount: Array.isArray(body.to) ? body.to.length : 0,
       senderProfile: body.senderProfile ?? 'professional',
       senderLocalPart: body.senderLocalPart ?? 'hello',
+      templateId: body.templateId ?? null,
       createdBy: session.uid,
       createdByEmail: session.email,
       updatedAt: FieldValue.serverTimestamp(),

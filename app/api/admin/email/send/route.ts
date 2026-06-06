@@ -11,6 +11,13 @@ const DAILY_RECIPIENT_LIMIT = 100;
 const BATCH_SIZE = 25;
 const MAX_ATTACHMENTS = 5;
 const MAX_ATTACHMENT_SIZE_BYTES = 10 * 1024 * 1024;
+const SENDER_DOMAIN = 'walktopus.in';
+
+function normalizeSenderLocalPart(input: unknown): string {
+  const value = typeof input === 'string' ? input.trim().toLowerCase() : '';
+  if (!/^[a-z0-9._+-]{1,64}$/.test(value)) return '';
+  return value;
+}
 
 function sanitizeEmails(input: unknown): string[] {
   if (!Array.isArray(input)) return [];
@@ -34,6 +41,8 @@ async function parsePayload(req: NextRequest): Promise<{
   subject: string;
   body: string;
   attachments: File[];
+  senderLocalPart: string;
+  templateId: string | null;
 }> {
   const contentType = req.headers.get('content-type') ?? '';
 
@@ -54,6 +63,8 @@ async function parsePayload(req: NextRequest): Promise<{
       subject: String(formData.get('subject') ?? '').trim(),
       body: String(formData.get('body') ?? '').trim(),
       attachments: formData.getAll('attachments').filter((file): file is File => file instanceof File),
+      senderLocalPart: normalizeSenderLocalPart(formData.get('senderLocalPart')),
+      templateId: String(formData.get('templateId') ?? '').trim() || null,
     };
   }
 
@@ -61,6 +72,8 @@ async function parsePayload(req: NextRequest): Promise<{
     to?: unknown;
     subject?: string;
     body?: string;
+    senderLocalPart?: string;
+    templateId?: string;
   };
 
   return {
@@ -68,6 +81,8 @@ async function parsePayload(req: NextRequest): Promise<{
     subject: (body.subject ?? '').trim(),
     body: (body.body ?? '').trim(),
     attachments: [],
+    senderLocalPart: normalizeSenderLocalPart(body.senderLocalPart),
+    templateId: (body.templateId ?? '').trim() || null,
   };
 }
 
@@ -85,6 +100,10 @@ export async function POST(req: NextRequest) {
 
     if (!payload.recipients.length) {
       return NextResponse.json({ error: 'No valid recipients' }, { status: 400 });
+    }
+
+    if (!payload.senderLocalPart) {
+      return NextResponse.json({ error: 'Invalid sender email name before @walktopus.in' }, { status: 400 });
     }
 
     if (payload.attachments.length > MAX_ATTACHMENTS) {
@@ -158,8 +177,17 @@ export async function POST(req: NextRequest) {
     }
 
     const resend = getResend();
-    const defaultSender = process.env.RESEND_FROM_EMAIL ?? 'hello@walktopus.in';
-    const from = `Walktopus <${defaultSender}>`;
+    const senderEmail = `${payload.senderLocalPart}@${SENDER_DOMAIN}`;
+    const from = `Walktopus <${senderEmail}>`;
+
+    let templateName: string | null = null;
+    if (payload.templateId) {
+      const templateSnap = await db.collection('email_templates').doc(payload.templateId).get();
+      if (templateSnap.exists) {
+        const templateData = templateSnap.data();
+        templateName = typeof templateData?.name === 'string' ? templateData.name : null;
+      }
+    }
 
     const attachments = await Promise.all(
       payload.attachments.map(async (file) => ({
@@ -206,6 +234,10 @@ export async function POST(req: NextRequest) {
       from,
       attachmentsCount: attachments.length,
       sampleRecipients: recipients.slice(0, 25),
+      senderLocalPart: payload.senderLocalPart,
+      senderEmail,
+      templateId: payload.templateId,
+      templateName,
       createdBy: session.uid,
       createdByEmail: session.email,
       createdAt: FieldValue.serverTimestamp(),

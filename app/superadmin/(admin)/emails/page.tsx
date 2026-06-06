@@ -28,6 +28,8 @@ type RecipientMode = 'custom' | 'leads' | 'subscribers' | 'converted';
 type MailboxFolder = 'compose' | 'inbox' | 'sent' | 'draft';
 type ComposerMode = 'reply' | 'forward' | null;
 
+const SENDER_LOCAL_PART_OPTIONS = ['hello', 'team', 'support', 'updates', 'marketing'] as const;
+
 interface InboxListItem {
   id: string;
   folder: 'inbox';
@@ -71,6 +73,8 @@ interface MailboxMessage {
   sent?: number;
   failed?: number;
   createdAt?: string | null;
+  senderLocalPart?: string;
+  templateId?: string | null;
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -93,8 +97,11 @@ export default function EmailsPage() {
   // Compose state
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [recipientMode, setRecipientMode] = useState<RecipientMode>('custom');
   const [customEmails, setCustomEmails] = useState('');
+  const [senderLocalPartOption, setSenderLocalPartOption] = useState<string>('hello');
+  const [customSenderLocalPart, setCustomSenderLocalPart] = useState('');
   const [composeAttachments, setComposeAttachments] = useState<File[]>([]);
   const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
   const [bodyPreview, setBodyPreview] = useState(false);
@@ -145,6 +152,16 @@ export default function EmailsPage() {
       default: return [];
     }
   }, [recipientMode, customEmails, leads, campaignSubs]);
+
+  const selectedTemplate = useMemo(
+    () => templates.find((template) => template.id === selectedTemplateId) ?? null,
+    [templates, selectedTemplateId],
+  );
+
+  const senderLocalPart = useMemo(() => {
+    if (senderLocalPartOption === '__custom__') return customSenderLocalPart.trim().toLowerCase();
+    return senderLocalPartOption.trim().toLowerCase();
+  }, [senderLocalPartOption, customSenderLocalPart]);
 
   // ─── Data fetching ──────────────────────────────────────────────────────────
 
@@ -256,12 +273,28 @@ export default function EmailsPage() {
 
   // ─── Compose helpers ─────────────────────────────────────────────────────────
 
-  const applyTemplate = (t: EmailTemplate) => { setSubject(t.subject); setBody(t.body); setActiveView('compose'); };
+  const applyTemplate = (templateId: string) => {
+    setSelectedTemplateId(templateId);
+    const template = templates.find((item) => item.id === templateId);
+    if (!template) return;
+    setSubject(template.subject);
+    setBody(template.body);
+    setActiveView('compose');
+  };
 
   const loadDraft = (draft: MailboxMessage) => {
     setSubject(draft.subject ?? '');
     setBody(draft.body ?? '');
+    setSelectedTemplateId(draft.templateId ?? '');
     setCustomEmails(Array.isArray(draft.to) ? draft.to.join(', ') : '');
+    const draftSender = (draft.senderLocalPart ?? 'hello').trim().toLowerCase();
+    if (SENDER_LOCAL_PART_OPTIONS.includes(draftSender as (typeof SENDER_LOCAL_PART_OPTIONS)[number])) {
+      setSenderLocalPartOption(draftSender);
+      setCustomSenderLocalPart('');
+    } else {
+      setSenderLocalPartOption('__custom__');
+      setCustomSenderLocalPart(draftSender);
+    }
     setRecipientMode('custom');
     setEditingDraftId(draft.id);
     setActiveView('compose');
@@ -272,7 +305,14 @@ export default function EmailsPage() {
     try {
       const resp = await fetch('/api/admin/email/mailboxes', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingDraftId, subject, body, to: recipients }),
+        body: JSON.stringify({
+          id: editingDraftId,
+          subject,
+          body,
+          to: recipients,
+          senderLocalPart,
+          templateId: selectedTemplateId || null,
+        }),
       });
       const data = (await resp.json()) as { id?: string; error?: string };
       if (!resp.ok) throw new Error(data.error ?? 'Failed to save draft');
@@ -293,11 +333,17 @@ export default function EmailsPage() {
   const handleSend = async () => {
     if (!subject.trim() || !body.trim()) { setSendError('Subject and body are required.'); return; }
     if (recipients.length === 0) { setSendError('No valid recipients.'); return; }
+    if (!/^[a-z0-9._+-]{1,64}$/.test(senderLocalPart)) {
+      setSendError('Sender name before @walktopus.in is invalid. Use letters, numbers, dot, _, +, or -.');
+      return;
+    }
     if (!confirm(`Send to ${recipients.length} recipient(s)?`)) return;
     setSending(true); setSendError(''); setSendResult(null);
     try {
       const fd = new FormData();
       fd.set('to', JSON.stringify(recipients)); fd.set('subject', subject); fd.set('body', body);
+      fd.set('senderLocalPart', senderLocalPart);
+      if (selectedTemplateId) fd.set('templateId', selectedTemplateId);
       for (const f of composeAttachments) fd.append('attachments', f);
       const resp = await fetch('/api/admin/email/send', { method: 'POST', body: fd });
       const data = (await resp.json()) as { sent?: number; failed?: number; skippedUnsubscribed?: number; error?: string };
@@ -353,12 +399,22 @@ export default function EmailsPage() {
           {templates.length > 0 ? (
             <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-4">
               <p className="text-xs font-medium text-gray-400 mb-2">Apply Template</p>
-              <div className="flex flex-wrap gap-2">
-                {templates.map((t) => (
-                  <button key={t.id} onClick={() => applyTemplate(t)} className="px-3 py-1.5 bg-white/5 hover:bg-orange-500/15 border border-white/10 hover:border-orange-500/30 text-gray-400 hover:text-orange-400 rounded-lg text-xs font-medium transition-colors">
-                    {t.name}
-                  </button>
-                ))}
+              <div className="grid sm:grid-cols-2 gap-2">
+                <select
+                  value={selectedTemplateId}
+                  onChange={(e) => applyTemplate(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#111111] border border-white/10 rounded-lg text-xs text-white focus:outline-none focus:border-orange-500/50"
+                >
+                  <option value="">No template</option>
+                  {templates.map((template) => (
+                    <option key={template.id} value={template.id}>{template.name}</option>
+                  ))}
+                </select>
+                {selectedTemplate ? (
+                  <p className="text-[11px] text-gray-500 self-center truncate">Using template: <span className="text-orange-300">{selectedTemplate.name}</span></p>
+                ) : (
+                  <p className="text-[11px] text-gray-500 self-center">Select a template to auto-fill subject and body.</p>
+                )}
               </div>
             </div>
           ) : null}
@@ -395,9 +451,32 @@ export default function EmailsPage() {
               </div>
               <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#111111] px-3 py-2.5">
                 <Image src="/logo.png" alt="Walktopus" width={28} height={28} className="h-7 w-7 rounded-full object-contain bg-white p-0.5" />
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-gray-500 uppercase tracking-wide">From</p>
-                  <p className="text-sm font-semibold text-white">Walktopus</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
+                    <select
+                      value={senderLocalPartOption}
+                      onChange={(e) => setSenderLocalPartOption(e.target.value)}
+                      className="px-2.5 py-1.5 bg-[#1a1a1a] border border-white/10 rounded-lg text-xs text-white focus:outline-none focus:border-orange-500/50"
+                    >
+                      {SENDER_LOCAL_PART_OPTIONS.map((option) => (
+                        <option key={option} value={option}>{option}@walktopus.in</option>
+                      ))}
+                      <option value="__custom__">Custom</option>
+                    </select>
+                    {senderLocalPartOption === '__custom__' ? (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          value={customSenderLocalPart}
+                          onChange={(e) => setCustomSenderLocalPart(e.target.value)}
+                          placeholder="name"
+                          className="w-40 max-w-full px-2.5 py-1.5 bg-[#1a1a1a] border border-white/10 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50"
+                        />
+                        <span className="text-xs text-gray-500">@walktopus.in</span>
+                      </div>
+                    ) : null}
+                  </div>
+                  <p className="text-[11px] text-gray-500 mt-1">Will send as: <span className="text-white">{(senderLocalPart || 'hello')}@walktopus.in</span></p>
                 </div>
               </div>
               <div>
