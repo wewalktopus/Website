@@ -10,7 +10,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
         <div>
           <Image
-            src={SITE_BRANDING.assets.logoTransparent}
+            src={SITE_BRANDING.assets.logoFooter}
             alt={`${BRAND.name} logo`}
             width={220}
             height={58}

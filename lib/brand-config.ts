@@ -8,6 +8,7 @@ export const BRAND_THEME = {
 export const BRAND_ASSETS = {
   logo: '/logo.png',
   logoTransparent: '/logo-transparent.png',
+  logoFooter: '/logo-footer.png',
   favicon: '/favicon.ico',
 } as const;
 

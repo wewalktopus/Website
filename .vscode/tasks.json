@@ -458,6 +458,16 @@
 				"typecheck"
 			],
 			"isBackground": false
+		},
+		{
+			"label": "typecheck-gmail-inbox",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"typecheck"
+			],
+			"isBackground": false
 		}
 	]
 }
